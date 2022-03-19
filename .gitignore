@@ -1,0 +1,42 @@
+# 文件夹
+/.vscode
+/_Compile
+
+# 文件名
+Test.*
+
+# 文件类型
+## 特殊
+*.lnk
+*.privacy.*
+*.backup.*
+## 文档
+*.pdf
+*.ppt
+*.pptx
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.html
+## 压缩包
+*.zip
+*.rar
+*.7z
+## 电子书
+*.mobi
+*.epub
+## 应用
+*.exe
+*.dll
+## 数据
+*.db
+*.log
+## 设置
+*.ini
+
+# 非原创
+/Translation-Terminator
+/TextReplace
+/SmartTranslator
+/WordsCorrect
