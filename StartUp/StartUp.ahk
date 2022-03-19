@@ -8,7 +8,7 @@ OnOff := {"WeMeet": True, "WeChat": True, "TIM": True}
 DetectHiddenWindows On
 
 ; 腾讯会议
-If (!(WinExist("SBTecent") or WinExist("腾讯会议")) and 1 < A_WDay < 7) {
+If (!(WinExist("SBTecent") or WinExist("腾讯会议")) and 1 < A_WDay and A_WDay < 7) {
     If OnOff["WeMeet"] {
         Run D:\Program Files\Tencent\WeMeet\wemeetapp.exe
         WinWait 腾讯会议, , 10

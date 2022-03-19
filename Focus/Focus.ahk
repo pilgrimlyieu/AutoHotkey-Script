@@ -53,7 +53,7 @@ If (A_WDay = 1 or A_WDay = 7) {
     IfMsgBox Yes
         Online := 1
 }
-If (1 < A_WDay < 7 or Online) {
+If ((1 < A_WDay and A_WDay < 7) or Online) {
     While 1 {
         If (ExtraLevel and ExtraTime and ExtraOnOff) {
             MsgBox 4160, 意外离屏, 已开启「意外离屏」！, 5
