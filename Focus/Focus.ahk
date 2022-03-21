@@ -5,9 +5,10 @@ Global Online := 0, AdvancedSettingOnOff := 0, RLNOF := 0, RENOF := 0, ROF := 0,
 Global ReadOF := 1
 Global Begins := ["0700", "0750", "0845", "0940", "1035", "1130", "1400", "1455", "1550", "1845", "2015"]
 Global Ends := ["0740", "0830", "0925", "1020", "1115", "1210", "1440", "1535", "1630", "2000", "2130"]
+Global ExtraStatus := ["未启用", "启用中"]
+Global WhiteList := ["SumatraPDF.exe", "WINWORD.EXE", "POWERPNT.EXE"]
 Global CourseNum := Begins.Length()
 Global ChooseTab := 1
-Global ExtraStatus := ["未启用", "启用中"]
 Global DefaultPassword := 000000
 
 If !FileExist(ConfigFile)
@@ -33,6 +34,11 @@ Else {
     ExtraLevel := 0
     DeltaTime := 0
 }
+RegexWhiteList := "i)\A("
+For Index, Value in WhiteList {
+    RegexWhiteList .= Value "|"
+}
+RegexWhiteList .= ")\z"
 Global EStatus := ExtraStatus[ExtraLevel + 1]
 Global SetPassword := Decrypt(SubStr(PasswordCode, 1, 8), SubStr(PasswordCode, 9))
 
@@ -66,7 +72,14 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
             Gosub Delta
         }
         #IfWinNotActive 腾讯会议
-        WinWaitActive 腾讯会议, , % CheckInterval
+        Loop % CheckInterval {
+            WinWaitActive 腾讯会议, , 1
+            If ExtraLevel
+                Continue 2
+        } Until !ErrorLevel
+        WinGet ProcName, ProcessName, A
+        If (ProcName and ProcName ~= RegexWhiteList)
+            Continue
         FormatTime, Now, , HHmm
         If (Now > Ends[Ends.Length()]) {
             DetectHiddenWindows On
@@ -75,9 +88,7 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
             ExitApp
         }
         Loop %CourseNum% {
-            If ExtraLevel
-                Break
-            Else If (Begins[A_Index] <= Now and Now <= Ends[A_Index] and ErrorLevel) {
+            If (Begins[A_Index] <= Now and Now <= Ends[A_Index] and ErrorLevel) {
                 If (UsedNum and LeaveOnOff) {
                     MsgBox 4388, 长时离屏, 离屏时间过长，是否开启为时 %LeaveMinute% 分钟的「长时离屏」？`n剩余长时离屏次数：%UsedNum%, 5
                     IfMsgBox Timeout
