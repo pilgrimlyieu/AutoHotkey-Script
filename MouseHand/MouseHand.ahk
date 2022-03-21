@@ -14,7 +14,7 @@ If (LButtonKeyNum = LBNum) {
     MsgBox 4144, 休息一下, 已经高强度持续使用鼠标很久了，活动一下手吧！可在休息至少 %ForceTime%s 后按 Esc 键退出锁定模式。, 10
     CoordMode Mouse
     MouseGetPos XPos, YPos
-    Loop ForceTime {
+    Loop % ForceTime {
         Sleep 1000
         MouseMove XPos, YPos
     }

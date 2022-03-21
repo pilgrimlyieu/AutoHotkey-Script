@@ -70,8 +70,8 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
         FormatTime, Now, , HHmm
         If (Now > Ends[Ends.Length()]) {
             DetectHiddenWindows On
-            WinKill SBTecent
             WinKill 腾讯会议
+            WinKill SBTecent
             ExitApp
         }
         Loop %CourseNum% {
