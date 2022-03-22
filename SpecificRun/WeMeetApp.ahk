@@ -1,6 +1,6 @@
 Run D:\Program Files\Tencent\WeMeet\wemeetapp.exe
 WinWait 腾讯会议, , 10
-If (!ErrorLevel) {
+If !ErrorLevel {
     Sleep 3000
     ; 主窗口与会议窗口除 ID 外都相同，害得我只能通过修改标题来解决
     WinSetTitle 腾讯会议, , SBTecent

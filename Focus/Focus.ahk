@@ -83,7 +83,11 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
         FormatTime, Now, , HHmm
         If (Now > Ends[Ends.Length()]) {
             DetectHiddenWindows On
+            CoordMode Mouse
+            WinActivate 腾讯会议
             WinKill 腾讯会议
+            Click 1000 580
+            Sleep 500
             WinKill SBTecent
             ExitApp
         }
