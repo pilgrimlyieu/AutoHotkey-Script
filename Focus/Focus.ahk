@@ -72,14 +72,14 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
             Gosub Delta
         }
         #IfWinNotActive 腾讯会议
-        Loop % CheckInterval {
-            WinWaitActive 腾讯会议, , 1
-            If ExtraLevel
-                Continue 2
-        } Until !ErrorLevel
         WinGet ProcName, ProcessName, A
         If (ProcName and ProcName ~= RegexWhiteList)
             Continue
+        Loop % CheckInterval {
+            WinWaitActive 腾讯会议, , 1
+            If (ExtraLevel or !ErrorLevel)
+                Continue 2
+        }
         FormatTime, Now, , HHmm
         If (Now > Ends[Ends.Length()]) {
             DetectHiddenWindows On
