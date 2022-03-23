@@ -38,7 +38,7 @@ RegexWhiteList := "i)\A("
 For Index, Value in WhiteList {
     RegexWhiteList .= Value "|"
 }
-RegexWhiteList .= ")\z"
+RegexWhiteList := SubStr(RegexWhiteList, 1, -1) ")\z"
 Global EStatus := ExtraStatus[ExtraLevel + 1]
 Global SetPassword := Decrypt(SubStr(PasswordCode, 1, 8), SubStr(PasswordCode, 9))
 
@@ -72,13 +72,15 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
             Gosub Delta
         }
         #IfWinNotActive 腾讯会议
-        WinGet ProcName, ProcessName, A
-        If ProcName ~= RegexWhiteList
-            Continue
         Loop % CheckInterval {
             WinWaitActive 腾讯会议, , 1
-            If (ExtraLevel or !ErrorLevel)
+            EL := ErrorLevel
+            If (ExtraLevel or !EL)
                 Continue 2
+        }
+        WinGet ProcName, ProcessName, A
+        If ProcName ~= RegexWhiteList {
+            Continue
         }
         FormatTime, Now, , HHmm
         If (Now > Ends[Ends.Length()]) {
@@ -92,7 +94,7 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
             ExitApp
         }
         Loop %CourseNum% {
-            If (Begins[A_Index] <= Now and Now <= Ends[A_Index] and ErrorLevel) {
+            If (Begins[A_Index] <= Now and Now <= Ends[A_Index] and EL) {
                 If (UsedNum and LeaveOnOff) {
                     MsgBox 4388, 长时离屏, 离屏时间过长，是否开启为时 %LeaveMinute% 分钟的「长时离屏」？`n剩余长时离屏次数：%UsedNum%, 5
                     IfMsgBox Timeout
@@ -345,6 +347,6 @@ Decrypt(Now, CypherText) {
     FormatTime Key4, %TempKey%, yyyyMMdd
     PlainText := (Key3 * Key4 - CypherText) // (Key2 * Key1)
     Loop % 6 - StrLen(PlainText)
-        Plus .= "0"
+        Plus .= 0
     Return Plus PlainText
 }
