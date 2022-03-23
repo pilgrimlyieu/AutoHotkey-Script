@@ -6,7 +6,7 @@ Global ReadOF := 1
 Global Begins := ["0700", "0750", "0845", "0940", "1035", "1130", "1400", "1455", "1550", "1845", "2015"]
 Global Ends := ["0740", "0830", "0925", "1020", "1115", "1210", "1440", "1535", "1630", "2000", "2130"]
 Global ExtraStatus := ["未启用", "启用中"]
-Global WhiteList := ["SumatraPDF.exe", "WINWORD.EXE", "POWERPNT.EXE"]
+Global WhiteList := ["SumatraPDF.exe", "WINWORD.EXE", "POWERPNT.EXE", "Snipaste.exe", "GoldenDict.exe", "db.exe"]
 Global CourseNum := Begins.Length()
 Global ChooseTab := 1
 Global DefaultPassword := 000000
@@ -53,7 +53,7 @@ Menu Tray, Add, 退出, Exit
 ; Sleep 60000
 
 If MainOnOff
-    WinHide SBTecent
+    WinHide SBTencent
 If (A_WDay = 1 or A_WDay = 7) {
     MsgBox 4388, Focus, 今天是否上网课？, 10
     IfMsgBox Yes
@@ -73,7 +73,7 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
         }
         #IfWinNotActive 腾讯会议
         WinGet ProcName, ProcessName, A
-        If (ProcName and ProcName ~= RegexWhiteList)
+        If ProcName ~= RegexWhiteList
             Continue
         Loop % CheckInterval {
             WinWaitActive 腾讯会议, , 1
@@ -88,7 +88,7 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
             WinKill 腾讯会议
             Click 1000 580
             Sleep 500
-            WinKill SBTecent
+            WinKill SBTencent
             ExitApp
         }
         Loop %CourseNum% {
@@ -197,13 +197,13 @@ Delta:
 Return
 
 Main:
-    If WinExist("SBTecent") {
-        WinMinimize SBTecent
-        WinSet Bottom, , SBTecent
-        WinHide SBTecent
+    If WinExist("SBTencent") {
+        WinMinimize SBTencent
+        WinSet Bottom, , SBTencent
+        WinHide SBTencent
         Return
     }
-    WinShow SBTecent
+    WinShow SBTencent
 Return
 
 Reload:
