@@ -3,13 +3,13 @@
 Global ConfigFile := A_ScriptDir "\Focus.ini", DataFile := A_ScriptDir "\Focus.db"
 Global Online := 0, AdvancedSettingOnOff := 0, RLNOF := 0, RENOF := 0, ROF := 0, EOF := 0, LeaveLevel := 0
 Global ReadOF := 1
-Global Begins := ["0700", "0750", "0845", "0940", "1035", "1130", "1400", "1455", "1550", "1845", "2015"]
-Global Ends := ["0740", "0830", "0925", "1020", "1115", "1210", "1440", "1535", "1630", "2000", "2130"]
+Global Begins := [0700, 0750, 0845, 0940, 1035, 1130, 1400, 1455, 1550, 1845, 2015]
+Global Ends := [0740, 0830, 0925, 1020, 1115, 1210, 1440, 1535, 1630, 2000, 2130]
 Global ExtraStatus := ["未启用", "启用中"]
 Global WhiteList := ["SumatraPDF.exe", "WINWORD.EXE", "POWERPNT.EXE", "Snipaste.exe", "GoldenDict.exe", "db.exe", "javaw.exe", "Mathematica.exe", "anki.exe"]
 Global CourseNum := Begins.Length()
 Global ChooseTab := 1
-Global AnkiTime := "2000"
+Global AnkiTime := 2000
 Global DefaultPassword := 000000
 
 If !FileExist(ConfigFile)
@@ -350,7 +350,7 @@ Encrypt(PlainText) {
     FormatTime Key2, %TempKey%, yyyyMMdd
     TempKey += -2, Days
     FormatTime Key3, %TempKey%, yyyyMMdd
-Return A_YYYY A_MM A_DD Key2 * Key3 - A_WDay * Key1 * PlainText
+    Return A_YYYY A_MM A_DD Key2 * Key3 - A_WDay * Key1 * PlainText
 }
 
 Decrypt(Now, CypherText) {
@@ -364,5 +364,5 @@ Decrypt(Now, CypherText) {
     PlainText := (Key3 * Key4 - CypherText) // (Key2 * Key1)
     Loop % 6 - StrLen(PlainText)
         Plus .= 0
-Return Plus PlainText
+    Return Plus PlainText
 }

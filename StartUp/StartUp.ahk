@@ -1,7 +1,7 @@
 ﻿;@Ahk2Exe-SetMainIcon StartUp.ico
 #NoTrayIcon
 
-; Sleep % 10000
+; Sleep 10000
 
 OnOff := {"Anki":1, "WeMeet": 1, "WeChat": 1, "TIM": 1}
 
