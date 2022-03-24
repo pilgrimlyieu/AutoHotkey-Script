@@ -40,3 +40,6 @@ Test.*
 /TextReplace
 /SmartTranslator
 /WordsCorrect
+
+# 工具
+/AutoHotkeyTools
