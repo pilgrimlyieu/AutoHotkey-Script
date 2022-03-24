@@ -1,5 +1,6 @@
 ; everyting 搜索
 #f::
+	Clipboard := ""
 	Send {Ctrl Down}c{Ctrl Up}
 	If Clipboard
 		Run D:/Program Files/Everything/Everything.exe -search %Clipboard%
