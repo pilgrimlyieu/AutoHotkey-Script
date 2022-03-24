@@ -6,9 +6,10 @@ Global ReadOF := 1
 Global Begins := ["0700", "0750", "0845", "0940", "1035", "1130", "1400", "1455", "1550", "1845", "2015"]
 Global Ends := ["0740", "0830", "0925", "1020", "1115", "1210", "1440", "1535", "1630", "2000", "2130"]
 Global ExtraStatus := ["未启用", "启用中"]
-Global WhiteList := ["SumatraPDF.exe", "WINWORD.EXE", "POWERPNT.EXE", "Snipaste.exe", "GoldenDict.exe", "db.exe"]
+Global WhiteList := ["SumatraPDF.exe", "WINWORD.EXE", "POWERPNT.EXE", "Snipaste.exe", "GoldenDict.exe", "db.exe", "javaw.exe", "Mathematica.exe", "anki.exe"]
 Global CourseNum := Begins.Length()
 Global ChooseTab := 1
+Global AnkiTime := "2000"
 Global DefaultPassword := 000000
 
 If !FileExist(ConfigFile)
@@ -71,7 +72,7 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
             }
             Gosub Delta
         }
-        #IfWinNotActive 腾讯会议
+        If !WinActive("腾讯会议") {
             Loop % CheckInterval {
                 WinWaitActive 腾讯会议, , 1
                 EL := ErrorLevel
@@ -97,23 +98,30 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
                 If (Begins[A_Index] <= Now and Now <= Ends[A_Index] and EL) {
                     If (UsedNum and LeaveOnOff) {
                         MsgBox 4388, 短时离屏, 离屏时间过长，是否开启为时 %LeaveMinute% 分钟的「短时离屏」？`n剩余短时离屏次数：%UsedNum%, 5
-                        IfMsgBox Timeout
-                        WinActivate 腾讯会议
                         IfMsgBox Yes
                         {
                             UsedNum --
                             LeaveLevel := 1
                             Sleep % LeaveMinute * 60000
                             LeaveLevel := 0
+                            Continue 2
                         }
-                        IfMsgBox No
-                        WinActivate 腾讯会议
+                        If (Now >= AnkiTime and !WinActive("ahk_exe anki.exe") and AnkiOnOff) {
+                            If !WinExist("ahk_exe anki.exe") {
+                                Run C:\Users\Administrator\Desktop\Anki.lnk
+                                CoordMode Mouse
+                                WinWait ahk_exe anki.exe, , 10
+                                WinActivate ahk_exe anki.exe
+                                Click 1140 330
+                            }
+                            WinActivate ahk_exe anki.exe
+                        }
+                        Else
+                            WinActivate 腾讯会议
+                        Continue 2
                     }
-                    Else
-                        WinActivate 腾讯会议
-                    Break
                 }
-            #IfWinNotActive
+            }
         }
     }
 }
@@ -132,6 +140,7 @@ Setting:
         Gui Add, Tab3, Choose%ChooseTab%, 基础|短时离屏|长时离屏
     Gui Tab, 基础
     Gui Add, CheckBox, x20 y+15 vMainOnOff gGETV Checked%MainOnOff%, 自动隐藏「腾讯会议」主窗口
+    Gui Add, CheckBox, x20 y+15 vAnkiOnOff gGETV Checked%AnkiOnOff%, Anki 模式
     Gui Add, Text, x20 y+15, 检查离屏间隔时间：
     Gui Add, Edit, x+10 w50 vCheckInterval gGETV
     Gui Add, UpDown, Range1-300, %CheckInterval%
@@ -234,6 +243,7 @@ Return
 
 Create_Config:
     IniWrite 1, %ConfigFile%, 设置, MainOnOff
+    IniWrite 1, %ConfigFile%, 设置, AnkiOnOff
     IniWrite 60, %ConfigFile%, 设置, CheckInterval
     IniWrite 1, %ConfigFile%, 设置, LeaveOnOff
     IniWrite 5, %ConfigFile%, 设置, LeaveNum
