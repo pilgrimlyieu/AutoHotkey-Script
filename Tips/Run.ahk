@@ -1,7 +1,7 @@
 ; everyting 搜索
 #f::
-	Send ^c
-	Run D:/Program Files/Everything/Everything.exe -s %Clipboard%
+	Send {Ctrl Down}c{Ctrl Up}
+	Run D:/Program Files/Everything/Everything.exe -search %Clipboard%
 	Clipboard := ""
 Return
 
