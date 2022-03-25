@@ -1,4 +1,4 @@
-;@Ahk2Exe-SetMainIcon Shutdown.ico
+﻿;@Ahk2Exe-SetMainIcon Shutdown.ico
 #NoTrayIcon
 
 Warn(WarnMinute, ExtendLevel, ExtendMinute) {

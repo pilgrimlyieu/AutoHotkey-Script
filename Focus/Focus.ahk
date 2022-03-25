@@ -9,7 +9,7 @@ Global ExtraStatus := ["未启用", "启用中"]
 Global WhiteList := ["SumatraPDF.exe", "WINWORD.EXE", "POWERPNT.EXE", "Snipaste.exe", "GoldenDict.exe", "db.exe", "javaw.exe", "Mathematica.exe", "anki.exe"]
 Global CourseNum := Begins.Length()
 Global ChooseTab := 1
-Global AnkiTime := 2000
+Global EveningTime := 2000
 Global DefaultPassword := 000000
 
 If !FileExist(ConfigFile)
@@ -106,15 +106,19 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
                             LeaveLevel := 0
                             Continue 2
                         }
-                        If (Now >= AnkiTime and !WinActive("ahk_exe anki.exe") and AnkiOnOff) {
-                            If !WinExist("ahk_exe anki.exe") {
-                                Run C:\Users\Administrator\Desktop\Anki.lnk
-                                CoordMode Mouse
-                                WinWait ahk_exe anki.exe, , 10
+                        If (Now >= EveningTime) {
+                            If !FridayOnOff
+                                ExitApp
+                            Else If (!WinActive("ahk_exe anki.exe") and AnkiOnOff) {
+                                If !WinExist("ahk_exe anki.exe") {
+                                    Run C:\Users\Administrator\Desktop\Anki.lnk
+                                    CoordMode Mouse
+                                    WinWait ahk_exe anki.exe, , 10
+                                    WinActivate ahk_exe anki.exe
+                                    Click 1140 330
+                                }
                                 WinActivate ahk_exe anki.exe
-                                Click 1140 330
                             }
-                            WinActivate ahk_exe anki.exe
                         }
                         Else
                             WinActivate 腾讯会议
@@ -140,6 +144,7 @@ Setting:
         Gui Add, Tab3, Choose%ChooseTab%, 基础|短时离屏|长时离屏
     Gui Tab, 基础
     Gui Add, CheckBox, x20 y+15 vMainOnOff gGETV Checked%MainOnOff%, 自动隐藏「腾讯会议」主窗口
+    Gui Add, CheckBox, x20 y+15 vFridayOnOff gGETV Checked%FridayOnOff%, 周五晚自习
     Gui Add, CheckBox, x20 y+15 vAnkiOnOff gGETV Checked%AnkiOnOff%, Anki 模式
     Gui Add, Text, x20 y+15, 检查离屏间隔时间：
     Gui Add, Edit, x+10 w50 vCheckInterval gGETV
@@ -243,6 +248,7 @@ Return
 
 Create_Config:
     IniWrite 1, %ConfigFile%, 设置, MainOnOff
+    IniWrite 0, %ConfigFile%, 设置, FridayOnOff
     IniWrite 1, %ConfigFile%, 设置, AnkiOnOff
     IniWrite 60, %ConfigFile%, 设置, CheckInterval
     IniWrite 1, %ConfigFile%, 设置, LeaveOnOff
