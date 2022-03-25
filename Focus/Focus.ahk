@@ -55,12 +55,8 @@ Menu Tray, Add, 退出, Exit
 
 If MainOnOff
     WinHide SBTencent
-If (A_WDay = 1 or A_WDay = 7) {
-    MsgBox 4388, Focus, 今天是否上网课？, 10
-    IfMsgBox Yes
-    Online := 1
-}
-If ((1 < A_WDay and A_WDay < 7) or Online) {
+
+If (1 < A_WDay and A_WDay < 7) {
     While 1 {
         If (ExtraLevel and ExtraTime and ExtraOnOff) {
             MsgBox 4160, 长时离屏, 已开启「长时离屏」！, 5
@@ -96,7 +92,9 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
             }
             Loop %CourseNum% {
                 If (Begins[A_Index] <= Now and Now <= Ends[A_Index] and EL) {
-                    If (UsedNum and LeaveOnOff) {
+                    If (A_WDay = 6 and Now >= EveningTime and !FridayOnOff)
+                        ExitApp
+                    Else If (UsedNum and LeaveOnOff) {
                         MsgBox 4388, 短时离屏, 离屏时间过长，是否开启为时 %LeaveMinute% 分钟的「短时离屏」？`n剩余短时离屏次数：%UsedNum%, 5
                         IfMsgBox Yes
                         {
@@ -106,19 +104,15 @@ If ((1 < A_WDay and A_WDay < 7) or Online) {
                             LeaveLevel := 0
                             Continue 2
                         }
-                        If (Now >= EveningTime) {
-                            If !FridayOnOff
-                                ExitApp
-                            Else If (!WinActive("ahk_exe anki.exe") and AnkiOnOff) {
-                                If !WinExist("ahk_exe anki.exe") {
-                                    Run C:\Users\Administrator\Desktop\Anki.lnk
-                                    CoordMode Mouse
-                                    WinWait ahk_exe anki.exe, , 10
-                                    WinActivate ahk_exe anki.exe
-                                    Click 1140 330
-                                }
+                        If (Now >= EveningTime and !WinActive("ahk_exe anki.exe") and AnkiOnOff) {
+                            If !WinExist("ahk_exe anki.exe") {
+                                Run C:\Users\Administrator\Desktop\Anki.lnk
+                                CoordMode Mouse
+                                WinWait ahk_exe anki.exe, , 10
                                 WinActivate ahk_exe anki.exe
+                                Click 1140 330
                             }
+                            WinActivate ahk_exe anki.exe
                         }
                         Else
                             WinActivate 腾讯会议
