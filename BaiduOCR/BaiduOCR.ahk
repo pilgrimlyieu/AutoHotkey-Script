@@ -35,26 +35,14 @@ loop % _Ke.length() {
 	tVar := _Va[1]
 	%tVar% := _Va[2]
 }
+HKTemp := HK
 
-GHK:
-	Hotkey %HK%, OCR
 return
 
 OCR:
+	clipboard := ""
 	send {f8}
-	KeyWait LButton, DT5
-	if (ErrorLevel = 1) {
-		WinClose ahk_exe D:\Program Files\Snipaste-2.7.1-Beta-x64\Snipaste.exe
-		return
-	}
-	else {
-		KeyWait LButton, T5
-		if (ErrorLevel = 1) {
-			WinClose ahk_exe D:\Program Files\Snipaste-2.7.1-Beta-x64\Snipaste.exe
-			return
-		}
-		send {LButton 2}
-	}
+	clipwait , , 1
 
 	pToken := Gdip_Startup()
 	pBitmap := Gdip_CreateBitmapFromClipboard()
@@ -87,7 +75,7 @@ Create_st:
 	Gui, st:Margin, 10, 10
 	Gui, st:Font, s14, SimHei
 	Gui, Add, Text, xm x15 y+25 w100 h25 +Right, OCR 热键
-	Gui, Add, Hotkey, x+15 w250 h25 vHK gGETV gGHK
+	Gui, Add, Hotkey, x+15 w250 h25 vHK gGHK
 	Gui, Add, Text, xm x15 y+25 w100 h25 +Right, API_Key
 	Gui, Add, Edit, x+15 w250 h25 vAPI_Key gGETV
 	Gui, Add, Text, xm x15 y+25 w100 h25 +Right, Secret_Key
@@ -109,6 +97,18 @@ Show_st:
 		Gosub Create_Config
 	Gui, st:Show, NA, 设置
 Return
+
+GHK:
+	GuiControlGet, tVa, , % A_GuiControl
+	%A_GuiControl% := tVa
+	if cz
+		Writeini(BD_Configfile, tVa, A_GuiControl, "OCR设置")
+	If HK {
+		Hotkey %HKTemp%, OCR, Off
+		Hotkey %HK%, OCR, On
+		HKTemp := HK
+	}
+return
 
 GETV:
 	GuiControlGet, tVa, , % A_GuiControl
