@@ -77,7 +77,7 @@ Urlencode(string, encoding:="utf-8") {
 
 Get_token(BD_Key,BD_Secret) {
 	BD_access_token := Readini(BD_Configfile, "BD_token", "OCR设置")
-	if BD_access_token && (Get_Ocr("/9j/4AAQSkZJRgABAQEAYABgAAD//gAUU29mdHdhcmU6IFNuaXBhc3Rl/9sAQwADAgIDAgIDAwMDBAMDBAUIBQUEBAUKBwcGCAwKDAwLCgsLDQ4SEA0OEQ4LCxAWEBETFBUVFQwPFxgWFBgSFBUU/9sAQwEDBAQFBAUJBQUJFA0LDRQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQU/8AAEQgAAQABAwEiAAIRAQMRAf/EAB8AAAEFAQEBAQEBAAAAAAAAAAABAgMEBQYHCAkKC//EALUQAAIBAwMCBAMFBQQEAAABfQECAwAEEQUSITFBBhNRYQcicRQygZGhCCNCscEVUtHwJDNicoIJChYXGBkaJSYnKCkqNDU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6g4SFhoeIiYqSk5SVlpeYmZqio6Slpqeoqaqys7S1tre4ubrCw8TFxsfIycrS09TV1tfY2drh4uPk5ebn6Onq8fLz9PX29/j5+v/EAB8BAAMBAQEBAQEBAQEAAAAAAAABAgMEBQYHCAkKC//EALURAAIBAgQEAwQHBQQEAAECdwABAgMRBAUhMQYSQVEHYXETIjKBCBRCkaGxwQkjM1LwFWJy0QoWJDThJfEXGBkaJicoKSo1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoKDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uLj5OXm5+jp6vLz9PX29/j5+v/aAAwDAQACEQMRAD8A/VOiiigD/9k=", BD_access_token) != "image size error")
+	if BD_access_token
 		return BD_access_token
 	BD_Url := "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials"
 	BD_Url := BD_Url "&client_id=" BD_Key "&client_secret=" BD_Secret
@@ -90,7 +90,7 @@ Get_token(BD_Key,BD_Secret) {
 	}
 }
 
-Get_Ocr(imgBase64, BD_access_token, txttype:="general_basic") {
+Get_Ocr(imgBase64, BD_access_token, txttype := "general_basic") {
 	BD_Url := "https://aip.baidubce.com/rest/2.0/ocr/v1/" txttype "?access_token=" BD_access_token
 	postdata := "image=" urlencode(imgBase64)
 	BD_ReturnTxt := URLDownloadToVar(BD_Url, "UTF-8", "POST", postdata, {"Content-Type":"application/x-www-form-urlencoded"})
@@ -118,17 +118,15 @@ Get_Ocr(imgBase64, BD_access_token, txttype:="general_basic") {
 	Return 0
 }
 
-bdocr_Bitmap(base64, BD_access_token, txttype := "") {
-	if !txttype
-		if tmp := Readini(BD_Configfile, "识别类型", "OCR设置")
-			txttype := tmp 
-		else
-			txttype := "general_basic"
+bdocr_Bitmap(base64, BD_access_token) {
+	if Readini(BD_Configfile, "识别类型", "OCR设置")
+		txttype := Readini(BD_Configfile, "识别类型", "OCR设置")
+	else
+		txttype := "general_basic"
 	return Get_Ocr(base64, BD_access_token, txttype)
 }
 
 Gdip_EncodeBitmapTo64string(pBitmap, ext, Quality=75) {
-
     if Ext not in BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG
         return -1
     Extension := "." Ext
@@ -139,8 +137,6 @@ Gdip_EncodeBitmapTo64string(pBitmap, ext, Quality=75) {
     if !(nCount && nSize)
     return -2
 
-
-
     Loop, %nCount%
     {
             sString := StrGet(NumGet(ci, (idx := (48+7*A_PtrSize)*(A_Index-1))+32+3*A_PtrSize), "UTF-16")
@@ -150,7 +146,6 @@ Gdip_EncodeBitmapTo64string(pBitmap, ext, Quality=75) {
             pCodec := &ci+idx
             break
     }
-
 
     if !pCodec
         return -3

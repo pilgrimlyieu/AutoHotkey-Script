@@ -36,6 +36,7 @@ loop % _Ke.length() {
 	%tVar% := _Va[2]
 }
 HKTemp := HK
+Hotkey %HK%, OCR, On
 
 return
 
@@ -43,6 +44,8 @@ OCR:
 	clipboard := ""
 	send {f8}
 	clipwait , , 1
+	if ErrorLevel
+		return
 
 	pToken := Gdip_Startup()
 	pBitmap := Gdip_CreateBitmapFromClipboard()
