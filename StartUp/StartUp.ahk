@@ -12,7 +12,7 @@ If !WinExist("ahk_exe anki.exe") {
     If OnOff["Anki"] {
         Run C:\Users\Administrator\Desktop\Anki.lnk
         CoordMode Mouse
-        WinWait ahk_exe anki.exe, , 10
+        WinWaitActive ahk_exe anki.exe, , 10
         If !ErrorLevel {
             WinActivate ahk_exe anki.exe
             Sleep 5000
@@ -29,7 +29,7 @@ If !WinExist("ahk_exe anki.exe") {
 If (!(WinExist("SBTencent") or WinExist("腾讯会议")) and 1 < A_WDay and A_WDay < 7) {
     If OnOff["WeMeet"] {
         Run D:\Program Files\Tencent\WeMeet\wemeetapp.exe
-        WinWait 腾讯会议, , 10
+        WinWaitActive 腾讯会议, , 10
         If !ErrorLevel {
             WinActivate 腾讯会议
             Sleep 5000
@@ -51,7 +51,7 @@ If (!(WinExist("SBTencent") or WinExist("腾讯会议")) and 1 < A_WDay and A_WD
 If !WinExist("微信") {
     If OnOff["WeChat"] {
         Run D:\Program Files\WeChat\WeChat.exe
-        WinWait 微信, , 10
+        WinWaitActive 微信, , 10
         If !ErrorLevel {
             WinActivate 微信
             Sleep 5000
