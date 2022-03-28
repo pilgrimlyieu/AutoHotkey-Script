@@ -222,26 +222,31 @@ Note:
     Else If Note {
         NoteUsed ++
         Note := 0
+        Used := NoteNum - NoteUsed
+        MsgBox 4160, 笔记模式, 持续 %Pass% 分钟的笔记模式已关闭！`n剩余可用笔记模式次数：%Used% , 5
         Return
     }
     Note := 1
     MsgBox 4160, 笔记模式, 笔记模式已开启！, 5
     Studu := ""
+    Pass := 0
     Loop % NoteTime {
-        Pass := A_Index - 1
         WinGetTitle WT, A
         If !(WT ~= "Week-\d{2}_\d{2}(?:-\d{2}){2}(?:_\w+)?\.md - ENote - Visual Studio Code \[管理员\]") {
             MsgBox 4132, 笔记模式, 是否要继续进行笔记模式？！`n笔记模式持续时间：%Pass% 分钟, 5
             IfMsgBox No
-                Return
+                Break
             WinActivate %Study%
         }
         Else
             Study := WT
         Sleep 60000
+        Pass ++
     }
     Note := 0
     NoteUsed ++
+    Used := NoteNum - NoteUsed
+    MsgBox 4160, 笔记模式, 持续 %Pass% 分钟的笔记模式已关闭！`n剩余可用笔记模式次数：%Used%, 5
 Return
 
 Delta:
