@@ -1,7 +1,7 @@
 ﻿;@Ahk2Exe-SetMainIcon Icon\Focus.ico
 
 Global ConfigFile := A_ScriptDir "\Focus.ini", DataFile := A_ScriptDir "\Focus.db"
-Global Online := 0, AdvancedSettingOnOff := 0, RLNOF := 0, RENOF := 0, ROF := 0, EOF := 0, LeaveLevel := 0
+Global Online := 0, AdvancedSettingOnOff := 0, RLNOF := 0, RENOF := 0, ROF := 0, EOF := 0, LeaveLevel := 0, Note := 0, NoteOnOff := 0, Note := 0, NoteUsed := 0
 Global ReadOF := 1
 Global Begins := [0700, 0750, 0845, 0940, 1035, 1130, 1400, 1455, 1550, 1845, 2015]
 Global Ends := [0740, 0830, 0925, 1020, 1115, 1210, 1440, 1535, 1630, 2000, 2130]
@@ -48,6 +48,7 @@ Menu Tray, Add, 设置, Setting
 Menu Tray, Default, 设置
 Menu Tray, Add, 腾讯会议主窗口, Main
 Menu Tray, Add, 长时离屏, Extra
+Menu Tray, Add, 笔记时间, Note
 Menu Tray, Add, 重启, Reload
 Menu Tray, Add, 退出, Exit
 
@@ -140,6 +141,15 @@ Setting:
     Gui Add, CheckBox, x20 y+15 vMainOnOff gGETV Checked%MainOnOff%, 自动隐藏「腾讯会议」主窗口
     Gui Add, CheckBox, x20 y+15 vFridayOnOff gGETV Checked%FridayOnOff%, 周五晚自习
     Gui Add, CheckBox, x20 y+15 vAnkiOnOff gGETV Checked%AnkiOnOff%, Anki 模式
+    Gui Add, CheckBox, x20 y+15 vNoteOnOff gGETV Checked%NoteOnOff%, 笔记模式
+    Gui Add, Text, x20 y+15, 笔记模式次数：
+    Gui Add, Edit, x+10 w50 vNoteNum gGETV
+    Gui Add, UpDown, Range0-5, %NoteNum%
+    Gui Add, Text, x20 x+10 y+-20, 次
+    Gui Add, Text, x20 y+15, 笔记模式时间：
+    Gui Add, Edit, x+10 w50 vNoteTime gGETV
+    Gui Add, UpDown, Range15-45, %NoteTime%
+    Gui Add, Text, x20 x+10 y+-20, 分钟
     Gui Add, Text, x20 y+15, 检查离屏间隔时间：
     Gui Add, Edit, x+10 w50 vCheckInterval gGETV
     Gui Add, UpDown, Range1-300, %CheckInterval%
@@ -149,11 +159,11 @@ Setting:
     Gui Add, CheckBox, x20 y+15 vLeaveOnOff gGETV Checked%LeaveOnOff%, 短时离屏
     Gui Add, Text, x20 y+15, 剩余短时离屏次数：%UsedNum% 次
     Gui Add, Button, Default w50 x230 y+-25 gRLN, 重置
-    Gui Add, Text, x20 y+10, 允许短时离屏次数：
+    Gui Add, Text, x20 y+15, 允许短时离屏次数：
     Gui Add, Edit, x+10 w50 vLeaveNum gGETV
     Gui Add, UpDown, Range0-10, %LeaveNum%
     Gui Add, Text, x20 x+10 y+-20, 次
-    Gui Add, Text, x20 y+10, 单次短时离屏时间：
+    Gui Add, Text, x20 y+15, 单次短时离屏时间：
     Gui Add, Edit, x+10 w50 vLeaveMinute gGETV
     Gui Add, UpDown, Range1-10, %LeaveMinute%
     Gui Add, Text, x20 x+10 y+-20, 分钟
@@ -163,7 +173,7 @@ Setting:
     Gui Add, Text, x20 y+15, 长时离屏持续时间：%DeltaTime% 分钟
     Gui Add, Text, x20 y+15, 剩余长时离屏时间：%ExtraTime% 分钟
     Gui Add, Button, Default w50 x230 y+-25 gREN, 重置
-    Gui Add, Text, x20 y+10, 允许长时离屏时间：
+    Gui Add, Text, x20 y+15, 允许长时离屏时间：
     Gui Add, Edit, x+10 w50 vExtraMinute gGETV
     Gui Add, UpDown, Range%LeaveMinute%-120, %ExtraMinute%
     Gui Add, Text, x20 x+10 y+-20, 分钟
@@ -172,18 +182,18 @@ Setting:
         If AdvancedGUIOnOff {
             Gui Add, Text, x20 y+15, 新高级设置密码：
             Gui Add, Edit, x+0 y+-20 w105 Limit6 Number Password -WantCtrlA vInputSetPassword gUpdate
-            Gui Add, Button, Default w50 x20 y+10 gSP, 设置
+            Gui Add, Button, Default w50 x20 y+15 gSP, 设置
             Gui Add, CheckBox, x20 y+15 vReadOF gUpdate Checked%ReadOF%, 只读模式
             Gui Add, CheckBox, x20 y+15 vRLNOF gUpdate Checked%RLNOF%, 短时离屏次数重置
             Gui Add, CheckBox, x20 y+15 vRENOF gUpdate Checked%RENOF%, 长时离屏时间重置
             Gui Add, CheckBox, x20 y+15 vROF gUpdate Checked%RENOF%, 重启
             Gui Add, CheckBox, x20 y+15 vEOF gUpdate Checked%RENOF%, 退出
-            Gui Add, Button, Default w50 x20 y+10 gOUT, 登出
+            Gui Add, Button, Default w50 x20 y+15 gOUT, 登出
         }
         Else {
             Gui Add, Text, x20 y+15, 请输入高级设置密码：
             Gui Add, Edit, x+0 y+-20 w105 Limit6 Number Password -WantCtrlA vInputPassword gUpdate
-            Gui Add, Button, Default w50 x20 y+10 gCP, 登入
+            Gui Add, Button, Default w50 x20 y+15 gCP, 登入
         }
     }
     Gui Setting:Show, NA, 设置
@@ -202,6 +212,36 @@ Extra:
     }
     ExtraLevel := !ExtraLevel
     EStatus := ExtraStatus[ExtraLevel + 1]
+Return
+
+Note:
+    If (NoteOnOff or NoteUsed >= NoteNum) {
+        MsgBox 4160, 笔记模式, 「笔记模式」未开启或次数已尽！, 5
+        Return
+    }
+    Else If Note {
+        NoteUsed ++
+        Note := 0
+        Return
+    }
+    Note := 1
+    MsgBox 4160, 笔记模式, 笔记模式已开启！, 5
+    Studu := ""
+    Loop % NoteTime {
+        Pass := A_Index - 1
+        WinGetTitle WT, A
+        If !(WT ~= "Week-\d{2}_\d{2}(?:-\d{2}){2}(?:_\w+)?\.md - ENote - Visual Studio Code \[管理员\]") {
+            MsgBox 4132, 笔记模式, 是否要继续进行笔记模式？！`n笔记模式持续时间：%Pass% 分钟, 5
+            IfMsgBox No
+                Return
+            WinActivate %Study%
+        }
+        Else
+            Study := WT
+        Sleep 60000
+    }
+    Note := 0
+    NoteUsed ++
 Return
 
 Delta:
@@ -244,6 +284,9 @@ Create_Config:
     IniWrite 1, %ConfigFile%, 设置, MainOnOff
     IniWrite 0, %ConfigFile%, 设置, FridayOnOff
     IniWrite 1, %ConfigFile%, 设置, AnkiOnOff
+    IniWrite 1, %ConfigFile%, 设置, NoteOnOff
+    IniWrite 5, %ConfigFile%, 设置, NoteNum
+    IniWrite 30, %ConfigFile%, 设置, NoteTime
     IniWrite 60, %ConfigFile%, 设置, CheckInterval
     IniWrite 1, %ConfigFile%, 设置, LeaveOnOff
     IniWrite 5, %ConfigFile%, 设置, LeaveNum
