@@ -42,8 +42,8 @@ return
 
 OCR:
 	clipboard := ""
-	send {f8}
-	clipwait , , 1
+	Send {f8}
+	ClipWait , , 10
 	if ErrorLevel
 		return
 
