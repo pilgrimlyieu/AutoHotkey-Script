@@ -1,16 +1,16 @@
 #Include <JSON>
 
-Readini(_BD_Configfile, _key:="", _Section:="") {
-	if FileExist(_BD_Configfile)
+Readini(_ConfigFile, _key:="", _Section:="") {
+	if FileExist(_ConfigFile)
 	{
-		Iniread, initmp, %_BD_Configfile%, %_Section%, %_key%
+		Iniread, initmp, %_ConfigFile%, %_Section%, %_key%
 		return initmp
 	}
 }
 
-Writeini(_BD_Configfile, _value, _key, _Section:="Config") {
+Writeini(_ConfigFile, _value, _key, _Section:="Config") {
 	if _value !=
-		IniWrite, %_value%, %_BD_Configfile%, %_Section%, %_key%
+		IniWrite, %_value%, %_ConfigFile%, %_Section%, %_key%
 }
 
 URLDownloadToVar(url, Encoding = "", Method="GET", postData="", headers:="") {
@@ -75,30 +75,29 @@ Urlencode(string, encoding:="utf-8") {
 	return content
 }
 
-Get_token(BD_Key,BD_Secret) {
-	BD_access_token := Readini(BD_Configfile, "BD_token", "OCR设置")
-	if BD_access_token
-		return BD_access_token
+Get_Token(BD_Key,BD_Secret) {
+	BD_access_Token := Readini(ConfigFile, "Baidu_Token", "OCR设置")
+	if BD_access_Token
+		return BD_access_Token
 	BD_Url := "https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials"
 	BD_Url := BD_Url "&client_id=" BD_Key "&client_secret=" BD_Secret
 	BD_Json := JSON.Load(URLDownloadToVar(BD_Url))
-	BD_access_token := BD_Json.access_token
-	msgbox % BD_access_token "|" BD_Key
-	if BD_access_token{
-		IniWrite, %BD_access_token%, %BD_Configfile%, OCR设置, BD_token
-		return BD_access_token
+	BD_access_Token := BD_Json.access_token
+	if BD_access_Token {
+		IniWrite, %BD_access_Token%, %ConfigFile%, OCR设置, Baidu_Token
+		return BD_access_Token
 	}
 }
 
-Get_Ocr(imgBase64, BD_access_token, txttype := "general_basic") {
-	BD_Url := "https://aip.baidubce.com/rest/2.0/ocr/v1/" txttype "?access_token=" BD_access_token
-	postdata := "image=" urlencode(imgBase64)
+Get_Ocr(imgBase64, BD_access_Token, txttype := "general_basic") {
+	BD_Url := "https://aip.baidubce.com/rest/2.0/ocr/v1/" txttype "?access_token=" BD_access_Token
+	postdata := "image=" urlencode(imgBase64) "&paragraph=true"
 	BD_ReturnTxt := URLDownloadToVar(BD_Url, "UTF-8", "POST", postdata, {"Content-Type":"application/x-www-form-urlencoded"})
 	BD_Json := JSON.Load(BD_ReturnTxt)
 	if BD_Json.error_msg != ""
 		return BD_Json.error_msg
 	wordsC := BD_Json.words_result_num
-	hh := Readini(BD_Configfile, "保留换行", "OCR设置")
+	hh := Readini(ConfigFile, "保留换行", "OCR设置")
 	if wordsC > 1
 	{
 		Loop % wordsC
@@ -107,7 +106,7 @@ Get_Ocr(imgBase64, BD_access_token, txttype := "general_basic") {
 			if hh
 				txtmp .= "`n"
 		}
-		if !Readini(BD_Configfile, "保留空格", "OCR设置")
+		if !Readini(ConfigFile, "保留空格", "OCR设置")
 			StringReplace, txtmp, txtmp, %A_Space%,,1
 		return txtmp
 	}
@@ -118,15 +117,15 @@ Get_Ocr(imgBase64, BD_access_token, txttype := "general_basic") {
 	Return 0
 }
 
-bdocr_Bitmap(base64, BD_access_token) {
-	if Readini(BD_Configfile, "识别类型", "OCR设置")
-		txttype := Readini(BD_Configfile, "识别类型", "OCR设置")
+bdocr_Bitmap(base64, BD_access_Token) {
+	if Readini(ConfigFile, "识别类型", "OCR设置")
+		txttype := Readini(ConfigFile, "识别类型", "OCR设置")
 	else
 		txttype := "general_basic"
-	return Get_Ocr(base64, BD_access_token, txttype)
+	return Get_Ocr(base64, BD_access_Token, txttype)
 }
 
-Gdip_EncodeBitmapTo64string(pBitmap, ext, Quality=75) {
+Gdip_EncodeBitmapTo64string(pBitmap, ext, Quality=100) {
     if Ext not in BMP,DIB,RLE,JPG,JPEG,JPE,JFIF,GIF,TIF,TIFF,PNG
         return -1
     Extension := "." Ext
@@ -212,7 +211,7 @@ WM_SHOWWINDOW(wParam, lParam, msg, hwnd) {
 		C_S =
 		Global _Tp:=["general_basic","accurate_basic","handwriting","webimage"]
 		loop % N_len{
-			tt := Readini(BD_Configfile, N_[A_index], "OCR设置")
+			tt := Readini(ConfigFile, N_[A_index], "OCR设置")
 			if % N_[A_index] = "识别类型"{
 				loop % _Tp.length() {
 					if _Tp[A_index] = tt
