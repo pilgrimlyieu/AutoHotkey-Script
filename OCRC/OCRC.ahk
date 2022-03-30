@@ -7,6 +7,10 @@
 #Include <OCRC_class>
 
 Global ConfigFile := A_ScriptDir "\OCRC_config.privacy.ini", stHwnd
+Global Formats := ["智能段落", "合并多行", "拆分多行"]
+Global Spaces := ["智能空格", "保留空格", "去除空格", "原始结果"]
+Global Puncs := ["智能标点", "中文标点", "英文标点", "原始结果"]
+Global SEngines := ["百度搜索", "谷歌搜索", "百度百科", "维基百科", "Everything"]
 
 Menu, Tray, NoStandard
 Menu, Tray, Tip, OCRC
@@ -53,11 +57,55 @@ OCR:
 
 	Baidu_Token := Get_Token(Baidu_API_Key, Baidu_Secret_Key)
 	clipboard := bdocr_Bitmap(base64string, Baidu_Token)
-	Gui New, +Resize +MinSize180x160, OCRC Result
-	Gui font, s18, times new roman
-	Gui add, text, , %clipboard%
-	Gui show
+	Gosub ResWin
 return
+
+ResWin:
+	Gui New
+	Gui ResWin:Default
+	Gui +MaximizeBox +MinimizeBox
+	Gui Font, s16, SimHei
+	Gui Add, Text, x40, 排版
+	Gui Font, s12
+	Gui Add, DropDownList, x+5 w100 vFormatStyle gDoFormat Choose1, 智能段落|合并多行|拆分多行
+	Gui Font, s16
+	Gui Add, Text, x+15, 空格
+	Gui Font, s12
+	Gui Add, DropDownList, x+5 w100 vSpaceStyle gDoSpace Choose1, 智能空格|保留空格|去除空格|原始结果
+	Gui Font, s16
+	Gui Add, Text, x+15, 标点
+	Gui Font, s12
+	Gui Add, DropDownList, x+5 w100 vPuncStyle gDoPunc Choose1, 智能标点|中文标点|英文标点|原始结果
+	Gui Font, s16
+	Gui Add, Text, x+15, 搜索
+	Gui Font, s12
+	Gui Add, DropDownList, x+5 w100 vSearchEngine gDoSearch Choose1, 百度搜索|谷歌搜索|百度百科|维基百科|Everything
+	Gui Font, s16
+	Gui Add, Button, x+15 y9 w60 h30, 翻译
+	Gui Font, s18
+	Gui Add, Edit, x40 y45 w720 h395 vResult gDoClip
+	Gui Show, w800 h450 Center, OCRC (BaiduOCR) Result`        Probability: %Probability%`%
+Return
+
+DoFormat:
+; TBC
+Return
+
+DoSpace:
+; TBC
+Return
+
+DoPunc:
+; TBC
+Return
+
+DoSearch:
+; TBC
+Return
+
+DoClip:
+; TBC
+Return
 
 Create_Config:
 	IniWrite, % "F7", %ConfigFile%, OCR设置, HK
@@ -67,7 +115,7 @@ Create_Config:
 	IniWrite, general_basic, %ConfigFile%, OCR设置, 识别类型
 	IniWrite, 0 , %ConfigFile%, OCR设置, 保留换行
 	IniWrite, 0, %ConfigFile%, OCR设置, 保留空格
-return
+Return
 
 Create_st:
 	Global cz := 0
