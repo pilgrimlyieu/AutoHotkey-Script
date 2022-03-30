@@ -96,25 +96,22 @@ Get_Ocr(imgBase64, BD_access_Token, txttype := "general_basic") {
 	BD_Json := JSON.Load(BD_ReturnTxt)
 	if BD_Json.error_msg != ""
 		return BD_Json.error_msg
-	wordsC := BD_Json.words_result_num
+	words_count := BD_Json.words_result_num
+	paragraphs_count := BD_Json.paragraphs_result_num
+	paragraphs := BD_Json.paragraphs_result
+	words := BD_Json.words_result
+	result := ""
 	hh := Readini(ConfigFile, "保留换行", "OCR设置")
-	if wordsC > 1
-	{
-		Loop % wordsC
-		{
-			txtmp .= BD_Json.words_result[A_Index].words
-			if hh
-				txtmp .= "`n"
+	for index, value in paragraphs {
+		paragraph_index := value.words_result_idx
+		Loop % paragraph_index.Length() {
+			result .= words[paragraph_index[A_Index] + 1].words
 		}
-		if !Readini(ConfigFile, "保留空格", "OCR设置")
-			StringReplace, txtmp, txtmp, %A_Space%,,1
-		return txtmp
+		result .= "`n"
 	}
-	else
-	{
-		Return BD_Json.words_result[1].words
-	}
-	Return 0
+	if !Readini(ConfigFile, "保留空格", "OCR设置")
+		result := StrReplace(result, A_Space)
+	return result
 }
 
 bdocr_Bitmap(base64, BD_access_Token) {
