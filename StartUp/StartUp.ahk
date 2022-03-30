@@ -10,12 +10,12 @@ DetectHiddenWindows On
 ; Anki
 If !WinExist("ahk_exe anki.exe") {
     If OnOff["Anki"] {
-        Run C:\Users\Administrator\Desktop\Anki.lnk
+        Run G:\Movable Computer\Movable Software\Program Files\Anki\Anki_StartUp.exe
         CoordMode Mouse
         WinWaitActive ahk_exe anki.exe, , 10
         If !ErrorLevel {
             WinActivate ahk_exe anki.exe
-            Sleep 5000
+            Sleep 10000
             CoordMode Mouse
             Click 1140 330
             Sleep 500
@@ -32,7 +32,7 @@ If (!(WinExist("SBTencent") or WinExist("腾讯会议")) and 1 < A_WDay and A_WD
         WinWaitActive 腾讯会议, , 10
         If !ErrorLevel {
             WinActivate 腾讯会议
-            Sleep 5000
+            Sleep 10000
             ; 主窗口与会议窗口除 ID 外都相同，害得我只能通过修改标题来解决
             WinSetTitle 腾讯会议, , SBTencent
             CoordMode Mouse
@@ -54,7 +54,7 @@ If !WinExist("微信") {
         WinWaitActive 微信, , 10
         If !ErrorLevel {
             WinActivate 微信
-            Sleep 5000
+            Sleep 10000
             CoordMode Mouse
             Click 960 610 ; 登录
             Sleep 500
@@ -68,7 +68,7 @@ If !WinExist("微信") {
 If !WinExist("TIM") {
     If OnOff["TIM"] {
         Run D:\Program Files\TIM\Bin\QQScLauncher.exe
-        Sleep 500
+        Sleep 10000
         WinMinimize TIM
     }
 }
