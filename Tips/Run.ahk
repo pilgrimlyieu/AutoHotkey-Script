@@ -1,4 +1,4 @@
-; everyting 搜索
+﻿; everyting 搜索
 #f::
 	Clipboard := ""
 	Send {Ctrl Down}c{Ctrl Up}
@@ -9,8 +9,10 @@
 	Clipboard := ""
 Return
 
+#HotString * c0
+
 ; 课表
-:*C0:ctb::
+::ctb::
 	Run C:\Users\Administrator\Desktop\课表.png, , Max
 	#IfWinActive ahk_exe D:\Program Files\Honeyview\Honeyview.exe
 	KeyWait q, DT5
@@ -19,7 +21,7 @@ Return
 Return
 
 ; 时间表
-:*C0:ttb::
+::ttb::
 	Run C:\Users\Administrator\Desktop\时间表.png, , Max
 	#IfWinActive ahk_exe D:\Program Files\Honeyview\Honeyview.exe
 	KeyWait q, DT5
@@ -27,5 +29,16 @@ Return
 	#IfWinActive
 Return
 
-#a::
-WinSet AlwaysOnTop, , A
+; 数学课本
+:X:sxs::Run G:\Movable Computer\Library\ENoteBook\Docs\CourseFiles\2-Mathematics\电子课本\人教A版-高中数学-选择性必修第三册.pdf, , Max
+
+
+; 物理课本
+:X:wls::Run G:\Movable Computer\Library\ENoteBook\Docs\CourseFiles\4-Physics\电子课本\新人教版-高中物理-选择性必修第一册-除动量.pdf, , Max
+
+
+; 物理必刷题答案
+:X:bst::Run G:\Movable Computer\Library\ENoteBook\Docs\CourseFiles\4-Physics\电子练习册\物理选修一必刷题答案.pdf, , Max
+
+
+#a::WinSet AlwaysOnTop, , A
