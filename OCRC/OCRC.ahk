@@ -11,10 +11,12 @@ Global Baidu_RecogTypes := ["general_basic", "accurate_basic", "handwriting", "w
 Global Baidu_RecogTypesP := ["通用文字（标准）识别", "通用文字（高精度）识别", "手写文字识别", "网络图片文字识别"]
 Global Baidu_Formats := ["智能段落", "合并多行", "拆分多行"]
 Global Baidu_Spaces := ["智能空格", "保留空格", "去除空格"]
-Global Baidu_Puncs := ["智能标点", "中文标点", "英文标点", "原始结果"]
+Global Baidu_Puncs := ["原始结果", "智能标点", "中文标点", "英文标点"]
 Global Baidu_Trans := ["自动检测", "英⟹中", "中⟹英", "繁⟹简", "日⟹中"]
 Global Baidu_SEngines := ["百度搜索", "谷歌搜索", "百度百科", "维基百科", "Everything"]
 Global Mathpix_ReturnStyles := ["RAW", "$RAW$", "$$RAW$$", "\(RAW\)", "\[RAW\]"]
+Global C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
+Global E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
 
 Menu, Tray, NoStandard
 Menu, Tray, Tip, OCRC
@@ -85,6 +87,11 @@ BOCR:
 return
 
 BPreDo:
+	Baidu_ResultFormatStyle  := Baidu_FormatStyle
+	Baidu_ResultPuncStyle  := Baidu_PuncStyle
+	Baidu_ResultSpaceStyle  := Baidu_SpaceStyle
+	Baidu_ResultTranType  := Baidu_TranType
+	Baidu_ResultSearchEngine  := Baidu_SearchEngine
 	Gosub DoBFormat
 	Gosub DoBSpace
 	Gosub DoBPunc
@@ -105,27 +112,27 @@ return
 
 BResWin:
 	Gui New
-	Gui +MaximizeBox +MinimizeBox
+	Gui +MinimizeBox
 	Gui Font, s16, SimHei
 	Gui Add, Text, x20, 排版
 	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_FormatStyle gDoBFormat AltSubmit Choose%Baidu_FormatStyle%, 智能段落|合并多行|拆分多行
-	Gui Font, s16
-	Gui Add, Text, x+15, 空格
-	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_PuncStyle gDoBPunc AltSubmit Choose%Baidu_PuncStyle%, 智能标点|中文标点|英文标点|原始结果
-	Gui Font, s16
-	Gui Add, Text, x+15, 翻译
-	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_SpaceStyle gDoBSpace AltSubmit Choose%Baidu_SpaceStyle%, 智能空格|保留空格|去除空格
+	Gui Add, DropDownList, x+5 w90 vBaidu_ResultFormatStyle gDoBFormat AltSubmit Choose%Baidu_ResultFormatStyle%, 智能段落|合并多行|拆分多行
 	Gui Font, s16
 	Gui Add, Text, x+15, 标点
 	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_TranType gDoBTran AltSubmit Choose%Baidu_TranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
+	Gui Add, DropDownList, x+5 w90 vBaidu_ResultPuncStyle gDoBPunc AltSubmit Choose%Baidu_ResultPuncStyle%, 原始结果|智能标点|中文标点|英文标点
+	Gui Font, s16
+	Gui Add, Text, x+15, 空格
+	Gui Font, s12
+	Gui Add, DropDownList, x+5 w90 vBaidu_ResultSpaceStyle gDoBSpace AltSubmit Choose%Baidu_ResultSpaceStyle%, 智能空格|保留空格|去除空格
+	Gui Font, s16
+	Gui Add, Text, x+15, 翻译
+	Gui Font, s12
+	Gui Add, DropDownList, x+5 w90 vBaidu_ResultTranType gDoBTran AltSubmit Choose%Baidu_ResultTranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
 	Gui Font, s16
 	Gui Add, Text, x+15, 搜索
 	Gui Font, s12
-	Gui Add, DropDownList, x+5 w105 vBaidu_SearchEngine gDoBSearch AltSubmit Choose%Baidu_SearchEngine%, 百度搜索|谷歌搜索|百度百科|维基百科|Everything
+	Gui Add, DropDownList, x+5 w105 vBaidu_ResultSearchEngine gDoBSearch AltSubmit Choose%Baidu_ResultSearchEngine%, 百度搜索|谷歌搜索|百度百科|维基百科|Everything
 	Gui Font, s18
 	Gui Add, Edit, x20 y45 w770 h395 vBResult gDoBClip hwndBResultHwnd, %BResult%
 	if Baidu_ProbOnOff
@@ -137,58 +144,61 @@ return
 DoBFormat:
 	Gui Submit, NoHide
 	BResult := ""
-	if (Baidu_FormatStyle = 1) {
+	if (Baidu_ResultFormatStyle = 1) {
 		for index, value in paragraphs {
 			for idx, vl in value.words_result_idx
 				BResult .= words[vl + 1].words
 			BResult .= "`n"
 		}
 	}
-	else if (Baidu_FormatStyle = 2) {
+	else if (Baidu_ResultFormatStyle = 2) {
 		for index, value in words
 			BResult .= value.words
 	}
-	else if (Baidu_FormatStyle = 3) {
+	else if (Baidu_ResultFormatStyle = 3) {
 		for index, value in words
 			BResult .= value.words "`n"
 	}
+	BResultTemp := BResult
 	GuiControl Text, %BResultHwnd%, %BResult%
 return
 
 DoBSpace:
 	Gui Submit, NoHide
-	if (Baidu_SpaceStyle = 1) {
+	if (Baidu_ResultSpaceStyle = 1) {
 		; TBC
-		return
 	}
-	else if (Baidu_SpaceStyle = 3)
+	else if (Baidu_ResultSpaceStyle = 3)
 		BResult := StrReplace(BResult, A_Space)
+	GuiControl Text, %BResultHwnd%, %BResult%
 return
 
 DoBPunc:
 	Gui Submit, NoHide
-	if (Baidu_PuncStyle = 1) {
+	if (Baidu_ResultPuncStyle = 1)
+		BResult := BResultTemp
+	else if (Baidu_ResultPuncStyle = 2) {
 		; TBC
-		return
 	}
-	else if (Baidu_PuncStyle = 2) {
-		; TBC
-		return
+	else if (Baidu_ResultPuncStyle = 3) {
+		for EP, CP in E2CPuncs
+			BResult := StrReplace(BResult, EP, CP)
 	}
-	else if (Baidu_PuncStyle = 3) {
-		; TBC
-		return
+	else if (Baidu_ResultPuncStyle = 4) {
+		for CP, EP in C2EPuncs
+			BResult := StrReplace(BResult, CP, EP)
 	}
+	GuiControl Text, %BResultHwnd%, %BResult%
 return
 
 DoBTran:
 	Gui Submit, NoHide
-; TBC
+	; TBC
 return
 
 DoBSearch:
 	Gui Submit, NoHide
-; TBC
+	; TBC
 return
 
 DoBClip:
@@ -254,7 +264,7 @@ Setting:
 	Gui Add, Text, x15 y300 w90 h25 +Right, 默认排版
 	Gui Add, DropDownList, x+15 w200 vBaidu_FormatStyle gGETV AltSubmit Choose%Baidu_FormatStyle%, 智能段落|合并多行|拆分多行
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认标点
-	Gui Add, DropDownList, x+15 w200 vBaidu_PuncStyle gGETV AltSubmit Choose%Baidu_PuncStyle%, 智能标点|中文标点|英文标点|原始结果
+	Gui Add, DropDownList, x+15 w200 vBaidu_PuncStyle gGETV AltSubmit Choose%Baidu_PuncStyle%, 原始结果|智能标点|中文标点|英文标点
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认空格
 	Gui Add, DropDownList, x+15 w200 vBaidu_SpaceStyle gGETV AltSubmit Choose%Baidu_SpaceStyle%, 智能空格|保留空格|去除空格
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认翻译
