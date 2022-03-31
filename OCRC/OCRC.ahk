@@ -81,7 +81,7 @@ BOCR:
 	words := BResultJson.words_result
 
 	Gosub BPreDo
-	if Baidu_ProbOnOff
+	if Baidu_ProbType
 		Gosub BProb
 	Gosub BResWin
 return
@@ -100,14 +100,18 @@ return
 
 BProb:
 	Baidu_Probability := 0
-	BProAddPlus := 0
-	; BProAdd := 0
-	for index, value in words {
-		; BProAdd += value.probability.average
-		BProAddPlus += value.probability.average * StrLen(value.words)
+	if (Baidu_ProbOnOff = 1) {
+		BProAddPlus := 0
+		for index, value in words
+			BProAddPlus += value.probability.average * StrLen(value.words)
+		Baidu_Probability := Format("{:.2f}", 100 * BProAddPlus / StrLen(BResult))
 	}
-	; Baidu_Probability := Format("{:.2f}", 100 * ProAdd / words.Length())
-	Baidu_Probability := Format("{:.2f}", 100 * BProAddPlus / StrLen(BResult))
+	else {
+		BProAdd := 0
+		for index, value in words
+			BProAdd += value.probability.average
+		Baidu_Probability := Format("{:.2f}", 100 * ProAdd / words_count)
+	}
 return
 
 BResWin:
@@ -135,7 +139,7 @@ BResWin:
 	Gui Add, DropDownList, x+5 w105 vBaidu_ResultSearchEngine gDoBSearch AltSubmit Choose%Baidu_ResultSearchEngine%, 百度搜索|谷歌搜索|百度百科|维基百科|Everything
 	Gui Font, s18
 	Gui Add, Edit, x20 y45 w770 h395 vBResult gDoBClip hwndBResultHwnd, %BResult%
-	if Baidu_ProbOnOff
+	if Baidu_ProbType
 		Gui Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果        Probability: " Baidu_Probability "%"
 	else
 		Gui Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果"
@@ -214,7 +218,7 @@ Create_Config:
 	IniWrite % "", %ConfigFile%, BaiduOCR, Baidu_Secret_Key
 	IniWrite % "", %ConfigFile%, BaiduOCR, Baidu_Token
 	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_RecogType
-	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_ProbOnOff
+	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_ProbType
 	IniWrite 1 , %ConfigFile%, BaiduOCR, Baidu_FormatStyle
 	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_PuncStyle
 	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_SpaceStyle
@@ -258,7 +262,7 @@ Setting:
 	Gui Add, Edit, x+15 w200 h25 vBaidu_Secret_Key gGETV, %Baidu_Secret_Key%
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 识别类型
 	Gui Add, DropDownList, x+15 w200 vBaidu_RecogType gGETV AltSubmit Choose%Baidu_RecogType%, 通用文字（标准）识别|通用文字（高精度）识别|手写文字识别|网络图片文字识别
-	Gui Add, CheckBox, x35 y+15 w90 vBaidu_ProbOnOff gGETV Checked%Baidu_ProbOnOff% +Right, 置信度
+	Gui Add, CheckBox, x35 y+15 w90 vBaidu_ProbType gGETV Check3 Checked%Baidu_ProbType% +Right, 置信度
 
 	Gui Add, GroupBox, x20 y270 w310 h220, 默认选项
 	Gui Add, Text, x15 y300 w90 h25 +Right, 默认排版
