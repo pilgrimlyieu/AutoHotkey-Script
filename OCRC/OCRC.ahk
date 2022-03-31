@@ -1,5 +1,5 @@
-﻿;@ABHK2Exe-SetMainIcon Icon\OCRC_icon.ico
-; Adapted from https://www.autoaBHK.com/archives/35526
+﻿;@Ahk2Exe-SetMainIcon Icon\OCRC_icon.ico
+; Adapted from https://www.autoahk.com/archives/35526
 ; Thank https://www.autohotkey.com/boards/viewtopic.php?t=86814&p=381493#
 ; Thank https://github.com/iseahound/Vis2
 ; Thank https://wyagd001.github.io/zh-cn/docs/AutoHotkey.htm
