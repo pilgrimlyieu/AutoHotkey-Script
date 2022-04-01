@@ -229,9 +229,12 @@ DoBSpace:
 		; 先智能标点再智能空格以获得更好体验。
 		for c, e in C2EPuncs
 			BResult := RegExReplace(BResult, " ?(" c ") ?", "$1")
-		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?([\w.:-]+) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
-		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?([\w.:-]+) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
-		BResult := RegExReplace(BResult, "(?<![\x{4e00}-\x{9fa5}a-zA-Z]) ?([\w.:-]+) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", "$1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?([\d.:]+) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?([\d.:]+) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
+		BResult := RegExReplace(BResult, "(?<![\x{4e00}-\x{9fa5}a-zA-Z]) ?([\d.:]+) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", "$1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}\d])\K ?([a-zA-Z.:-_]+) ?(?=[\x{4e00}-\x{9fa5}\d])", " $1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}\d])\K ?([a-zA-Z.:-_]+) ?(?![\x{4e00}-\x{9fa5}\d])", " $1")
+		BResult := RegExReplace(BResult, "(?<![\x{4e00}-\x{9fa5}\d]) ?([a-zA-Z.:-]+) ?(?=[\x{4e00}-\x{9fa5}\d])", "$1 ")
 		BResult := RegExReplace(BResult, "(?:[\w\d])?\K ?([,.?!:;]) ?(?=[\w\d])?", "$1 ")
 		BResult := RegExReplace(BResult, "(?:[\w\d])?\K([([]) ?(?=[\w\d])?", "$1")
 		BResult := RegExReplace(BResult, "(?:[\w\d])?\K ?([)\]])(?=[\w\d])?", "$1")
