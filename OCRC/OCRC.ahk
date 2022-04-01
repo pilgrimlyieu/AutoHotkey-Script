@@ -204,10 +204,12 @@ return
 DoBSearch:
 	Gui Submit, NoHide
 	if (Baidu_ResultSearchEngine = 6) {
-		if BResult
-			Run D:/Program Files/Everything/Everything.exe -search %BResult%
+		if (!(BResult ~= "[*?""<>|]") and BResult ~= "[C-G]:(?:[\\/].+)+")
+			Run D:/Program Files/Everything/Everything.exe -path "%BResult%"
+		else if BResult
+			Run D:/Program Files/Everything/Everything.exe -search "%BResult%"
 		else
-			Run D:/Program Files/Everything/Everything.exe
+			Run D:/Program Files/Everything/Everything.exe -home
 	}
 	else {
 		Run % Baidu_SEnginesP[Baidu_ResultSearchEngine] BResult
