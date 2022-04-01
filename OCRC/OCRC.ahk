@@ -137,7 +137,7 @@ BResWin:
 	Gui Font, s16
 	Gui Add, Text, x+15, 搜索
 	Gui Font, s12
-	Gui Add, DropDownList, x+5 w105 vBaidu_ResultSearchEngine gDoBSearch AltSubmit Choose%Baidu_ResultSearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基百科|Everything
+	Gui Add, DropDownList, x+5 w105 vBaidu_ResultSearchEngine gDoBSearch AltSubmit Choose%Baidu_ResultSearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
 	Gui Font, s18
 	Gui Add, Edit, x20 y45 w770 h395 vBResult gDoBClip hwndBResultHwnd, %BResult%
 	if Baidu_ProbType
@@ -285,7 +285,7 @@ Setting:
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认翻译
 	Gui Add, DropDownList, x+15 w200 vBaidu_TranType gGETV AltSubmit Choose%Baidu_TranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认搜索
-	Gui Add, DropDownList, x+15 w200 vBaidu_SearchEngine gGETV AltSubmit Choose%Baidu_SearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基百科|Everything
+	Gui Add, DropDownList, x+15 w200 vBaidu_SearchEngine gGETV AltSubmit Choose%Baidu_SearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
 
 
 	Gui Tab, MathpixOCR
