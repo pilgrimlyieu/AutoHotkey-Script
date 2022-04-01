@@ -13,10 +13,11 @@ Global Baidu_Formats := ["智能段落", "合并多行", "拆分多行"]
 Global Baidu_Spaces := ["智能空格", "保留空格", "去除空格"]
 Global Baidu_Puncs := ["原始结果", "智能标点", "中文标点", "英文标点"]
 Global Baidu_Trans := ["自动检测", "英⟹中", "中⟹英", "繁⟹简", "日⟹中"]
-Global Baidu_SEngines := ["百度搜索", "谷歌搜索", "百度百科", "维基百科", "Everything"]
+Global Baidu_SEngines := ["百度搜索", "谷歌搜索", "谷歌镜像", "百度百科", "维基镜像", "Everything"]
 Global Mathpix_ReturnStyles := ["RAW", "$RAW$", "$$RAW$$", "\(RAW\)", "\[RAW\]"]
-Global C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
-Global E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
+Global Baidu_C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
+Global Baidu_E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
+Global Baidu_SEnginesP := ["https://www.baidu.com/s?wd=", "https://www.google.com/search?q=", "https://google.pem.app/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
 
 Menu, Tray, NoStandard
 Menu, Tray, Tip, OCRC
@@ -136,7 +137,7 @@ BResWin:
 	Gui Font, s16
 	Gui Add, Text, x+15, 搜索
 	Gui Font, s12
-	Gui Add, DropDownList, x+5 w105 vBaidu_ResultSearchEngine gDoBSearch AltSubmit Choose%Baidu_ResultSearchEngine%, 百度搜索|谷歌搜索|百度百科|维基百科|Everything
+	Gui Add, DropDownList, x+5 w105 vBaidu_ResultSearchEngine gDoBSearch AltSubmit Choose%Baidu_ResultSearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基百科|Everything
 	Gui Font, s18
 	Gui Add, Edit, x20 y45 w770 h395 vBResult gDoBClip hwndBResultHwnd, %BResult%
 	if Baidu_ProbType
@@ -185,11 +186,11 @@ DoBPunc:
 		; TBC
 	}
 	else if (Baidu_ResultPuncStyle = 3) {
-		for EP, CP in E2CPuncs
+		for EP, CP in Baidu_E2CPuncs
 			BResult := StrReplace(BResult, EP, CP)
 	}
 	else if (Baidu_ResultPuncStyle = 4) {
-		for CP, EP in C2EPuncs
+		for CP, EP in Baidu_C2EPuncs
 			BResult := StrReplace(BResult, CP, EP)
 	}
 	GuiControl Text, %BResultHwnd%, %BResult%
@@ -202,7 +203,17 @@ return
 
 DoBSearch:
 	Gui Submit, NoHide
-	; TBC
+	if (Baidu_ResultSearchEngine = 6) {
+		if BResult
+			Run D:/Program Files/Everything/Everything.exe -search %BResult%
+		else
+			Run D:/Program Files/Everything/Everything.exe
+	}
+	else {
+		Run % Baidu_SEnginesP[Baidu_ResultSearchEngine] BResult
+		if (Baidu_ResultSearchEngine = 3)
+			MsgBox 4144, 警告, 请勿在镜像站输入隐私信息！
+	}
 return
 
 DoBClip:
@@ -274,7 +285,7 @@ Setting:
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认翻译
 	Gui Add, DropDownList, x+15 w200 vBaidu_TranType gGETV AltSubmit Choose%Baidu_TranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认搜索
-	Gui Add, DropDownList, x+15 w200 vBaidu_SearchEngine gGETV AltSubmit Choose%Baidu_SearchEngine%, 百度搜索|谷歌搜索|百度百科|维基百科|Everything
+	Gui Add, DropDownList, x+15 w200 vBaidu_SearchEngine gGETV AltSubmit Choose%Baidu_SearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基百科|Everything
 
 
 	Gui Tab, MathpixOCR
