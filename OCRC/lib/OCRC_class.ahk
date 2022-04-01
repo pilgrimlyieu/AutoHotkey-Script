@@ -87,8 +87,11 @@ Get_OCR(imgBase64, BD_access_Token, txttype) {
 	postdata := "image=" UrlEncode(imgBase64) "&paragraph=true&probability=true"
 	BD_ReturnTxt := URLDownloadToVar(BD_Url, "UTF-8", "POST", postdata, {"Content-Type":"application/x-www-form-urlencoded"})
 	BD_Json := JSON.Load(BD_ReturnTxt)
-	if BD_Json.error_msg
-		return BD_Json.error_msg
+	if BD_Json.error_msg {
+		MsgBox 4112, BaiduOCR ERROR, % BD_Json.error_msg
+		Get_Token(Baidu_API_Key, Baidu_Secret_Key)
+		return
+	}
 	return BD_Json
 }
 
@@ -162,40 +165,6 @@ Gdip_EncodeBitmapTo64string(pBitmap, Ext, Quality := 75) {
     VarSetCapacity(base64, -1)
 
     return base64
-}
-
-WM_SHOWWINDOW(wParam, lParam, msg, hwnd) {
-	if (hwnd = sthwnd and wParam) {
-		Gui, st:Show, NA, 设置
-		ControlFocus, , ahk_id %stHwnd%
-		WinGet, ListC, ControlListHwnd, ahk_id %sthwnd%
-		C_S := StrSplit(ListC, "`n")
-		Global N_ := [], C_ := []
-		N_len := 0
-		loop % C_S.length() {
-			GuiControlGet cName, Name, % C_S[A_index]
-			if cName {
-				N_[++ N_len] := cName
-				C_[N_len] := C_S[A_index]
-			}
-		}
-		C_S := ""
-		Global _Tp:=["general_basic", "accurate_basic", "handwriting", "webimage"]
-		loop % N_len {
-			tt := ReadIni(ConfigFile, N_[A_index], "BaiduOCR")
-			if (N_[A_index] = "Baidu_RecogType") {
-				loop % _Tp.length() {
-					if (_Tp[A_index] = tt)
-						GuiControl, Choose, Baidu_RecogType, % A_index, break
-				}
-				continue
-			}
-			GuiControl, , % C_[A_index], %tt%
-		}
-		cz := 1
-	}
-	if (hwnd = sthwnd and !wParam)
-		WinClose, 设置
 }
 
 Gdip_Startup() {

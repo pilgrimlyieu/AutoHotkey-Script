@@ -1,8 +1,8 @@
 ﻿;@Ahk2Exe-SetMainIcon Icon\OCRC_icon.ico
-; Adapted from https://www.autoahk.com/archives/35526
+; Thank https://wyagd001.github.io/zh-cn/docs/AutoHotkey.htm
+; Thank https://www.autoahk.com/archives/35526
 ; Thank https://www.autohotkey.com/boards/viewtopic.php?t=86814&p=381493#
 ; Thank https://github.com/iseahound/Vis2
-; Thank https://wyagd001.github.io/zh-cn/docs/AutoHotkey.htm
 
 #Include <OCRC_class>
 
@@ -20,8 +20,6 @@ Global IsChineseBefore := "(?:[\x{4e00}-\x{9fa5}]\s?)\K" ; 由于回顾断言的
 Global IsChineseAfter := "(?=\s?[\x{4e00}-\x{9fa5}])"
 Global IsEnglishBefore := "([\w\d]\s?)\K"
 Global IsEnglishAfter := "(?=\s?[\w\d])"
-; Global CPuncs := ["，", "。", "？", "！", "、", "：", "；", "“", "”", "‘", "’", "「", "」", "『", "』", "（", "）", "【", "】", "《", "》"]
-; Global EPuncs := [",", ".", "?", "!", ":", ";", "(", ")", "[", "]"]
 Global C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
 Global E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
 Global Baidu_SEnginesP := ["https://www.baidu.com/s?wd=", "https://www.google.com/search?q=", "https://google.pem.app/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
@@ -87,6 +85,8 @@ BOCR:
 	Gdip_Shutdown(pToken)
 
 	BResultJson := BDOCR_Bitmap(base64string, Baidu_Token)
+	if !BResultJson
+		return
 
 	words_count := BResultJson.words_result_num
 	paragraphs_count := BResultJson.paragraphs_result_num
