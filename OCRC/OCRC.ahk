@@ -67,6 +67,7 @@ Hotkey %MHK%, MOCR, On
 return
 
 BOCR:
+	Gui BRW:Destroy
 	clipboard := ""
 	Send {f8}
 	Sleep 500
@@ -131,34 +132,34 @@ BProb:
 return
 
 BResWin:
-	Gui New
-	Gui +MinimizeBox
-	Gui Font, s16, SimHei
-	Gui Add, Text, x20, 排版
-	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_ResultFormatStyle gDoBFormat AltSubmit Choose%Baidu_ResultFormatStyle%, 智能段落|合并多行|拆分多行
-	Gui Font, s16
-	Gui Add, Text, x+15, 标点
-	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_ResultPuncStyle gDoBPunc AltSubmit Choose%Baidu_ResultPuncStyle%, 智能标点|原始结果|中文标点|英文标点
-	Gui Font, s16
-	Gui Add, Text, x+15, 空格
-	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_ResultSpaceStyle gDoBSpace AltSubmit Choose%Baidu_ResultSpaceStyle%, 智能空格|原始结果|去除空格
-	Gui Font, s16
-	Gui Add, Text, x+15, 翻译
-	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_ResultTranType gDoBTran AltSubmit Choose%Baidu_ResultTranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
-	Gui Font, s16
-	Gui Add, Text, x+15, 搜索
-	Gui Font, s12
-	Gui Add, DropDownList, x+5 w105 vBaidu_ResultSearchEngine gDoBSearch AltSubmit Choose%Baidu_ResultSearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
-	Gui Font, s18
-	Gui Add, Edit, x20 y45 w770 h395 vBResult gDoBClip hwndBResultHwnd, %BResult%
+	Gui BRW:New
+	Gui BRW:+MinimizeBox
+	Gui BRW:Font, s16, SimHei
+	Gui BRW:Add, Text, x20, 排版
+	Gui BRW:Font, s12
+	Gui BRW:Add, DropDownList, x+5 w90 vBaidu_ResultFormatStyle gDoBFormat AltSubmit Choose%Baidu_ResultFormatStyle%, 智能段落|合并多行|拆分多行
+	Gui BRW:Font, s16
+	Gui BRW:Add, Text, x+15, 标点
+	Gui BRW:Font, s12
+	Gui BRW:Add, DropDownList, x+5 w90 vBaidu_ResultPuncStyle gDoBPunc AltSubmit Choose%Baidu_ResultPuncStyle%, 智能标点|原始结果|中文标点|英文标点
+	Gui BRW:Font, s16
+	Gui BRW:Add, Text, x+15, 空格
+	Gui BRW:Font, s12
+	Gui BRW:Add, DropDownList, x+5 w90 vBaidu_ResultSpaceStyle gDoBSpace AltSubmit Choose%Baidu_ResultSpaceStyle%, 智能空格|原始结果|去除空格
+	Gui BRW:Font, s16
+	Gui BRW:Add, Text, x+15, 翻译
+	Gui BRW:Font, s12
+	Gui BRW:Add, DropDownList, x+5 w90 vBaidu_ResultTranType gDoBTran AltSubmit Choose%Baidu_ResultTranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
+	Gui BRW:Font, s16
+	Gui BRW:Add, Text, x+15, 搜索
+	Gui BRW:Font, s12
+	Gui BRW:Add, DropDownList, x+5 w105 vBaidu_ResultSearchEngine gDoBSearch AltSubmit Choose%Baidu_ResultSearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
+	Gui BRW:Font, s18
+	Gui BRW:Add, Edit, x20 y45 w770 h395 vBResult gDoBClip hwndBResultHwnd, %BResult%
 	if Baidu_ProbType
-		Gui Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果        置信度：" Baidu_Probability "%"
+		Gui BRW:Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果        置信度：" Baidu_Probability "%"
 	else
-		Gui Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果"
+		Gui BRW:Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果"
 return
 
 DoBFormat:
@@ -316,12 +317,12 @@ Setting:
 	if !FileExist(ConfigFile)
 		Gosub Create_Config
 
-	Gui st:New, , 设置
-	Gui st:Default
-	Gui st:+AlwaysOnTop +HwndstHwnd
-	Gui st:Margin, 10, 10
-	Gui st:Font, s12, SimHei
-    Gui st:Color, EBEDF4
+	Gui New, , 设置
+	Gui Default
+	Gui +AlwaysOnTop +HwndstHwnd
+	Gui Margin, 10, 10
+	Gui Font, s12, SimHei
+    Gui Color, EBEDF4
 	Gui Add, Tab3, Choose2, 基础|BaiduOCR|MathpixOCR
 
 
