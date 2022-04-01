@@ -6,18 +6,25 @@
 
 #Include <OCRC_class>
 
-Global ConfigFile := A_ScriptDir "\OCRC_config.privacy.ini", stHwnd
+Global ConfigFile := A_ScriptDir "\OCRC_config.privacy.ini"
+
 Global Baidu_RecogTypes := ["general_basic", "accurate_basic", "handwriting", "webimage"]
 Global Baidu_RecogTypesP := ["通用文字（标准）识别", "通用文字（高精度）识别", "手写文字识别", "网络图片文字识别"]
 Global Baidu_Formats := ["智能段落", "合并多行", "拆分多行"]
-Global Baidu_Spaces := ["智能空格", "保留空格", "去除空格"]
-Global Baidu_Puncs := ["原始结果", "智能标点", "中文标点", "英文标点"]
+Global Baidu_Spaces := ["智能空格", "原始结果", "去除空格"]
+Global Baidu_Puncs := ["智能标点", "原始结果", "中文标点", "英文标点"]
 Global Baidu_Trans := ["自动检测", "英⟹中", "中⟹英", "繁⟹简", "日⟹中"]
 Global Baidu_SEngines := ["百度搜索", "谷歌搜索", "谷歌镜像", "百度百科", "维基镜像", "Everything"]
-Global Mathpix_ReturnStyles := ["RAW", "$RAW$", "$$RAW$$", "\(RAW\)", "\[RAW\]"]
+Global IsChinese := "[\x{4e00}-\x{9fa5}]"
+Global IsChineseBefore := "([\x{4e00}-\x{9fa5}]\s?)\K" ; 由于回顾断言的缺陷，用 \K 代替回顾断言
+Global IsChineseAfter := "(?=\s?[\x{4e00}-\x{9fa5}])"
+Global IsEnglishBefore := "([\w\d]\s?)\K"
+Global IsEnglishAfter := "(?=\s?[\w\d])"
 Global Baidu_C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
 Global Baidu_E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
 Global Baidu_SEnginesP := ["https://www.baidu.com/s?wd=", "https://www.google.com/search?q=", "https://google.pem.app/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
+
+Global Mathpix_ReturnStyles := ["RAW", "$RAW$", "$$RAW$$", "\(RAW\)", "\[RAW\]"]
 
 Menu, Tray, NoStandard
 Menu, Tray, Tip, OCRC
@@ -36,6 +43,7 @@ if not A_IsAdmin {
 
 if !FileExist(ConfigFile)
 	Gosub Create_Config
+
 _Se := StrSplit(ReadIni(ConfigFile),"`n")
 loop % _Se.length() {
 	_Ke := StrSplit(ReadIni(ConfigFile, "", _Se[A_Index]), "`n")
@@ -45,13 +53,14 @@ loop % _Se.length() {
 		%tVar% := _Va[2]
 	}
 }
+
 if (!Baidu_Token and Baidu_API_Key and Baidu_Secret_Key)
 	Baidu_Token := Get_Token(Baidu_API_Key, Baidu_Secret_Key)
 
 BHKTemp := BHK
 Hotkey %BHK%, BOCR, On
 MHKTemp := MHK
-; Hotkey %MHK%, MOCR, On
+Hotkey %MHK%, MOCR, On
 
 return
 
@@ -87,6 +96,10 @@ BOCR:
 	Gosub BResWin
 return
 
+MOCR:
+; TBC
+return
+
 BPreDo:
 	Baidu_ResultFormatStyle  := Baidu_FormatStyle
 	Baidu_ResultPuncStyle  := Baidu_PuncStyle
@@ -101,7 +114,7 @@ return
 
 BProb:
 	Baidu_Probability := 0
-	if (Baidu_ProbOnOff = 1) {
+	if (Baidu_ProbType = 1) {
 		BProAddPlus := 0
 		for index, value in words
 			BProAddPlus += value.probability.average * StrLen(value.words)
@@ -125,11 +138,11 @@ BResWin:
 	Gui Font, s16
 	Gui Add, Text, x+15, 标点
 	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_ResultPuncStyle gDoBPunc AltSubmit Choose%Baidu_ResultPuncStyle%, 原始结果|智能标点|中文标点|英文标点
+	Gui Add, DropDownList, x+5 w90 vBaidu_ResultPuncStyle gDoBPunc AltSubmit Choose%Baidu_ResultPuncStyle%, 智能标点|原始结果|中文标点|英文标点
 	Gui Font, s16
 	Gui Add, Text, x+15, 空格
 	Gui Font, s12
-	Gui Add, DropDownList, x+5 w90 vBaidu_ResultSpaceStyle gDoBSpace AltSubmit Choose%Baidu_ResultSpaceStyle%, 智能空格|保留空格|去除空格
+	Gui Add, DropDownList, x+5 w90 vBaidu_ResultSpaceStyle gDoBSpace AltSubmit Choose%Baidu_ResultSpaceStyle%, 智能空格|原始结果|去除空格
 	Gui Font, s16
 	Gui Add, Text, x+15, 翻译
 	Gui Font, s12
@@ -173,18 +186,35 @@ DoBSpace:
 	if (Baidu_ResultSpaceStyle = 1) {
 		; TBC
 	}
+	else if (Baidu_ResultSpaceStyle = 2)
+		BResult := BResultPuncTemp
 	else if (Baidu_ResultSpaceStyle = 3)
 		BResult := StrReplace(BResult, A_Space)
+	BResultSpaceTemp := BResult
 	GuiControl Text, %BResultHwnd%, %BResult%
 return
 
 DoBPunc:
 	Gui Submit, NoHide
-	if (Baidu_ResultPuncStyle = 1)
-		BResult := BResultTemp
-	else if (Baidu_ResultPuncStyle = 2) {
-		; TBC
+	if (Baidu_ResultPuncStyle = 1) {
+		for c, e in Baidu_C2EPuncs
+			BResult := RegExReplace(BResult, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
+		for e, c in Baidu_E2CPuncs
+			BResult := RegExReplace(BResult, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
+		QPNumP := 1, QPNum := 1, PTR := ""
+		loop parse, BResult
+		{
+			if (A_LoopField = """" and (A_Index = 1 or SubStr(BResult, A_Index - 1, 1)) ~= IsChinese and (A_Index = StrLen(BResult) or SubStr(BResult, A_Index + 1, 1) ~= IsChinese))
+				PTR .= Mod(QPNumP ++, 2) ? "“" : "”"
+			else if (A_LoopField = "'")
+				PTR .= Mod(QPNum ++, 2) ? "‘" : "’"
+			else
+				PTR .= A_LoopField
+		}
+		BResult := PTR
 	}
+	else if (Baidu_ResultPuncStyle = 1)
+		BResult := BResultSpaceTemp
 	else if (Baidu_ResultPuncStyle = 3) {
 		for EP, CP in Baidu_E2CPuncs
 			BResult := StrReplace(BResult, EP, CP)
@@ -193,6 +223,7 @@ DoBPunc:
 		for CP, EP in Baidu_C2EPuncs
 			BResult := StrReplace(BResult, CP, EP)
 	}
+	BResultPuncTemp := BResult
 	GuiControl Text, %BResultHwnd%, %BResult%
 return
 
@@ -281,9 +312,9 @@ Setting:
 	Gui Add, Text, x15 y300 w90 h25 +Right, 默认排版
 	Gui Add, DropDownList, x+15 w200 vBaidu_FormatStyle gGETV AltSubmit Choose%Baidu_FormatStyle%, 智能段落|合并多行|拆分多行
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认标点
-	Gui Add, DropDownList, x+15 w200 vBaidu_PuncStyle gGETV AltSubmit Choose%Baidu_PuncStyle%, 原始结果|智能标点|中文标点|英文标点
+	Gui Add, DropDownList, x+15 w200 vBaidu_PuncStyle gGETV AltSubmit Choose%Baidu_PuncStyle%, 智能标点|原始结果|中文标点|英文标点
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认空格
-	Gui Add, DropDownList, x+15 w200 vBaidu_SpaceStyle gGETV AltSubmit Choose%Baidu_SpaceStyle%, 智能空格|保留空格|去除空格
+	Gui Add, DropDownList, x+15 w200 vBaidu_SpaceStyle gGETV AltSubmit Choose%Baidu_SpaceStyle%, 智能空格|原始结果|去除空格
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认翻译
 	Gui Add, DropDownList, x+15 w200 vBaidu_TranType gGETV AltSubmit Choose%Baidu_TranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认搜索
@@ -322,8 +353,8 @@ GMHK:
 	%A_GuiControl% := tVa
 	WriteIni(ConfigFile, tVa, A_GuiControl, "MathpixOCR")
 	if MHK {
-		; Hotkey %MHKTemp%, MOCR, Off
-		; Hotkey %MHK%, MOCR, On
+		Hotkey %MHKTemp%, MOCR, Off
+		Hotkey %MHK%, MOCR, On
 		MHKTemp := MHK
 	}
 return
