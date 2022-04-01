@@ -156,7 +156,7 @@ BResWin:
 	Gui Font, s18
 	Gui Add, Edit, x20 y45 w770 h395 vBResult gDoBClip hwndBResultHwnd, %BResult%
 	if Baidu_ProbType
-		Gui Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果        Probability: " Baidu_Probability "%"
+		Gui Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果        置信度：" Baidu_Probability "%"
 	else
 		Gui Show, w800 h450, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[Baidu_RecogType] "」识别结果"
 return
