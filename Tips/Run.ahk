@@ -2,10 +2,13 @@
 #f::
 	Clipboard := ""
 	Send {Ctrl Down}c{Ctrl Up}
-	If Clipboard
-		Run D:/Program Files/Everything/Everything.exe -search %Clipboard%
+	Clipboard := Trim(Clipboard)
+	If (!(Clipboard ~= "[*?""<>|]") and Clipboard ~= "[C-G]:(?:[\\/].+)+")
+		Run D:/Program Files/Everything/Everything.exe -path "%Clipboard%"
+	Else If Clipboard
+		Run D:/Program Files/Everything/Everything.exe -search "%Clipboard%"
 	Else
-		Run D:/Program Files/Everything/Everything.exe
+		Run D:/Program Files/Everything/Everything.exe -home
 	Clipboard := ""
 Return
 
