@@ -11,17 +11,19 @@ Global ConfigFile := A_ScriptDir "\OCRC_config.privacy.ini"
 Global Baidu_RecogTypes := ["general_basic", "accurate_basic", "handwriting", "webimage"]
 Global Baidu_RecogTypesP := ["通用文字（标准）识别", "通用文字（高精度）识别", "手写文字识别", "网络图片文字识别"]
 Global Baidu_Formats := ["智能段落", "合并多行", "拆分多行"]
-Global Baidu_Spaces := ["智能空格", "原始结果", "去除空格"]
 Global Baidu_Puncs := ["智能标点", "原始结果", "中文标点", "英文标点"]
+Global Baidu_Spaces := ["智能空格", "原始结果", "去除空格"]
 Global Baidu_Trans := ["自动检测", "英⟹中", "中⟹英", "繁⟹简", "日⟹中"]
 Global Baidu_SEngines := ["百度搜索", "谷歌搜索", "谷歌镜像", "百度百科", "维基镜像", "Everything"]
 Global IsChinese := "[\x{4e00}-\x{9fa5}]"
-Global IsChineseBefore := "([\x{4e00}-\x{9fa5}]\s?)\K" ; 由于回顾断言的缺陷，用 \K 代替回顾断言
+Global IsChineseBefore := "(?:[\x{4e00}-\x{9fa5}]\s?)\K" ; 由于回顾断言的缺陷，用 \K 代替回顾断言
 Global IsChineseAfter := "(?=\s?[\x{4e00}-\x{9fa5}])"
 Global IsEnglishBefore := "([\w\d]\s?)\K"
 Global IsEnglishAfter := "(?=\s?[\w\d])"
-Global Baidu_C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
-Global Baidu_E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
+; Global CPuncs := ["，", "。", "？", "！", "、", "：", "；", "“", "”", "‘", "’", "「", "」", "『", "』", "（", "）", "【", "】", "《", "》"]
+; Global EPuncs := [",", ".", "?", "!", ":", ";", "(", ")", "[", "]"]
+Global C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
+Global E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
 Global Baidu_SEnginesP := ["https://www.baidu.com/s?wd=", "https://www.google.com/search?q=", "https://google.pem.app/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
 
 Global Mathpix_ReturnStyles := ["RAW", "$RAW$", "$$RAW$$", "\(RAW\)", "\[RAW\]"]
@@ -107,8 +109,8 @@ BPreDo:
 	Baidu_ResultTranType  := Baidu_TranType
 	Baidu_ResultSearchEngine  := Baidu_SearchEngine
 	Gosub DoBFormat
-	Gosub DoBSpace
 	Gosub DoBPunc
+	Gosub DoBSpace
 	Gosub DoBClip
 return
 
@@ -160,6 +162,7 @@ BResWin:
 return
 
 DoBFormat:
+	; 排版选项会覆盖标点、空格的修改。即如果需要撤销全部更改可以选择排版中的智能段落。
 	Gui Submit, NoHide
 	BResult := ""
 	if (Baidu_ResultFormatStyle = 1) {
@@ -181,49 +184,81 @@ DoBFormat:
 	GuiControl Text, %BResultHwnd%, %BResult%
 return
 
+DoBPunc:
+	Gui Submit, NoHide
+	if (Baidu_ResultPuncStyle = 1) {
+		for c, e in C2EPuncs
+			BResult := RegExReplace(BResult, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
+		for e, c in E2CPuncs
+			BResult := RegExReplace(BResult, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
+		PTR := ""
+		loop parse, BResult, "
+		{
+			if Mod(A_Index, 2)
+				PTR .= A_LoopField "“"
+			else
+				PTR .= Trim(A_LoopField) "”"
+		}
+		BResult := ""
+		loop parse, PTR, '
+		{
+			if Mod(A_Index, 2)
+				BResult .= A_LoopField "‘"
+			else
+				BResult .= Trim(A_LoopField) "’"
+		}
+		BResult := SubStr(BResult, 1, StrLen(BResult) - 2)
+	}
+	else if (Baidu_ResultPuncStyle = 1)
+		BResult := BResultSpaceTemp
+	else if (Baidu_ResultPuncStyle = 3) {
+		for EP, CP in E2CPuncs
+			BResult := StrReplace(BResult, EP, CP)
+	}
+	else if (Baidu_ResultPuncStyle = 4) {
+		for CP, EP in C2EPuncs
+			BResult := StrReplace(BResult, CP, EP)
+	}
+	BResultPuncTemp := BResult
+	GuiControl Text, %BResultHwnd%, %BResult%
+return
+
 DoBSpace:
 	Gui Submit, NoHide
 	if (Baidu_ResultSpaceStyle = 1) {
-		; TBC
+		; 先智能标点再智能空格以获得更好体验。
+		for c, e in C2EPuncs
+			BResult := RegExReplace(BResult, " ?(" c ") ?", "$1")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?([\w.:-]+) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?([\w.:-]+) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
+		BResult := RegExReplace(BResult, "(?<![\x{4e00}-\x{9fa5}a-zA-Z]) ?([\w.:-]+) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", "$1 ")
+		BResult := RegExReplace(BResult, "(?:[\w\d])?\K ?([,.?!:;]) ?(?=[\w\d])?", "$1 ")
+		BResult := RegExReplace(BResult, "(?:[\w\d])?\K([([]) ?(?=[\w\d])?", "$1")
+		BResult := RegExReplace(BResult, "(?:[\w\d])?\K ?([)\]])(?=[\w\d])?", "$1")
+		BResult := RegExReplace(BResult, "(?:\d)\K ?([.:]) ?(?=\d)", "$1")
+		PTR := ""
+		loop parse, BResult, "
+		{
+			if Mod(A_Index, 2)
+				PTR .= A_LoopField """"
+			else
+				PTR .= Trim(A_LoopField) """"
+		}
+		BResult := ""
+		loop parse, PTR, '
+		{
+			if Mod(A_Index, 2)
+				BResult .= A_LoopField "'"
+			else
+				BResult .= Trim(A_LoopField) "'"
+		}
+		BResult := SubStr(BResult, 1, StrLen(BResult) - 2)
 	}
 	else if (Baidu_ResultSpaceStyle = 2)
 		BResult := BResultPuncTemp
 	else if (Baidu_ResultSpaceStyle = 3)
 		BResult := StrReplace(BResult, A_Space)
 	BResultSpaceTemp := BResult
-	GuiControl Text, %BResultHwnd%, %BResult%
-return
-
-DoBPunc:
-	Gui Submit, NoHide
-	if (Baidu_ResultPuncStyle = 1) {
-		for c, e in Baidu_C2EPuncs
-			BResult := RegExReplace(BResult, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
-		for e, c in Baidu_E2CPuncs
-			BResult := RegExReplace(BResult, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
-		QPNumP := 1, QPNum := 1, PTR := ""
-		loop parse, BResult
-		{
-			if (A_LoopField = """" and (A_Index = 1 or SubStr(BResult, A_Index - 1, 1)) ~= IsChinese and (A_Index = StrLen(BResult) or SubStr(BResult, A_Index + 1, 1) ~= IsChinese))
-				PTR .= Mod(QPNumP ++, 2) ? "“" : "”"
-			else if (A_LoopField = "'")
-				PTR .= Mod(QPNum ++, 2) ? "‘" : "’"
-			else
-				PTR .= A_LoopField
-		}
-		BResult := PTR
-	}
-	else if (Baidu_ResultPuncStyle = 1)
-		BResult := BResultSpaceTemp
-	else if (Baidu_ResultPuncStyle = 3) {
-		for EP, CP in Baidu_E2CPuncs
-			BResult := StrReplace(BResult, EP, CP)
-	}
-	else if (Baidu_ResultPuncStyle = 4) {
-		for CP, EP in Baidu_C2EPuncs
-			BResult := StrReplace(BResult, CP, EP)
-	}
-	BResultPuncTemp := BResult
 	GuiControl Text, %BResultHwnd%, %BResult%
 return
 
