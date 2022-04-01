@@ -36,7 +36,7 @@ Menu, Tray, Default, 设置
 Menu, Tray, Add, 重启, ReloadSub
 Menu, Tray, Add, 退出, ExitSub
 
-if not A_IsAdmin {
+if !A_IsAdmin {
 	try {
 		Run *RunAs "%A_ScriptFullPath%"
 		ExitApp
@@ -191,23 +191,17 @@ DoBPunc:
 			BResult := RegExReplace(BResult, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
 		for e, c in E2CPuncs
 			BResult := RegExReplace(BResult, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
-		PTR := ""
-		loop parse, BResult, "
+		QPNumP := 1, QPNum := 1, PTR := ""
+		loop parse, BResult
 		{
-			if Mod(A_Index, 2)
-				PTR .= A_LoopField "“"
+			if (A_LoopField = """" and (A_Index = 1 or SubStr(BResult, A_Index - 1, 1)) ~= IsChinese and (A_Index = StrLen(BResult) or SubStr(BResult, A_Index + 1, 1) ~= IsChinese))
+				PTR .= Mod(QPNumP ++, 2) ? "“" : "”"
+			else if (A_LoopField = "'")
+				PTR .= Mod(QPNum ++, 2) ? "‘" : "’"
 			else
-				PTR .= Trim(A_LoopField) "”"
+				PTR .= A_LoopField
 		}
-		BResult := ""
-		loop parse, PTR, '
-		{
-			if Mod(A_Index, 2)
-				BResult .= A_LoopField "‘"
-			else
-				BResult .= Trim(A_LoopField) "’"
-		}
-		BResult := SubStr(BResult, 1, StrLen(BResult) - 2)
+		BResult := PTR
 	}
 	else if (Baidu_ResultPuncStyle = 1)
 		BResult := BResultSpaceTemp
@@ -229,13 +223,13 @@ DoBSpace:
 		; 先智能标点再智能空格以获得更好体验。
 		for c, e in C2EPuncs
 			BResult := RegExReplace(BResult, " ?(" c ") ?", "$1")
-		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?([\d.:]+) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
-		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?([\d.:]+) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
-		BResult := RegExReplace(BResult, "(?<![\x{4e00}-\x{9fa5}a-zA-Z]) ?([\d.:]+) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", "$1 ")
-		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}\d])\K ?([a-zA-Z.:-_]+) ?(?=[\x{4e00}-\x{9fa5}\d])", " $1 ")
-		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}\d])\K ?([a-zA-Z.:-_]+) ?(?![\x{4e00}-\x{9fa5}\d])", " $1")
-		BResult := RegExReplace(BResult, "(?<![\x{4e00}-\x{9fa5}\d]) ?([a-zA-Z.:-]+) ?(?=[\x{4e00}-\x{9fa5}\d])", "$1 ")
-		BResult := RegExReplace(BResult, "(?:[\w\d])?\K ?([,.?!:;]) ?(?=[\w\d])?", "$1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
+		BResult := RegExReplace(BResult, "(?<![\x{4e00}-\x{9fa5}a-zA-Z]) ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", "$1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}])\K ?([a-zA-Z][a-zA-Z-_]*) ?(?=[\x{4e00}-\x{9fa5}])", " $1 ")
+		BResult := RegExReplace(BResult, "(?:[\x{4e00}-\x{9fa5}])\K ?([a-zA-Z][a-zA-Z-_]*) ?(?![\x{4e00}-\x{9fa5}])", " $1")
+		BResult := RegExReplace(BResult, "(?<![\x{4e00}-\x{9fa5}]) ?([a-zA-Z][a-zA-Z-_]*) ?(?=[\x{4e00}-\x{9fa5}])", "$1 ")
+		BResult := RegExReplace(BResult, "(?:[\w\d])\K ?([,.?!:;]) ?(?=[\w\d\x{4e00}-\x{9fa5}])", "$1 ")
 		BResult := RegExReplace(BResult, "(?:[\w\d])?\K([([]) ?(?=[\w\d])?", "$1")
 		BResult := RegExReplace(BResult, "(?:[\w\d])?\K ?([)\]])(?=[\w\d])?", "$1")
 		BResult := RegExReplace(BResult, "(?:\d)\K ?([.:]) ?(?=\d)", "$1")
