@@ -134,7 +134,7 @@ return
 BResWin:
 	Gui BRW:New
 	Gui BRW:+MinimizeBox
-	Gui BRW:Font, s16, SimHei
+	Gui BRW:Font, s16, Microsoft YaHei
 	Gui BRW:Add, Text, x20, 排版
 	Gui BRW:Font, s12
 	Gui BRW:Add, DropDownList, x+5 w90 vBaidu_ResultFormatStyle gDoBFormat AltSubmit Choose%Baidu_ResultFormatStyle%, 智能段落|合并多行|拆分多行
@@ -317,12 +317,12 @@ Setting:
 	if !FileExist(ConfigFile)
 		Gosub Create_Config
 
-	Gui New, , 设置
-	Gui Default
-	Gui +AlwaysOnTop +HwndstHwnd
-	Gui Margin, 10, 10
-	Gui Font, s12, SimHei
-    Gui Color, EBEDF4
+	Gui st:New, , 设置
+	Gui st:Default
+	Gui st:+AlwaysOnTop +HwndstHwnd
+	Gui st:Margin, 10, 10
+	Gui st:Font, s12, Microsoft YaHei
+    Gui st:Color, EBEDF4
 	Gui Add, Tab3, Choose2, 基础|BaiduOCR|MathpixOCR
 
 
