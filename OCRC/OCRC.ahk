@@ -4,7 +4,9 @@
 ; Thank https://www.autohotkey.com/boards/viewtopic.php?t=86814&p=381493#
 ; Thank https://github.com/iseahound/Vis2
 
-#Include <OCRC_class>
+#Include <Common>
+#Include <Baidu>
+#Include <Mathpix>
 
 Global ConfigFile := A_ScriptDir "\OCRC_config.privacy.ini"
 
@@ -55,7 +57,7 @@ loop % _Se.length() {
 }
 
 if (!Baidu_Token and Baidu_API_Key and Baidu_Secret_Key)
-	Baidu_Token := Get_Token(Baidu_API_Key, Baidu_Secret_Key)
+	Baidu_Token := Baidu_GetToken(Baidu_API_Key, Baidu_Secret_Key)
 
 BHKTemp := BHK
 Hotkey %BHK%, BOCR, On
@@ -84,7 +86,7 @@ BOCR:
 	Gdip_DisposeImage(pBitmap)
 	Gdip_Shutdown(pToken)
 
-	BResultJson := BDOCR_Bitmap(base64string, Baidu_Token)
+	BResultJson := Baidu_Bitmap(base64string, Baidu_Token)
 	if !BResultJson
 		return
 
