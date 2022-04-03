@@ -1,6 +1,3 @@
-#Include <JSON>
-#Include <Common>
-
 class Baidu {
 	__New(post := "", config := "") {
 		clipboard := ""
@@ -37,6 +34,7 @@ class Baidu {
 
 		Gui %id%:New
 		Gui %id%:+MinimizeBox
+		Gui %id%:Color, EBEDF4
 		Gui %id%:Font, s16, Microsoft YaHei
 
 		Gui %id%:Add, Text, x20, 排版
@@ -197,7 +195,6 @@ class Baidu {
 			spacestyle := this.config.spacestyle
 
 		if (spacestyle = 1) {
-			; 先智能标点再智能空格以获得更好体验。
 			for c, e in C2EPuncs
 				this.result := RegExReplace(this.result, " ?(" c ") ?", "$1")
 			this.result := RegExReplace(this.result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")

@@ -1,6 +1,3 @@
-#Include <JSON>
-#Include <Common>
-
 class Mathpix {
 	__New(post := "", config := "") {
 		clipboard := ""
@@ -26,9 +23,9 @@ class Mathpix {
 			return
 		}
 
-		id := this.json.request_id ; 用于标识窗口
-		confidence := Format("{:.2f}", 100 * this.json.confidence) ; 置信度
-		latex_result := this.json.latex_styled ; 纯 LaTeX 结果
+		id := this.json.request_id
+		confidence := Format("{:.2f}", 100 * this.json.confidence)
+		latex_result := this.json.latex_styled
 		inline_result := this.post.math_inline_delimiters[1] latex_result this.post.math_inline_delimiters[2]
 		display_result := this.post.math_display_delimiters[1] "`n" latex_result "`n" this.post.math_display_delimiters[2] "`n"
 		result := StrReplace(StrReplace(this.json.text, "\n", "`n"), "\\", "\")
@@ -37,18 +34,20 @@ class Mathpix {
 		Gui %id%:+MinimizeBox
 		Gui %id%:Color, EBEDF4
 		Gui %id%:Font, s18, Microsoft YaHei
+
 		if latex_result {
 			Gui %id%:Add, Text, x10 y20 w100 +Right, LaTeX
-			Gui %id%:Add, Edit, x120 yp w420 h36 vlatex_result ReadOnly -Multi -VScroll, %latex_result%
+			Gui %id%:Add, Edit, x120 yp w470 h36 vlatex_result ReadOnly -Multi -VScroll, %latex_result%
 			Gui %id%:Add, Text, x10 y+20 w100 +Right, 行内公式
-			Gui %id%:Add, Edit, x120 yp w420 h36 vinline_result ReadOnly -Multi -VScroll, %inline_result%
+			Gui %id%:Add, Edit, x120 yp w470 h36 vinline_result ReadOnly -Multi -VScroll, %inline_result%
 			Gui %id%:Add, Text, x10 y+20 w100 +Right, 行间公式
-			Gui %id%:Add, Edit, x120 yp w420 h36 vdisplay_result ReadOnly -Multi -VScroll, %display_result%
+			Gui %id%:Add, Edit, x120 yp w470 h36 vdisplay_result ReadOnly -Multi -VScroll, %display_result%
 		}
 		else {
 			Gui %id%:Add, Text, x10 y20 w100 +Right, 识别结果
-			Gui %id%:Add, Edit, x120 yp w420 h36 vresult ReadOnly -Multi -VScroll, %result%
+			Gui %id%:Add, Edit, x120 yp w470 h36 vresult ReadOnly -Multi -VScroll, %result%
 		}
+
 		if (confidence <= 20)
 			progresscolor := "EC4D3D"
 		else if (confidence <= 60)
@@ -57,12 +56,14 @@ class Mathpix {
 			progresscolor := "63C956"
 		Gui %id%:Add, Progress, x10 y+20 w580 h30 c%progresscolor%, %confidence%
 		Gui %id%:Add, Text, yp w600 +Center BackgroundTrans +0x1, %confidence%`%
-		if latex_result and this.setting.config.default_select
+
+		if latex_result
 			this.FocusSelect("Edit" this.setting.config.default_select)
 		else
 			this.FocusSelect("Edit1")
 		guiheight := latex_result ? 240 : 120
 		Gui %id%:Show, w600 h%guiheight%, % "OCRC (MathpixOCR) 识别结果"
+
 		GroupAdd Mathpix, ahk_id %MRW%
 		OnMessage(0x201, this.UpdateClip)
 	}
@@ -75,9 +76,9 @@ class Mathpix {
 	}
 
 	WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
-		if !WinExist("ahk_group Mathpix") { ; 我***
-			OnMessage(0x201, this.UpdateClip, 0) ; 这段 if 放在 GuiClose 里就没用
-			return ; 这个没什么用的功能花了我一个下午！！！
+		if !WinExist("ahk_group Mathpix") {
+			OnMessage(0x201, this.UpdateClip, 0)
+			return
 		}
 		GuiControlGet focusvar, FocusV
 		if focusvar in result,latex_result,inline_result,display_result
