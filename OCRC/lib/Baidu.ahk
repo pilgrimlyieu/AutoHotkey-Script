@@ -1,4 +1,4 @@
-class Baidu {
+﻿class Baidu {
 	__New(post := "", config := "") {
 		clipboard := ""
 		this.config := config

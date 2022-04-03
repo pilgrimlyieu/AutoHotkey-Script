@@ -1,4 +1,4 @@
-class Mathpix {
+﻿class Mathpix {
 	__New(post := "", config := "") {
 		clipboard := ""
 		headers := {"app_id": config.app_id
@@ -58,7 +58,7 @@ class Mathpix {
 		Gui %id%:Add, Text, yp w600 +Center BackgroundTrans +0x1, %confidence%`%
 
 		if latex_result
-			this.FocusSelect("Edit" this.setting.config.default_select)
+			this.FocusSelect("Edit" this.config.default_select)
 		else
 			this.FocusSelect("Edit1")
 		guiheight := latex_result ? 240 : 120

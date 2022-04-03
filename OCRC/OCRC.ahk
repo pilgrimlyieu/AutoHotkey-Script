@@ -1,5 +1,9 @@
 ﻿;@Ahk2Exe-SetMainIcon Icon\OCRC_icon.ico
 
+; Optical Character Recognition Commander
+; by PilgrimLyieu
+; v1.0.0
+
 #Include <Common>
 #Include <JSON>
 #Include <Baidu>

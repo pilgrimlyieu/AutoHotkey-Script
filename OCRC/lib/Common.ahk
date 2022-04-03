@@ -1,4 +1,4 @@
-#Include <JSON>
+﻿#Include <JSON>
 
 ReadIni(_ConfigFile, _key := "", _Section := "") {
 	if FileExist(_ConfigFile) {
