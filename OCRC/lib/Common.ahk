@@ -190,17 +190,41 @@ GetScreenShot() {
 	WinWaitNotActive Snipper - Snipaste, , 10
 	if ErrorLevel {
 		Send {Esc}
-		return
+		return -1
 	}
 	ClipWait 1, 1
 	if ErrorLevel
-		return
+		return -1
 }
 
-Img2Base() {
+Img2Base(Front := False) {
 	pToken := Gdip_Startup()
 	pBitmap := Gdip_CreateBitmapFromClipboard()
 	base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG")
 	Gdip_DisposeImage(pBitmap)
 	Gdip_Shutdown(pToken)
+	return Front ? "data:image/jpg;base64," base64string : base64string
+}
+
+Mathpix_UpdateClip(wParam, lParam, msg, hwnd) {
+	GuiControlGet focusvar, FocusV
+	if focusvar in result,latex_result,inline_result,display_result
+	{
+		GuiControlGet clipvar, , %hwnd%
+		if clipvar
+			clipboard := clipvar
+	}
+}
+
+Mathpix_FocusSelect(control) {
+	GuiControlGet hwndvar, Hwnd, %control%
+	GuiControlGet clipvar, , %control%
+	ControlFocus , , ahk_id %hwndvar%
+	clipboard := clipvar
+}
+
+MathpixClose(hwnd) {
+	Gui Destroy
+	if !WinExist("ahk_group Mathpix")
+		OnMessage(0x201, "")
 }
