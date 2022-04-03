@@ -311,10 +311,6 @@ Create_Config:
 	IniWrite 1, %ConfigFile%, MathpixOCR, Mathpix_ConfOnOff
 return
 
-!a::
-Gosub Setting
-return
-
 Setting:
 	if !FileExist(ConfigFile)
 		Gosub Create_Config

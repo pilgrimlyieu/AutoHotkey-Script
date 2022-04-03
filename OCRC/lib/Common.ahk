@@ -205,26 +205,3 @@ Img2Base(Front := False) {
 	Gdip_Shutdown(pToken)
 	return Front ? "data:image/jpg;base64," base64string : base64string
 }
-
-Mathpix_UpdateClip(wParam, lParam, msg, hwnd) {
-	GuiControlGet focusvar, FocusV
-	if focusvar in result,latex_result,inline_result,display_result
-	{
-		GuiControlGet clipvar, , %hwnd%
-		if clipvar
-			clipboard := clipvar
-	}
-}
-
-Mathpix_FocusSelect(control) {
-	GuiControlGet hwndvar, Hwnd, %control%
-	GuiControlGet clipvar, , %control%
-	ControlFocus , , ahk_id %hwndvar%
-	clipboard := clipvar
-}
-
-MathpixClose(hwnd) {
-	Gui Destroy
-	if !WinExist("ahk_group Mathpix")
-		OnMessage(0x201, "")
-}

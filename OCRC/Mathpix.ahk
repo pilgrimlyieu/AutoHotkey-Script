@@ -13,6 +13,6 @@ f7::
 		return
 	base64string := Img2Base(True)
     
-    j := new Mathpix("", "", base64string, {"post": {"math_inline_delimiters" : ["$", "$"], "math_display_delimiters" : ["$$", "$$"]}, "config": {"default_select": 2}})
+    j := new Mathpix({"math_inline_delimiters" : ["$", "$"], "math_display_delimiters" : ["$$", "$$"]}, {"app_id": "", "app_key": "", "imgbase64": base64string, "default_select": 2})
     j.show()
 return
