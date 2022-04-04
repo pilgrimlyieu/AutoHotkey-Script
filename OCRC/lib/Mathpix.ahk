@@ -30,7 +30,7 @@
 		display_result := this.post.math_display_delimiters[1] "`n" latex_result "`n" this.post.math_display_delimiters[2] "`n"
 		result := StrReplace(StrReplace(this.json.text, "\n", "`n"), "\\", "\")
 
-		Gui %id%:New, +HwndMRW
+		Gui %id%:New, % "+HwndMRW +Label" this.__Class ".Gui"
 		Gui %id%:+MinimizeBox
 		Gui %id%:Color, EBEDF4
 		Gui %id%:Font, s18, Microsoft YaHei
@@ -84,8 +84,14 @@
 		if focusvar in result,latex_result,inline_result,display_result
 		{
 			GuiControlGet clipvar, , %hwnd%
-			if clipvar
+			if clipvar {
+				clipboard := ""
 				clipboard := clipvar
+			}
 		}
+	}
+
+	GuiEscape() {
+		Gui Destroy
 	}
 }

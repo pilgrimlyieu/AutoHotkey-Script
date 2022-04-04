@@ -2,7 +2,7 @@
 
 ; Optical Character Recognition Commander
 ; by PilgrimLyieu
-; v1.0.0
+; v1.1.0
 
 #Include <Common>
 #Include <JSON>
@@ -68,8 +68,10 @@ BaiduOCR:
 
 	BaiduOCR := new Baidu({"paragraph": "true"
 						 , "probability": Baidu_ProbType ? "true" : "false"}
-						, {"api_key": Baidu_API_Key
+						 , {"api_key": Baidu_API_Key
 						 , "secret_key": Baidu_Secret_Key
+						 , "token": Baidu_Token
+						 , "token_expiration": Baidu_TokenExpiration
 						 , "imgbase64": base64string
 						 , "recogtype": Baidu_RecogTypes[Baidu_RecogType]
 						 , "probtype": Baidu_ProbType
@@ -89,7 +91,7 @@ MathpixOCR:
 
 	MathpixOCR := new Mathpix({"math_inline_delimiters": Mathpix_InlineStyles[Mathpix_InlineStyle]
 							 , "math_display_delimiters": Mathpix_DisplayStyles[Mathpix_DisplayStyle]}
-							, {"app_id": Mathpix_App_ID
+							 , {"app_id": Mathpix_App_ID
 							 , "app_key": Mathpix_App_Key
 							 , "imgbase64": base64string
 							 , "default_select": Mathpix_DefaultSelect})
@@ -101,9 +103,10 @@ Create_Config:
 	IniWrite % "", %ConfigFile%, BaiduOCR, Baidu_API_Key
 	IniWrite % "", %ConfigFile%, BaiduOCR, Baidu_Secret_Key
 	IniWrite % "", %ConfigFile%, BaiduOCR, Baidu_Token
+	IniWrite %A_Now%, %ConfigFile%, BaiduOCR, Baidu_TokenExpiration
 	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_RecogType
 	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_ProbType
-	IniWrite 1 , %ConfigFile%, BaiduOCR, Baidu_FormatStyle
+	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_FormatStyle
 	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_PuncStyle
 	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_SpaceStyle
 	IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_TranType
@@ -127,7 +130,7 @@ Setting:
 	Gui st:Margin, 10, 10
 	Gui st:Font, s12, Microsoft YaHei
     Gui st:Color, EBEDF4
-	Gui Add, Tab3, Choose2, BaiduOCR|MathpixOCR
+	Gui Add, Tab3, Choose1, BaiduOCR|MathpixOCR
 
 	Gui Tab, BaiduOCR
 	Gui Add, GroupBox, x20 y40 w310 h230, 基础设置

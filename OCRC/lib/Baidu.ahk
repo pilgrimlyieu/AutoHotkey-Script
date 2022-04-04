@@ -12,11 +12,8 @@
 	Show() {
 		if this.json.error_msg {
 			MsgBox 4112, BaiduOCR ERROR, % this.json.error_msg
-			this.Token()
 			return
 		}
-
-		this.words := this.json.words_result
 
 		id := "baidu" this.json.log_id
 		formatstyle  := this.config.formatstyle
@@ -25,14 +22,13 @@
 		trantype  := this.config.trantype
 		searchengine  := this.config.searchengine
 
-		this.Format("")
-		this.Punc("")
-		this.Space("")
-		this.Clip("")
+		this.Format()
+		this.Punc()
+		this.Space()
 		if this.config.probtype
 			this.Prob()
 
-		Gui %id%:New
+		Gui %id%:New, % "+Label" this.__Class ".Gui"
 		Gui %id%:+MinimizeBox
 		Gui %id%:Color, EBEDF4
 		Gui %id%:Font, s16, Microsoft YaHei
@@ -77,9 +73,9 @@
 		this.Update(mainhwnd, "Clip")
 
 		if this.config.probtype {
-			if (this.probability <= 20)
+			if (this.probability <= 60)
 				progresscolor := "EC4D3D"
-			else if (this.probability <= 60)
+			else if (this.probability <= 80)
 				progresscolor := "F8CD46"
 			else
 				progresscolor := "63C956"
@@ -96,119 +92,123 @@
 	}
 
 	Token() {
-		if ReadIni(ConfigFile, "Baidu_Token", "BaiduOCR")
-			this.token := ReadIni(ConfigFile, "Baidu_Token", "BaiduOCR")
+		if (this.config.token and A_Now < this.config.token_expiration)
+			this.token := this.config.token
 		else {
-			this.token := JSON.Load(URLDownloadToVar("https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" this.config.api_key "&client_secret=" this.config.secret_key)).access_token
+			returnjson := JSON.Load(URLDownloadToVar("https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" this.config.api_key "&client_secret=" this.config.secret_key))
+			if returnjson.error
+				MsgBox 4112, % "BaiduOCR " returnjson.error, % returnjson.error_description
+			else {
+				expiration += returnjson.expires_in, seconds
+				WriteIni(ConfigFile, expiration, "Baidu_TokenExpiration", "BaiduOCR")
+			}
+			this.token := returnjson.access_token
 			WriteIni(ConfigFile, this.token, "Baidu_Token", "BaiduOCR")
 		}
 	}
 
 	Prob() {
-		this.probability := 0
 		if (this.config.probtype = 1) {
-			probadd := 0
-			for index, value in this.words
+			for index, value in this.json.words_result
 				probadd += value.probability.average * StrLen(value.words)
 			this.probability := Format("{:.2f}", 100 * probadd / StrLen(this.result))
 		}
 		else {
-			probadd := 0
-			for index, value in this.words
+			for index, value in this.json.words_result
 				probadd += value.probability.average
 			this.probability := Format("{:.2f}", 100 * probadd / this.json.words_result_num)
 		}
 	}
 
-	Format(hwnd) {
+	Format(hwnd := "") {
 		if hwnd
 			GuiControlGet formatstyle, , %hwnd%
 		else
 			formatstyle := this.config.formatstyle
-		this.result := ""
 
 		if (formatstyle = 1) {
 			for index, value in this.json.paragraphs_result {
 				for idx, vl in value.words_result_idx
-					this.result .= this.words[vl + 1].words
-				this.result .= "`n"
+					result .= this.json.words_result[vl + 1].words
+				result .= "`n"
 			}
 		}
 		else if (formatstyle = 2) {
-			for index, value in this.words
-				this.result .= value.words
+			for index, value in this.json.words_result
+				result .= value.words
 		}
 		else if (formatstyle = 3) {
-			for index, value in this.words
-				this.result .= value.words "`n"
+			for index, value in this.json.words_result
+				result .= value.words "`n"
 		}
 
-		this.resulttemp := this.result
+		this.result := result
 		if hwnd
-			GuiControl Text, % this.mainhwnd, % this.result
+			GuiControl Text, % this.mainhwnd, % result
+		this.Clip()
 	}
 
-	Punc(hwnd) {
+	Punc(hwnd := "") {
 		if hwnd
 			GuiControlGet puncstyle, , %hwnd%
 		else
 			puncstyle := this.config.puncstyle
+		result := this.result
 
 		if (puncstyle = 1) {
 			for c, e in C2EPuncs
-				this.result := RegExReplace(this.result, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
+				result := RegExReplace(result, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
 			for e, c in E2CPuncs
-				this.result := RegExReplace(this.result, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
-			QPNumP := 1, QPNum := 1, PTR := ""
-			result := this.result
+				result := RegExReplace(result, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
 			loop parse, result
 			{
-				if (A_LoopField = """" and (A_Index = 1 or SubStr(this.result, A_Index - 1, 1)) ~= IsChinese and (A_Index = StrLen(this.result) or SubStr(this.result, A_Index + 1, 1) ~= IsChinese))
-					PTR .= Mod(QPNumP ++, 2) ? "“" : "”"
+				if (A_LoopField = """" and SubStr(result, A_Index - 1, 1) ~= IsChinese and SubStr(result, A_Index + 1, 1) ~= IsChinese and A_Index > 1)
+					PTR .= Mod(++ QPNumP, 2) ? "“" : "”"
 				else if (A_LoopField = "'")
-					PTR .= Mod(QPNum ++, 2) ? "‘" : "’"
+					PTR .= Mod(++ QPNum, 2) ? "‘" : "’"
 				else
 					PTR .= A_LoopField
 			}
-			this.result := PTR
+			result := PTR
 		}
-		else if (puncstyle = 1)
-			this.result := this.resultspacetemp
+		else if (puncstyle = 2)
+			result := this.resultspacetemp
 		else if (puncstyle = 3) {
 			for EP, CP in E2CPuncs
-				this.result := StrReplace(this.result, EP, CP)
+				result := StrReplace(result, EP, CP)
 		}
 		else if (puncstyle = 4) {
 			for CP, EP in C2EPuncs
-				this.result := StrReplace(this.result, CP, EP)
+				result := StrReplace(result, CP, EP)
 		}
 
-		this.resultpunctemp := this.result
+		this.resultpunctemp := result
+		this.result := result
 		if hwnd
-			GuiControl Text, % this.mainhwnd, % this.result
+			GuiControl Text, % this.mainhwnd, % result
+		this.Clip()
 	}
 
-	Space(hwnd) {
+	Space(hwnd := "") {
 		if hwnd
 			GuiControlGet spacestyle, , %hwnd%
 		else
 			spacestyle := this.config.spacestyle
+		result := this.result
 
 		if (spacestyle = 1) {
 			for c, e in C2EPuncs
-				this.result := RegExReplace(this.result, " ?(" c ") ?", "$1")
-			this.result := RegExReplace(this.result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
-			this.result := RegExReplace(this.result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
-			this.result := RegExReplace(this.result, "(?<![\x{4e00}-\x{9fa5}a-zA-Z]) ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", "$1 ")
-			this.result := RegExReplace(this.result, "(?:[\x{4e00}-\x{9fa5}])\K ?([a-zA-Z][a-zA-Z-_]*) ?(?=[\x{4e00}-\x{9fa5}])", " $1 ")
-			this.result := RegExReplace(this.result, "(?:[\x{4e00}-\x{9fa5}])\K ?([a-zA-Z][a-zA-Z-_]*) ?(?![\x{4e00}-\x{9fa5}])", " $1")
-			this.result := RegExReplace(this.result, "(?<![\x{4e00}-\x{9fa5}]) ?([a-zA-Z][a-zA-Z-_]*) ?(?=[\x{4e00}-\x{9fa5}])", "$1 ")
-			this.result := RegExReplace(this.result, "(?:[\w\d])\K ?([,.?!:;]) ?(?=[\w\d\x{4e00}-\x{9fa5}])", "$1 ")
-			this.result := RegExReplace(this.result, "(?:[\w\d])?\K([([]) ?(?=[\w\d])?", "$1")
-			this.result := RegExReplace(this.result, "(?:[\w\d])?\K ?([)\]])(?=[\w\d])?", "$1")
-			this.result := RegExReplace(this.result, "(?:\d)\K ?([.:]) ?(?=\d)", "$1")
-			PTR := ""
-			result := this.result
+				result := RegExReplace(result, " ?(" c ") ?", "$1")
+			result := RegExReplace(result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
+			result := RegExReplace(result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
+			result := RegExReplace(result, "(?<![\x{4e00}-\x{9fa5}a-zA-Z]) ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", "$1 ")
+			result := RegExReplace(result, "(?:[\x{4e00}-\x{9fa5}])\K ?([a-zA-Z][a-zA-Z-_]*) ?(?=[\x{4e00}-\x{9fa5}])", " $1 ")
+			result := RegExReplace(result, "(?:[\x{4e00}-\x{9fa5}])\K ?([a-zA-Z][a-zA-Z-_]*) ?(?![\x{4e00}-\x{9fa5}])", " $1")
+			result := RegExReplace(result, "(?<![\x{4e00}-\x{9fa5}]) ?([a-zA-Z][a-zA-Z-_]*) ?(?=[\x{4e00}-\x{9fa5}])", "$1 ")
+			result := RegExReplace(result, "(?:[\w\d])\K ?([,.?!:;]) ?(?=[\w\d\x{4e00}-\x{9fa5}])", "$1 ")
+			result := RegExReplace(result, "(?:[\w\d])?\K([([]) ?(?=[\w\d])?", "$1")
+			result := RegExReplace(result, "(?:[\w\d])?\K ?([)\]])(?=[\w\d])?", "$1")
+			result := RegExReplace(result, "(?:\d)\K ?([.:]) ?(?=\d)", "$1")
 			loop parse, result, "
 			{
 				if Mod(A_Index, 2)
@@ -216,30 +216,31 @@
 				else
 					PTR .= Trim(A_LoopField) """"
 			}
-			this.result := ""
 			loop parse, PTR, '
 			{
 				if Mod(A_Index, 2)
-					this.result .= A_LoopField "'"
+					PTRP .= A_LoopField "'"
 				else
-					this.result .= Trim(A_LoopField) "'"
+					PTRP .= Trim(A_LoopField) "'"
 			}
-			this.result := SubStr(this.result, 1, StrLen(this.result) - 2)
+			result := SubStr(PTRP, 1, StrLen(PTRP) - 2)
 		}
 		else if (spacestyle = 2)
-			this.result := this.resultpunctemp
+			result := this.resultpunctemp
 		else if (spacestyle = 3)
-			this.result := StrReplace(this.result, A_Space)
+			result := StrReplace(result, A_Space)
 
-		this.resultspacetemp := this.result
+		this.resultspacetemp := result
+		this.result := result
 		if hwnd
-			GuiControl Text, % this.mainhwnd, % this.result
+			GuiControl Text, % this.mainhwnd, % result
+		this.Clip()
 	}
 
-	Translate(hwnd) {
+	Translate(hwnd := "") {
 	}
 
-	Search(hwnd) {
+	Search(hwnd := "") {
 		if hwnd
 			GuiControlGet searchengine, , %hwnd%
 		else
@@ -259,15 +260,18 @@
 			if (searchengine = 3)
 				MsgBox 4144, 警告, 请勿在镜像站输入隐私信息！
 		}
-
-		this.result := result
 	}
 
-	Clip(hwnd) {
+	Clip(hwnd := "") {
+		clipboard := ""
 		if hwnd {
 			GuiControlGet result, , %hwnd%
 			this.result := result
 		}
 		clipboard := this.result
+	}
+
+	GuiEscape() {
+		Gui Destroy
 	}
 }
