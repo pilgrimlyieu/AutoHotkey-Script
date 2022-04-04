@@ -145,6 +145,7 @@
 		}
 
 		this.result := result
+		this.resulttemp := result
 		if hwnd
 			GuiControl Text, % this.mainhwnd, % result
 		this.Clip()
@@ -175,7 +176,7 @@
 			result := PTR
 		}
 		else if (puncstyle = 2)
-			result := this.resultspacetemp
+			result := this.resultspacetemp ? this.resultspacetemp : this.resulttemp
 		else if (puncstyle = 3) {
 			for EP, CP in E2CPuncs
 				result := StrReplace(result, EP, CP)
@@ -229,7 +230,7 @@
 			result := SubStr(PTRP, 1, StrLen(PTRP) - 2)
 		}
 		else if (spacestyle = 2)
-			result := this.resultpunctemp
+			result := this.resultpunctemp ? this.resultpunctemp : this.resulttemp
 		else if (spacestyle = 3)
 			result := StrReplace(result, A_Space)
 
