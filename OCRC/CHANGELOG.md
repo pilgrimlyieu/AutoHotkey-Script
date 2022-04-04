@@ -6,6 +6,34 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.1.2] - 2022-04-04
+
+### Added
+
+- [README](README.md)(Not completed)
+
+### Fixed
+
+- Baidu
+  - "Result is blank while default punctuation is 'raw result'" bug
+
+## [1.1.1] - 2022-04-04
+
+### Added
+
+- Baidu
+  - Bing Search support
+
+### Changed
+
+- Baidu
+  - Remove extra line breaking of "Intelligent paragraph" and "Merge multiple lines"
+
+### Fixed
+
+- Baidu
+  - "Intelligent quotation mark doesn't work" bug
+
 ## [1.1.0] - 2022-04-04
 
 ### Added
@@ -80,6 +108,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Confidence
     - Bar
 
-[Unreleased]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/53b2361...HEAD
+[Unreleased]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/df92b84...HEAD
+[1.1.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/980eebe...df92b84
+[1.1.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/53b2361...980eebe
 [1.1.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/3aa1fb2...53b2361
 [1.0.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/pull/8
