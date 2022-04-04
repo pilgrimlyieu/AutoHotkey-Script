@@ -2,7 +2,7 @@
 
 ; Optical Character Recognition Commander
 ; by PilgrimLyieu
-; v1.1.0
+; v1.1.1
 
 #Include <Common>
 #Include <JSON>
@@ -20,7 +20,7 @@ Global IsEnglishBefore := "([\w\d]\s?)\K"
 Global IsEnglishAfter := "(?=\s?[\w\d])"
 Global C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
 Global E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
-Global Baidu_SEnginesP := ["https://www.baidu.com/s?wd=", "https://www.google.com/search?q=", "https://google.pem.app/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
+Global Baidu_SEnginesP := ["https://www.baidu.com/s?wd=", "https://cn.bing.com/search?q=", "https://www.google.com/search?q=", "https://google.pem.app/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
 
 Global Mathpix_InlineStyles := [["$", "$"], ["\(", "\)"]]
 Global Mathpix_DisplayStyles := [["$$", "$$"], ["\[", "\]"]]
@@ -154,7 +154,7 @@ Setting:
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认翻译
 	Gui Add, DropDownList, x+15 w200 vBaidu_TranType gGETV AltSubmit Choose%Baidu_TranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认搜索
-	Gui Add, DropDownList, x+15 w200 vBaidu_SearchEngine gGETV AltSubmit Choose%Baidu_SearchEngine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
+	Gui Add, DropDownList, x+15 w200 vBaidu_SearchEngine gGETV AltSubmit Choose%Baidu_SearchEngine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
 
 	Gui Tab, MathpixOCR
 	Gui Add, GroupBox, x20 y40 w310 h150, 基础设置

@@ -63,7 +63,7 @@
 		Gui %id%:Font, s16
 		Gui %id%:Add, Text, x+15, 搜索
 		Gui %id%:Font, s12
-		Gui %id%:Add, DropDownList, x+5 w105 hwndsearchhwnd AltSubmit Choose%searchengine%, 百度搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
+		Gui %id%:Add, DropDownList, x+5 w105 hwndsearchhwnd AltSubmit Choose%searchengine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
 		this.searchhwnd := searchhwnd
 		this.Update(searchhwnd, "Search")
 
@@ -132,6 +132,7 @@
 					result .= this.json.words_result[vl + 1].words
 				result .= "`n"
 			}
+			result := SubStr(result, 1, StrLen(result) - 1)
 		}
 		else if (formatstyle = 2) {
 			for index, value in this.json.words_result
@@ -140,6 +141,7 @@
 		else if (formatstyle = 3) {
 			for index, value in this.json.words_result
 				result .= value.words "`n"
+			result := SubStr(result, 1, StrLen(result) - 1)
 		}
 
 		this.result := result
@@ -160,12 +162,13 @@
 				result := RegExReplace(result, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
 			for e, c in E2CPuncs
 				result := RegExReplace(result, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
+			QPNumP := 1, QPNum := 1
 			loop parse, result
 			{
-				if (A_LoopField = """" and SubStr(result, A_Index - 1, 1) ~= IsChinese and SubStr(result, A_Index + 1, 1) ~= IsChinese and A_Index > 1)
-					PTR .= Mod(++ QPNumP, 2) ? "“" : "”"
-				else if (A_LoopField = "'")
-					PTR .= Mod(++ QPNum, 2) ? "‘" : "’"
+				if (A_LoopField = """" and (SubStr(result, A_Index - 1, 1) ~= IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= IsChinese or A_Index = StrLen(result)))
+					PTR .= Mod(QPNumP ++, 2) ? "“" : "”"
+				else if (A_LoopField = "'" and (SubStr(result, A_Index - 1, 1) ~= IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= IsChinese or A_Index = StrLen(result)))
+					PTR .= Mod(QPNum ++, 2) ? "‘" : "’"
 				else
 					PTR .= A_LoopField
 			}
@@ -247,7 +250,7 @@
 			searchengine := this.config.searchengine
 		result := this.result
 
-		if (searchengine = 6) {
+		if (searchengine = 7) {
 			if (!(result ~= "[*?""<>|]") and result ~= "[C-G]:(?:[\\/].+)+")
 				Run D:/Program Files/Everything/Everything.exe -path "%result%"
 			else if result
@@ -257,7 +260,7 @@
 		}
 		else {
 			Run % Baidu_SEnginesP[searchengine] result
-			if (searchengine = 3)
+			if (searchengine = 4)
 				MsgBox 4144, 警告, 请勿在镜像站输入隐私信息！
 		}
 	}
