@@ -1,6 +1,7 @@
 # 文件夹
 /.vscode
 /_Compile
+**/Test
 
 # 文件名
 Test.*

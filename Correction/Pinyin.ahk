@@ -15,3 +15,7 @@
 ::ziu::zui
 ::ciu::cui
 ::siu::sui
+
+::enng::neng
+::emng::meng
+::enmg::meng
