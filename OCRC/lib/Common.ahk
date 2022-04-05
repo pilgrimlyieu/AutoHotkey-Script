@@ -1,71 +1,71 @@
 ﻿#Include <JSON>
 
 ReadIni(_ConfigFile, _key := "", _Section := "") {
-	if FileExist(_ConfigFile) {
-		Iniread, initmp, %_ConfigFile%, %_Section%, %_key%
-		return initmp
-	}
+    if FileExist(_ConfigFile) {
+        Iniread, initmp, %_ConfigFile%, %_Section%, %_key%
+        return initmp
+    }
 }
 
 WriteIni(_ConfigFile, _value, _key, _Section := "Config") {
-	if (_value != "")
-		IniWrite %_value%, %_ConfigFile%, %_Section%, %_key%
+    if (_value != "")
+        IniWrite %_value%, %_ConfigFile%, %_Section%, %_key%
 }
 
 URLDownloadToVar(url, Encoding := "", Method := "GET", postData := "", headers := "") {
-	hObject := ComObjCreate("WinHttp.WinHttpRequest.5.1")
-	hObject.SetTimeouts(30000, 30000, 1200000, 1200000) 
-	try
-		hObject.Open(Method, url, (Method = "POST" ? True : False))  
-	
-	if IsObject(headers) {
-		for k, v in headers {
-			if v
-				hObject.SetRequestHeader(k, v)
-		}
-	}
-	if postData {
-		try
-			hObject.Send(postData)
-		hObject.WaitForResponse(-1)
-	}
-	else {
-		try
-			hObject.Send()
-	}
+    hObject := ComObjCreate("WinHttp.WinHttpRequest.5.1")
+    hObject.SetTimeouts(30000, 30000, 1200000, 1200000) 
+    try
+        hObject.Open(Method, url, (Method = "POST" ? True : False))  
+    
+    if IsObject(headers) {
+        for k, v in headers {
+            if v
+                hObject.SetRequestHeader(k, v)
+        }
+    }
+    if postData {
+        try
+            hObject.Send(postData)
+        hObject.WaitForResponse(-1)
+    }
+    else {
+        try
+            hObject.Send()
+    }
 
-	if (Encoding && hObject.ResponseBody) {
-		oADO := ComObjCreate("adodb.stream")
-		oADO.Type := 1
-		oADO.Mode := 3
-		oADO.Open()
-		oADO.Write(hObject.ResponseBody)
-		oADO.Position := 0
-		oADO.Type := 2
-		oADO.Charset := Encoding
-		return oADO.ReadText(), oADO.Close()
-	}
-	try 
-		return hObject.ResponseText
+    if (Encoding && hObject.ResponseBody) {
+        oADO := ComObjCreate("adodb.stream")
+        oADO.Type := 1
+        oADO.Mode := 3
+        oADO.Open()
+        oADO.Write(hObject.ResponseBody)
+        oADO.Position := 0
+        oADO.Type := 2
+        oADO.Charset := Encoding
+        return oADO.ReadText(), oADO.Close()
+    }
+    try 
+        return hObject.ResponseText
 }
 
 StrPutVar(sVar, ByRef sbin, encoding) {
-	VarSetCapacity(sbin, StrPut(sVar, encoding) * ((encoding = "utf-16" || encoding = "cp1200")  ? 2 : 1))
+    VarSetCapacity(sbin, StrPut(sVar, encoding) * ((encoding = "utf-16" || encoding = "cp1200")  ? 2 : 1))
     return (StrPut(sVar, &sbin, encoding) -1) * ((encoding = "utf-16" || encoding = "cp1200")  ? 2 : 1)
 }
 
 UrlEncode(string, encoding := "utf-8") {
-	bt := StrPutVar(string, sb, encoding)
-	loop % bt {
-		hex := format("{1:02x}", hex2 := NumGet(&sb, A_index - 1, "Uchar"))
+    bt := StrPutVar(string, sb, encoding)
+    loop % bt {
+        hex := format("{1:02x}", hex2 := NumGet(&sb, A_index - 1, "Uchar"))
 
-		if hex2
-		if (hex2 == 33 || (hex2 >= 39 && hex2 <= 42) || hex2 == 45 || hex2 == 46 || (hex2 >= 48 && hex2 <= 57) || (hex2 >= 65 && hex2 <= 90) || hex2 == 95 || (hex2 >= 97 && hex2 <= 122) || hex2 == 126)
-			content .= Chr(hex2)
-		else
-			content .= "`%" hex
-	}
-	return content
+        if hex2
+        if (hex2 == 33 || (hex2 >= 39 && hex2 <= 42) || hex2 == 45 || hex2 == 46 || (hex2 >= 48 && hex2 <= 57) || (hex2 >= 65 && hex2 <= 90) || hex2 == 95 || (hex2 >= 97 && hex2 <= 122) || hex2 == 126)
+            content .= Chr(hex2)
+        else
+            content .= "`%" hex
+    }
+    return content
 }
 
 Gdip_EncodeBitmapTo64string(pBitmap, Ext, Quality := 75) {
@@ -77,15 +77,15 @@ Gdip_EncodeBitmapTo64string(pBitmap, Ext, Quality := 75) {
     VarSetCapacity(ci, nSize)
     DllCall("gdiplus\GdipGetImageEncoders", "uint", nCount, "uint", nSize, Ptr, &ci)
     if !(nCount && nSize)
-		return -2
+        return -2
 
     loop %nCount% {
-		sString := StrGet(NumGet(ci, (idx := (48 + 7 * A_PtrSize) * (A_Index - 1)) + 32 + 3 * A_PtrSize), "UTF-16")
-		if !InStr(sString, "*" Extension)
-			continue
+        sString := StrGet(NumGet(ci, (idx := (48 + 7 * A_PtrSize) * (A_Index - 1)) + 32 + 3 * A_PtrSize), "UTF-16")
+        if !InStr(sString, "*" Extension)
+            continue
 
-		pCodec := &ci + idx
-		break
+        pCodec := &ci + idx
+        break
     }
 
     if !pCodec
@@ -94,18 +94,18 @@ Gdip_EncodeBitmapTo64string(pBitmap, Ext, Quality := 75) {
     if (Quality != 75) {
         Quality := (Quality < 0) ? 0 : (Quality > 100) ? 100 : Quality
         if Extension in .JPG,.JPEG,.JPE,.JFIF 
-		{
-			DllCall("gdiplus\GdipGetEncoderParameterListSize", Ptr, pBitmap, Ptr, pCodec, "uint*", nSize)
-			VarSetCapacity(EncoderParameters, nSize, 0)
-			DllCall("gdiplus\GdipGetEncoderParameterList", Ptr, pBitmap, Ptr, pCodec, "uint", nSize, Ptr, &EncoderParameters)
-			loop % NumGet(EncoderParameters, "UInt") {
-				elem := (24 + (A_PtrSize ? A_PtrSize : 4)) * (A_Index - 1) + 4 + (pad := A_PtrSize = 8 ? 4 : 0)
-				if (NumGet(EncoderParameters, elem + 16, "UInt") = 1) && (NumGet(EncoderParameters, elem + 20, "UInt") = 6) {
-					p := elem + &EncoderParameters - pad - 4
-					NumPut(Quality, NumGet(NumPut(4, NumPut(1, p + 0) + 20, "UInt")), "UInt")
-					break
-				}
-			}
+        {
+            DllCall("gdiplus\GdipGetEncoderParameterListSize", Ptr, pBitmap, Ptr, pCodec, "uint*", nSize)
+            VarSetCapacity(EncoderParameters, nSize, 0)
+            DllCall("gdiplus\GdipGetEncoderParameterList", Ptr, pBitmap, Ptr, pCodec, "uint", nSize, Ptr, &EncoderParameters)
+            loop % NumGet(EncoderParameters, "UInt") {
+                elem := (24 + (A_PtrSize ? A_PtrSize : 4)) * (A_Index - 1) + 4 + (pad := A_PtrSize = 8 ? 4 : 0)
+                if (NumGet(EncoderParameters, elem + 16, "UInt") = 1) && (NumGet(EncoderParameters, elem + 20, "UInt") = 6) {
+                    p := elem + &EncoderParameters - pad - 4
+                    NumPut(Quality, NumGet(NumPut(4, NumPut(1, p + 0) + 20, "UInt")), "UInt")
+                    break
+                }
+            }
         }
     }
 
@@ -133,39 +133,39 @@ Gdip_EncodeBitmapTo64string(pBitmap, Ext, Quality := 75) {
 }
 
 Gdip_Startup() {
-	Ptr := A_PtrSize ? "UPtr" : "UInt"
+    Ptr := A_PtrSize ? "UPtr" : "UInt"
 
-	if !DllCall("GetModuleHandle", "str", "gdiplus", Ptr)
-		DllCall("LoadLibrary", "str", "gdiplus")
-	VarSetCapacity(si, A_PtrSize = 8 ? 24 : 16, 0), si := Chr(1)
-	DllCall("gdiplus\GdiplusStartup", A_PtrSize ? "UPtr*" : "uint*", pToken, Ptr, &si, Ptr, 0)
-	return pToken
+    if !DllCall("GetModuleHandle", "str", "gdiplus", Ptr)
+        DllCall("LoadLibrary", "str", "gdiplus")
+    VarSetCapacity(si, A_PtrSize = 8 ? 24 : 16, 0), si := Chr(1)
+    DllCall("gdiplus\GdiplusStartup", A_PtrSize ? "UPtr*" : "uint*", pToken, Ptr, &si, Ptr, 0)
+    return pToken
 }
 
 Gdip_Shutdown(pToken) {
-	Ptr := A_PtrSize ? "UPtr" : "UInt"
+    Ptr := A_PtrSize ? "UPtr" : "UInt"
 
-	DllCall("gdiplus\GdiplusShutdown", Ptr, pToken)
-	if hModule := DllCall("GetModuleHandle", "str", "gdiplus", Ptr)
-		DllCall("FreeLibrary", Ptr, hModule)
-	return 0
+    DllCall("gdiplus\GdiplusShutdown", Ptr, pToken)
+    if hModule := DllCall("GetModuleHandle", "str", "gdiplus", Ptr)
+        DllCall("FreeLibrary", Ptr, hModule)
+    return 0
 }
 
 Gdip_CreateBitmapFromClipboard() {
-	Ptr := A_PtrSize ? "UPtr" : "UInt"
+    Ptr := A_PtrSize ? "UPtr" : "UInt"
 
-	if !DllCall("OpenClipboard", Ptr, 0)
-		return -1
-	if !DllCall("IsClipboardFormatAvailable", "uint", 8)
-		return -2
-	if !hBitmap := DllCall("GetClipboardData", "uint", 2, Ptr)
-		return -3
-	if !pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap)
-		return -4
-	if !DllCall("CloseClipboard")
-		return -5
-	DeleteObject(hBitmap)
-	return pBitmap
+    if !DllCall("OpenClipboard", Ptr, 0)
+        return -1
+    if !DllCall("IsClipboardFormatAvailable", "uint", 8)
+        return -2
+    if !hBitmap := DllCall("GetClipboardData", "uint", 2, Ptr)
+        return -3
+    if !pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap)
+        return -4
+    if !DllCall("CloseClipboard")
+        return -5
+    DeleteObject(hBitmap)
+    return pBitmap
 }
 
 Gdip_DisposeImage(pBitmap) {
@@ -173,10 +173,10 @@ Gdip_DisposeImage(pBitmap) {
 }
 
 Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette := 0) {
-	Ptr := A_PtrSize ? "UPtr" : "UInt"
+    Ptr := A_PtrSize ? "UPtr" : "UInt"
 
-	DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", Ptr, hBitmap, Ptr, Palette, A_PtrSize ? "UPtr*" : "uint*", pBitmap)
-	return pBitmap
+    DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", Ptr, hBitmap, Ptr, Palette, A_PtrSize ? "UPtr*" : "uint*", pBitmap)
+    return pBitmap
 }
 
 DeleteObject(hObject) {
@@ -184,24 +184,24 @@ DeleteObject(hObject) {
 }
 
 GetScreenShot() {
-	clipboard := ""
-	Send {f8}
-	Sleep 500
-	WinWaitNotActive Snipper - Snipaste, , 10
-	if ErrorLevel {
-		Send {Esc}
-		return -1
-	}
-	ClipWait 1, 1
-	if ErrorLevel
-		return -1
+    clipboard := ""
+    Send {f8}
+    Sleep 500
+    WinWaitNotActive Snipper - Snipaste, , 10
+    if ErrorLevel {
+        Send {Esc}
+        return -1
+    }
+    ClipWait 1, 1
+    if ErrorLevel
+        return -1
 }
 
 Img2Base(Front := False) {
-	pToken := Gdip_Startup()
-	pBitmap := Gdip_CreateBitmapFromClipboard()
-	base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG")
-	Gdip_DisposeImage(pBitmap)
-	Gdip_Shutdown(pToken)
-	return Front ? "data:image/jpg;base64," base64string : base64string
+    pToken := Gdip_Startup()
+    pBitmap := Gdip_CreateBitmapFromClipboard()
+    base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG")
+    Gdip_DisposeImage(pBitmap)
+    Gdip_Shutdown(pToken)
+    return Front ? "data:image/jpg;base64," base64string : base64string
 }

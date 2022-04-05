@@ -1,10 +1,8 @@
 # OCRC
 
-[toc]
-
 ## 引言 Introduction
 
-**OCRC** 全称为 *Optical Character Recognition Commander*，中文为**光学字符识别指挥**，是一个集全了*百度 OCR* 与 *Mathpix OCR*的**文字+公式**识别利器。
+**OCRC** 全称为 *Optical Character Recognition Commander*，中文为**光学字符识别指挥**，是一个集全了*百度 OCR* 与 *Mathpix OCR*的**文字 + 公式**识别利器。
 
 ## 下载 Download
 
@@ -73,9 +71,9 @@ OCRC 的使用需要联网，无法离线使用。
 
 **识别类型**
 
-支持的识别类型包括*通用文字（标准）识别*、*通用文字（高精度）识别*、*手写文字识别*、*网络图片识别*。除了*手写文字识别*是 500次/月 外其他都是 1000次/月。
+支持的识别类型包括*通用文字（标准）识别*、*通用文字（高精度）识别*、*手写文字识别*、*网络图片识别*（默认是第一个，下同）。除了*手写文字识别*是 500次/月 外其他都是 1000次/月。
 
-我的建议是全部都用*高精度识别*。经过不完全的测试，对于手写文字，*手写文字识别*与*高精度识别*不相上下，而*标准识别*一塌糊涂，而*高精度识别*一般来说次数够用，因此更推荐使用*高精度识别*。（默认是第一个，下同）
+我的建议是全部都用*高精度识别*。经过不完全的测试，对于手写文字，*手写文字识别*与*高精度识别*不相上下，而*标准识别*一塌糊涂，而*高精度识别*一般来说次数够用，因此更推荐使用*高精度识别*。
 
 ---
 
@@ -163,7 +161,7 @@ Global C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", 
 Global E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
 ```
 
-由于*智能标点*引擎是我自己写的，有很多不足之处，[例如](https://github.com/pilgrimlyieu/AutoHotkey-Script/commit/e5cf1d1f6c510758951dc6234e970753854ee9d5)这个 commit 下的评论：
+由于*智能标点*引擎是我自己写的，有很多不足之处，例如[这个 commit ](https://github.com/pilgrimlyieu/AutoHotkey-Script/commit/e5cf1d1f6c510758951dc6234e970753854ee9d5)下的评论：
 
 > Though, the intelligent punctuation engine is simple and not available for all cases. For example, `这里有 apple, banana, 笔, 橡皮和纸` should be `这里有 apple、banana、笔、橡皮和纸` instead of `这里有 apple, banana, 笔，橡皮和纸`.
 
@@ -208,7 +206,7 @@ if (puncstyle = 1) {
 ```autohotkey
 Format(hwnd := "") {
     ...
-	this.resulttemp := result
+    this.resulttemp := result
     ...
 }
 
@@ -217,7 +215,7 @@ Punc(hwnd := "") {
     else if (puncstyle = 2)
         result := this.resultspacetemp ? this.resultspacetemp : this.resulttemp
     ...
-	this.resultpunctemp := result
+    this.resultpunctemp := result
     ...
 }
 
@@ -231,7 +229,7 @@ Space(hwnd := "") {
 }
 ```
 
-我们可以发现 `Format`、`Punc` 和 `Space` 在处理完后分别保存了一个临时结果 `this.resulttemp`、`this.resultpunctemp` 和 `this.resultspacetemp`，在我们选择*原始结果*的时候，分别跳转到对方的临时结果（即标点与空格相互跳转），除非在默认标点选择了原始结果时，此时空格的临时结果还没有保存，就会跳转到排版的临时结果。更多的内容会在[结果窗口]中介绍。
+我们可以发现 `Format`、`Punc` 和 `Space` 在处理完后分别保存了一个临时结果 `this.resulttemp`、`this.resultpunctemp` 和 `this.resultspacetemp`，在我们选择*原始结果*的时候，分别跳转到对方的临时结果（即标点与空格相互跳转），除非在默认标点选择了原始结果时，此时空格的临时结果还没有保存，就会跳转到排版的临时结果。更多的内容会在[结果窗口](#结果窗口-result-window)中介绍。
 
 *智能空格*引擎引擎也是我自己写的，也有很多不足。
 
@@ -385,7 +383,7 @@ $$
 
 同时 Snipaste 截图热键是 <kbd>F8</kbd>，暂时不考虑更改。（有需要更改的可以去 `Common.ahk` 中将 `GetScreenShot` 函数中的 `Send {f8}` 改为自己想要的热键，然后自行编译）
 
-> 起初是自带截图，但是由于太卡了，极其影响体验，就去除了这个功能，详见[鸣谢](#鸣谢)
+> 起初是自带截图，但是由于太卡了，极其影响体验，就去除了这个功能，详见[鸣谢](#autoahk---ocr)
 
 两个使用方法一致，按下指定热键会弹出截图窗口，截取所需内容后复制截图即可。另外设置的热键在软件启用时会覆盖这个热键的其他功能，所以请谨慎选择。
 
@@ -633,7 +631,7 @@ OCRC 的 Mathpix 部分起源于 [GitHub](https://github.com/) 项目 [img2latex
 
 也是更美观一点。还支持*剪贴板图片显示*、*公式渲染*等功能。
 
-剪贴板显示的功能应该不难，但我觉得没什么必要。公式渲染的功能不错，但是可能太困难了，再加上公式一大显示不清晰，就弃用了。
+剪贴板显示的功能应该不难，但我觉得没什么必要。公式渲染的功能不错，但是可能太困难了，再加上公式一大显示不清晰，就没有这个打算。
 
 ![](images/2022-04-05-11-20-13.png)
 
@@ -653,7 +651,7 @@ CONFIDENCE_PROGRESS_BAR.progressProperty().addListener((observable, oldValue, ne
 });
 ```
 
-本有考虑做渐变的置信度，但最终还是放弃了弄了个最简单的。
+本有考虑做渐变的置信度，但最终还是放弃了，弄了个最简单的。
 
 ---
 
@@ -691,12 +689,12 @@ AutoHotkey 官方论坛可以说是对我帮助第二大的了。
 
 ```autohotkey
 Img2Base(Front := False) {
-	pToken := Gdip_Startup()
-	pBitmap := Gdip_CreateBitmapFromClipboard()
-	base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG")
-	Gdip_DisposeImage(pBitmap)
-	Gdip_Shutdown(pToken)
-	return Front ? "data:image/jpg;base64," base64string : base64string
+    pToken := Gdip_Startup()
+    pBitmap := Gdip_CreateBitmapFromClipboard()
+    base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG")
+    Gdip_DisposeImage(pBitmap)
+    Gdip_Shutdown(pToken)
+    return Front ? "data:image/jpg;base64," base64string : base64string
 }
 ```
 
