@@ -171,7 +171,7 @@ Setting:
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 行间公式
 	Gui Add, DropDownList, x+15 w200 vMathpix_DisplayStyle gGETV AltSubmit Choose%Mathpix_DisplayStyle%, $$...$$|\[...\]
 	Gui Add, Text, x15 y+15 w90 h25 +Right, 默认选择
-	Gui Add, DropDownList, x+15 w200 vMathpix_DefaultSelect gGETV AltSubmit Choose%Mathpix_DefaultSelect%, LaTeX|行内公式|行间公式
+	Gui Add, DropDownList, x+15 w200 vMathpix_DefaultSelect gGETV AltSubmit Choose%Mathpix_DefaultSelect%, LaTeX|行内公式|行间公式|文本公式
 
 	Gui st:Show, , OCRC 设置
 return

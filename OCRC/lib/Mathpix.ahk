@@ -43,10 +43,8 @@
 			Gui %id%:Add, Text, x10 y+20 w100 +Right, 行间公式
 			Gui %id%:Add, Edit, x120 yp w470 h36 vdisplay_result ReadOnly -Multi -VScroll, %display_result%
 		}
-		else {
-			Gui %id%:Add, Text, x10 y20 w100 +Right, 识别结果
-			Gui %id%:Add, Edit, x120 yp w470 h36 vresult ReadOnly -Multi -VScroll, %result%
-		}
+		Gui %id%:Add, Text, x10 y+20 w100 +Right, 文本公式
+		Gui %id%:Add, Edit, x120 yp w470 h36 vresult ReadOnly -Multi -VScroll, %result%
 
 		if (confidence <= 20)
 			progresscolor := "EC4D3D"
@@ -61,7 +59,7 @@
 			this.FocusSelect("Edit" this.config.default_select)
 		else
 			this.FocusSelect("Edit1")
-		guiheight := latex_result ? 240 : 120
+		guiheight := latex_result ? 300 : 120
 		Gui %id%:Show, w600 h%guiheight%, % "OCRC (MathpixOCR) 识别结果"
 
 		GroupAdd Mathpix, ahk_id %MRW%
