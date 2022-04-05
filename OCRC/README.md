@@ -6,11 +6,29 @@
 
 **OCRC** 全称为 *Optical Character Recognition Commander*，中文为**光学字符识别指挥**，是一个集全了*百度 OCR* 与 *Mathpix OCR*的**文字+公式**识别利器。
 
+## 下载 Download
+
+暂不准备 Release，如有需要可自行 Clone 代码。下面是必须的文件。
+
+`OCRC.ahk` 主程序
+
+`lib/Common.ahk` 调用函数集合
+
+`lib/JSON.ahk` JSON 库
+
+`lib/Baidu.ahk` Baidu 类
+
+`lib/Mathpix.ahk` Mathpix 类
+
+`icon/OCRC_icon.ico` 图标
+
 ## 使用说明 Instruction
 
-> **注意**：下列使用说明基于版本 **[1.1.2]**
+OCRC 的使用需要联网，无法离线使用。
 
-[1.1.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/tree/df92b84626b2b082b270cb8649c084ee63ab6dfa/OCRC
+> **注意**：下列使用说明基于版本 **[1.1.3]**
+
+[1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/tree/6fad68c91400bb455f2273b6a5adec67eb1e20cb/OCRC
 
 ### 菜单 Menu
 
@@ -289,6 +307,8 @@ if (spacestyle = 1) {
 
 然后一样的要填入，也一定要注意保密！
 
+---
+
 **行内公式**
 
 如下图，行内公式包含了 `$...$` 与 `\(...\)` 等行内公式选项。
@@ -296,6 +316,8 @@ if (spacestyle = 1) {
 就是 `$\alpha$` 与 `\(\alpha\)` 的差别。
 
 ![](images/2022-04-04-21-32-57.png)
+
+---
 
 **行间公式**
 
@@ -363,7 +385,7 @@ $$
 
 同时 Snipaste 截图热键是 <kbd>F8</kbd>，暂时不考虑更改。（有需要更改的可以去 `Common.ahk` 中将 `GetScreenShot` 函数中的 `Send {f8}` 改为自己想要的热键，然后自行编译）
 
-> 起初是自带截图，但是由于太卡了，极其影响体验，就去除了这个功能，详见鸣谢。
+> 起初是自带截图，但是由于太卡了，极其影响体验，就去除了这个功能，详见[鸣谢](#鸣谢)
 
 两个使用方法一致，按下指定热键会弹出截图窗口，截取所需内容后复制截图即可。另外设置的热键在软件启用时会覆盖这个热键的其他功能，所以请谨慎选择。
 
@@ -381,13 +403,17 @@ $$
 
 ![](images/2022-04-04-22-45-01.png)
 
-左上角显示了识别类型。上面一排显示了操作选项。最下面一条显示了置信度极其数值。
+左上角显示了识别类型。上面一排显示了操作选项。最下面一条显示了置信度及其数值。
 
 文字识别准确度还是挺高的。然而这个段落识别简直了。要不是看到第二段的「引发」我还以为出 bug 了。
+
+---
 
 ![](images/FormatDemo.gif)
 
 可以看出，排版*不基于*其它两项设置，实际上它直接修改 API 返回的文本，因此这会清除其它两项的修改。可以用此达到重置修改的目的。
+
+---
 
 ![](images/PuncDemo.gif)
 
@@ -397,22 +423,387 @@ $$
 
 有点可惜的就是无法通过直接点击默认搜索引擎来实现直接搜索，而是仍要在打开的列表里进行选择点击。
 
+---
+
 ![](images/PuncRaw.gif)
 
 ![](images/SpaceRaw.gif)
 
 在使用「智能段落」重置后，原始结果选项跳转到了经过对方操作的结果。
 
+---
+
 ![](images/ChangeToClip.gif)
 
 在编辑框可以自由操作，剪贴板会时刻记录最新的内容。
+
+---
 
 ![](images/Reset.gif)
 
 另一个说明「智能段落」的重置功能的例子。
 
+---
+
 ![](images/IntelligentPunc&Space.gif)
 
+智能标点 + 智能空格演示。
+
+---
+
+![](images/2022-04-05-09-41-18.png)
+
+支持多窗口。
+
+---
+
+![](images/2022-04-05-09-34-28.png)
+
+> 一位市场分析人士对澎湃新闻表示，俄罗斯原油出口减量风险是近期油价上涨的主因。经合组织的石油库存处于7年低位，在此背景下，原油供应的任何减量风险都会对油价产生显著影响。
+
+![](images/2022-04-05-09-35-37.png)
+
+这是缩放文字进行处理的结果。置信度在 80% 以上置信度条是绿色的，60% ~ 80% 是黄色的，60% 以下是红色的。
+
+实际上相同置信度 Mathpix 返回的结果远比百度准确，因此两个设置的阈值不同。（这红色的识别什么玩意还有 50% 置信度）
+
 #### Mathpix OCR
+
+以[ 维基百科 - 泰勒级数 ](https://zh.wikipedia.org/wiki/%E6%B3%B0%E5%8B%92%E7%BA%A7%E6%95%B0)为例进行演示。
+
+**单条公式**
+
+![](images/2022-04-05-08-44-31.png)
+
+![](images/2022-04-05-08-45-20.png)
+
+单条公式分为三条返回结果，分别为 *LaTeX*、*行内公式*与*行间公式*。最下面一条是置信度及其数值。
+
+> **注意**：在 **1.1.3** 及以后的版本会返回 **4** 条结果，详细见下面。（本文撰至此处时的版本是 **1.1.2**，由于不影响说明便没有进行更改。
+
+蓝色边框表明了正在选中该公式。
+
+返回结果分别是
+
+```LaTeX
+\sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n !}(x-a)^{n}
+
+$\sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n !}(x-a)^{n}$
+
+$$
+\sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n !}(x-a)^{n}
+$$
+```
+
+可以看出来完美符合，置信度 100% 名副其实。
+
+---
+
+![](images/ClickToClip.gif)
+
+可以通过点选所需结果的编辑框来获取结果。
+
+另外，编辑框是禁止编辑的。
+
+---
+
+![](images/2022-04-05-08-59-02.png)
+
+![](images/2022-04-05-08-59-47.png)
+
+支持多窗口。
+
+```LaTeX
+$$
+\begin{aligned}
+&\sin x=\sum_{n=0}^{\infty} \frac{(-1)^{n}}{(2 n+1) !} x^{2 n+1}\\
+&=x-\frac{x^{3}}{3 !}+\frac{x^{5}}{5 !}-\cdots\\
+&\cos x=\sum_{n=0}^{\infty} \frac{(-1)^{n}}{(2 n) !} x^{2 n}\\
+&=1-\frac{x^{2}}{2 !}+\frac{x^{4}}{4 !}-\cdots\\
+&\tan x=\sum_{n=1}^{\infty} \frac{B_{2 n}(-4)^{n}\left(1-4^{n}\right)}{(2 n) !} x^{2 n-1} \quad=x+\frac{x^{3}}{3}+\frac{2 x^{5}}{15}+\cdots \quad \forall x:|x|<\frac{\pi}{2}\\
+&\sec x=\sum_{n=0}^{\infty} \frac{(-1)^{n} E_{2 n}}{(2 n) !} x^{2 n} \quad=1+\frac{x^{2}}{2}+\frac{5 x^{4}}{24}+\cdots \quad \forall x:|x|<\frac{\pi}{2}\\
+&\arcsin x=\sum_{n=0}^{\infty} \frac{(2 n) !}{4^{n}(n !)^{2}(2 n+1)} x^{2 n+1} \quad=x+\frac{x^{3}}{6}+\frac{3 x^{5}}{40}+\cdots \quad \forall x:|x| \leq 1\\
+&\arccos x=\frac{\pi}{2}-\arcsin x\\
+&=\frac{\pi}{2}-\sum_{n=0}^{\infty} \frac{(2 n) !}{4^{n}(n !)^{2}(2 n+1)} x^{2 n+1} \quad=\frac{\pi}{2}-x-\frac{x^{3}}{6}-\frac{3 x^{5}}{40}+\cdots \quad \forall x:|x| \leq 1\\
+&\arctan x=\sum_{n=0}^{\infty} \frac{(-1)^{n}}{2 n+1} x^{2 n+1} \quad=x-\frac{x^{3}}{3}+\frac{x^{5}}{5}-\cdots \quad \forall x:|x| \leq 1, x \neq i
+\end{aligned}
+$$
+```
+
+![](images/MathpixDemo.jpg)
+
+有一定的不足之处，但总体上还是可以接受的。
+
+---
+
+**单行文本 + 公式**
+
+![](images/2022-04-05-09-19-47.png)
+
+![](images/2022-04-05-09-19-34.png)
+
+![](images/2022-04-05-09-22-16.png)
+
+文本公式在单行文本与公式混搭时会返回更适用的结果。
+
+---
+
+**多行文本 + 公式**
+
+![](images/2022-04-05-09-24-33.png)
+
+![](images/2022-04-05-09-25-29.png)
+
+此时只会返回文本公式一个结果。
+
+需要注意的是，这种情况的准确度并不稳定，同样文本刚刚 20% 的置信度再截图一次就 86% 了，因此如果不是很准确可以考虑多截几次图。
+
+```LaTeX
+在数学上，对于一个在实数或复数 $a$ 邻域上，以实数作为变量或以复数作为变量的函数，并且是无穷可微的函数 $f(x)$ ，它的泰勒级数是以下这种形式的幂级数:
+$$
+\sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n !}(x-a)^{n}
+$$
+这里， $n$ !表示 $n$ 的阶乘，而 $f^{(n)}(a)$ 表示函数 $f$ 在点 $a$ 处的 $n$ 阶导数。如果 $a=0$ ，也可以把这个级数称为麦克劳林级数。
+```
+
+除了有点遗憾没能将阶乘符号识别出来外，准确度极高。
+
+---
+
+![](images/2022-04-05-09-29-45.png)
+
+支持纯文本识别，但并不推荐。纯文本识别的工作还是交给百度比较好。
+
+另外对于 Mathpix OCR，置信度在 60% 以上置信度条是绿色的，20% ~ 60% 是黄色的，20% 以下是红色的。
+
+![](images/2022-04-05-09-32-15.png)
+
+这是故意没截全的返回结果，实际上准确率挺不错的，还挺谦虚的。
+
+### 错误 Error
+
+在正常范围的操作内（不手动修改配置文件）除了 API 返回的错误外，是不会出现错误与错误信息的。修改配置文件的情况导致的错误并没有采取措施返回错误信息，因此不建议在不了解的情况下随意修改配置文件。
+
+常见错误示例：
+
+![](images/2022-04-05-09-50-20.png)
+
+Secret_Key 不正确。
+
+![](images/2022-04-05-09-53-57.png)
+
+图片过大或过小。
+
+![](images/2022-04-05-09-55-10.png)
+
+未识别到内容。
+
+详细错误信息及相关解释见
+
+|   OCR   | 类型  |                      网址                       |
+| :-----: | :---: | :---------------------------------------------: |
+|  百度   | Token | https://ai.baidu.com/ai-doc/REFERENCE/Ck3dwjhhu |
+|  百度   | 识别  |   https://cloud.baidu.com/doc/OCR/s/dk3h7y5vr   |
+| Mathpix | 识别  |   https://docs.mathpix.com/#error-id-strings    |
+
+## 鸣谢 Thanks
+
+按对我贡献大小升序排列。
+
+### Quicker 动作 - 截图OCR
+
+OCRC 的念头及百度 OCR 部分起源于 [Quicker] 动作 [截图OCR]。由于 Quicker 是付费的（虽然可以免费使用），就高仿做了一个。
+
+![](images/2022-04-05-10-54-51.png)
+
+这个动作更美观一点。比起 OCRC 多了*行数*（暂时想不到解决方法）、*翻译*、*纠错*、*保存*、*文字大爆炸*、*内容审核*等功能。
+
+实际上纠错、内容审核也可以做，只是百度给的 API 是总量限制的，再加上用处不大，也就没有弄了。*翻译*是很重要的功能，以后肯定要加入的。
+
+[Quicker]: https://getquicker.net/
+
+[截图OCR]: https://getquicker.net/Sharedaction?code=ba82e11a-f845-4ca3-44ee-08d690b5076c
+
+
+### img2latex
+
+OCRC 的 Mathpix 部分起源于 [GitHub](https://github.com/) 项目 [img2latex](https://github.com/blaisewang/img2latex-mathpix)，当时百度部分已基本完成，就高仿嵌了一个。
+
+![](images/2022-04-05-11-18-01.png)
+
+也是更美观一点。还支持*剪贴板图片显示*、*公式渲染*等功能。
+
+剪贴板显示的功能应该不难，但我觉得没什么必要。公式渲染的功能不错，但是可能太困难了，再加上公式一大显示不清晰，就弃用了。
+
+![](images/2022-04-05-11-20-13.png)
+
+另外，置信度的颜色还是我从他们的源码上找到的。
+
+```java
+// red for less than 20% certainty, yellow for 20% ~ 60%, and green for above 60%
+CONFIDENCE_PROGRESS_BAR.progressProperty().addListener((observable, oldValue, newValue) -> {
+    var progress = newValue.doubleValue();
+    if (progress < 0.2) {
+        setStyle("-fx-accent: #ec4d3d;");
+    } else if (progress < 0.6) {
+        setStyle("-fx-accent: #f8cd46;");
+    } else {
+        setStyle("-fx-accent: #63c956;");
+    }
+});
+```
+
+本有考虑做渐变的置信度，但最终还是放弃了弄了个最简单的。
+
+---
+
+### AutoAHK - OCR
+
+OCRC 的百度 OCR 部分是基于 [AutoAHK](https://www.autoahk.com/) 论坛的 [AHK 实现文字识别（OCR） —— 离线与在线4种方法总结](https://www.autoahk.com/archives/35526) 这篇文章改造的。不过已经改得面目全非，已然没了最初的模样。（截图工具内自带，如有需要可自行参考并加入）
+
+> 附带一句，我并不是很喜欢这个论坛。因为一进这个论坛就提示我要登录，登录完就提示我要绑定邮箱，每个页面都是这样，还爆卡，我就用 uBlock Origin 禁了，这也让我对这里观感不好。
+
+---
+
+### [Stack Overflow](https://stackoverflow.com)
+
+知名问答平台。
+
+![](images/2022-04-05-11-29-11.png)
+
+更多的没找到了。
+
+---
+
+### [百度智能云 API 文档](https://cloud.baidu.com/doc/OCR/s/Ek3h7xypm) & [Mathpix Reference](https://docs.mathpix.com)
+
+参考文档。
+
+---
+
+### [AutoHotkey Community](https://www.autohotkey.com/boards/)
+
+AutoHotkey 官方论坛可以说是对我帮助第二大的了。
+
+例如 [How to change snapshots in clipboard to base64 directly?](https://www.autohotkey.com/boards/viewtopic.php?t=86814)
+
+这个问题是 AutoHotkey 论坛第一个对我有帮助的问题。它最终形成了 `Common.ahk` 中的 `Img2Base` 函数。
+
+```autohotkey
+Img2Base(Front := False) {
+	pToken := Gdip_Startup()
+	pBitmap := Gdip_CreateBitmapFromClipboard()
+	base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG")
+	Gdip_DisposeImage(pBitmap)
+	Gdip_Shutdown(pToken)
+	return Front ? "data:image/jpg;base64," base64string : base64string
+}
+```
+
+![](images/AutoHotkeyForumSearch.png)
+
+我的大部分教程里没找到答案的问题都是在这里解决的。
+
+<Details><Summary>吐槽</Summary>
+
+另外对比百度与必应国际对问题的搜索结果。（这些还不是很明显）
+
+![](images/2022-04-05-11-39-39.png)
+
+![](images/2022-04-05-11-40-20.png)
+
+![](images/2022-04-05-11-43-18.png)
+
+![](images/2022-04-05-11-44-14.png)
+
+百度连 AutoHotkey 论坛都没出现。
+
+</Details>
+
+---
+
+### [AutoHotkey 快速参考](https://wyagd001.github.io/zh-cn/docs/AutoHotkey.htm)
+
+官方中文文档，给了我极大的帮助。
+
+<Details><Summary>感悟</Summary>
+
+## 感悟 Thoughts
+
+印象中在此之前接触过一两次 AutoHotkey，但都只进行了简单的操作便放弃了。而这次再次接触后却一发不可收拾，我想也有网课的原因。虽然有点后悔，毕竟很快我就要开学，就要大寄了，不过好在摆脱了摆烂的深渊（虽然是从一个深渊到另一个深渊）。
+
+AutoHotkey 这个语言我可谓是又爱又恨。爱它的简洁、易用，又恨它的不规范。举个例子
+
+```autohotkey
+array := ["a", "b"]
+var := array[1]
+%var% := array[2]
+```
+
+谁能想到这是定义一个变量 `a` 并将它赋值为 `"b"` 呢？而且数组的序号从 1 开始，简直就是异端！
+
+```autohotkey
+loop parse, result, "
+{
+    if Mod(A_Index, 2)
+        PTR .= A_LoopField """"
+    else
+        PTR .= Trim(A_LoopField) """"
+}
+
+if focusvar in result,latex_result,inline_result,display_result
+{
+    GuiControlGet clipvar, , %hwnd%
+    if clipvar {
+        clipboard := ""
+        clipboard := clipvar
+    }
+}
+```
+
+这两种写法对我这种强迫症简直不能忍，一定要写成
+
+```autohotkey
+loop parse, result, " {
+    if Mod(A_Index, 2)
+        PTR .= A_LoopField """"
+    else
+        PTR .= Trim(A_LoopField) """"
+}
+
+if focusvar in result, latex_result, inline_result, display_result {
+    GuiControlGet clipvar, , %hwnd%
+    if clipvar {
+        clipboard := ""
+        clipboard := clipvar
+    }
+}
+```
+
+然后就会报错了。对于大括号，在这个特殊的语法条件里大括号会被视为字符，导致错误。对于逗号的空格，也一样被视为字符。
+
+还有关联数组的奇葩写法，这是因为以 `,` 等开头的才会并入前一行。
+
+```autohotkey
+√ array1 := {"a": 1, "b": 2, "c": 3}
+
+√ array2 := {"a": 1
+           , "b": 2
+           , "c": 3}
+
+× array3 := {
+    "a": 1,
+    "b": 2,
+    "c": 3,
+}
+```
+
+还有另类的就是 `\` 能正常使用，换行什么的从 `\n` 变为 `n 这样。
+
+还有令我感慨万分的就是我写的第一个类（`Mathpix.ahk`），用的不是编程路上第一个语言 Python，不是我觉得很优雅的 JavaScript，而是这个「不伦不类」的 AutoHotkey。
+
+不管怎样，AutoHotkey 都在我的编程路上留下了不可磨灭的印记，是一座值得仰望的丰碑。将来在这条路能否走得更远，就看返校后的我了:cry:。
+
+</Details>
 
 [^UnsupportHotkey]: [Hotkey 控件](https://wyagd001.github.io/zh-cn/docs/commands/GuiControls.htm#Hotkey)

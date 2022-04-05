@@ -2,11 +2,11 @@
 	__New(post := "", config := "") {
 		clipboard := ""
 		headers := {"app_id": config.app_id
-				, "app_key": config.app_key
-				, "Content-type": "application/json"}
+				  , "app_key": config.app_key
+				  , "Content-type": "application/json"}
 		postdata := {"src": config.imgbase64
-				, "idiomatic_eqn_arrays": True
-				, "formats": ["text", "latex_styled"]}
+				  , "idiomatic_eqn_arrays": True
+				  , "formats": ["text", "latex_styled"]}
 		for key, value in post
 			postdata[key] := value
 		this.UpdateClip := ObjBindMethod(this, "WM_LBUTTONDOWN")

@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [Unreleased]
 
+## [1.1.3] - 2022-04-05
+
+### Fixed
+
+-Mathpix
+  - "Single line text with formula doesn't return single result" bug
+
 ## [1.1.2] - 2022-04-04
 
 ### Added
@@ -108,7 +115,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Confidence
     - Bar
 
-[Unreleased]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/df92b84...HEAD
+[Unreleased]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/6fad68c...HEAD
+[1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/df92b84...6fad68c
 [1.1.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/980eebe...df92b84
 [1.1.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/53b2361...980eebe
 [1.1.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/3aa1fb2...53b2361
