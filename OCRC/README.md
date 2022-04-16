@@ -12,7 +12,9 @@
 
 ## 下载 Download
 
-暂不准备 Release，如有需要可自行 Clone 代码。下面是必须的文件。
+~~暂不准备 Release，如有需要可自行 Clone 代码。下面是必须的文件。~~
+
+已 [release](https://github.com/pilgrimlyieu/AutoHotkey-Script/releases/tag/OCRC)
 
 `OCRC.ahk` 主程序
 
