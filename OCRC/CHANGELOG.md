@@ -2,18 +2,40 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/lang/zh-CN/).
 
-## [Unreleased]
+## [1.2.0 First Released Version] (2022-04-16)
 
-## [1.1.3] - 2022-04-05
+### Added
+
+- General
+  - OCR switch support
+  - EncodingBitmap-to-64String quality support
+  - Local screenshot support (Default)
+  - Third-party screenshot support
+  - Everything path support
+
+### Changed
+
+- General
+  - Change config name from "OCRC_config.privacy.ini" to "OCRC.privacy.ini"
+- Mathpix
+  - Now show "formula text" only when "inline formula" is different from it
+  - Reduce width of result windows
+
+### Fixed
+
+- General
+  - "[Empty content will not be written into config](https://github.com/pilgrimlyieu/AutoHotkey-Script/issues/9)" bug
+
+## [1.1.3] (2022-04-05)
 
 ### Fixed
 
 - Mathpix
   - "Single line text with formula doesn't return single result" bug
 
-## [1.1.2] - 2022-04-04
+## [1.1.2] (2022-04-04)
 
 ### Added
 
@@ -24,7 +46,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Baidu
   - "Result is blank while default punctuation is 'raw result'" bug
 
-## [1.1.1] - 2022-04-04
+## [1.1.1] (2022-04-04)
 
 ### Added
 
@@ -41,7 +63,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Baidu
   - "Intelligent quotation mark doesn't work" bug
 
-## [1.1.0] - 2022-04-04
+## [1.1.0] (2022-04-04)
 
 ### Added
 
@@ -64,7 +86,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Baidu
     - Reget token after get OCR result error
 
-## [1.0.0] - 2022-04-03
+## [1.0.0] (2022-04-03)
 
 ### Added
 
@@ -115,7 +137,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - Confidence
     - Bar
 
-[Unreleased]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/6fad68c...HEAD
+[1.2.0 First Released Version]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/6fad68c...b11d711
 [1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/df92b84...6fad68c
 [1.1.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/980eebe...df92b84
 [1.1.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/53b2361...980eebe

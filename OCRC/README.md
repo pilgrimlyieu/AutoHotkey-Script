@@ -1,5 +1,11 @@
 # OCRC
 
+> **注意**：最新版本为 **[1.2.0]**，下列使用说明基于*已过时版本* **[1.1.3]**，请自行进行甄别判断。1.2.0 与 1.1.3 的区别可见[更新文档](CHANGELOG.md#120-first-released-version-2022-04-16)
+
+[1.2.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/tree/b11d711c9682743621ec614ab392677214757e7c/OCRC
+
+[1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/tree/6fad68c91400bb455f2273b6a5adec67eb1e20cb/OCRC
+
 ## 引言 Introduction
 
 **OCRC** 全称为 *Optical Character Recognition Commander*，中文为**光学字符识别指挥**，是一个集全了*百度 OCR* 与 *Mathpix OCR*的**文字 + 公式**识别利器。
@@ -23,10 +29,6 @@
 ## 使用说明 Instruction
 
 OCRC 的使用需要联网，无法离线使用。
-
-> **注意**：下列使用说明基于版本 **[1.1.3]**
-
-[1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/tree/6fad68c91400bb455f2273b6a5adec67eb1e20cb/OCRC
 
 ### 菜单 Menu
 
@@ -154,11 +156,11 @@ Prob() {
 
 同样的，*智能标点*根据前后文信息智能地替换标点符号；*原始结果*比较复杂，稍后解释；*中文标点*将所有标点替换成中文标点；*英文标点*则相反。（省略号等特殊标点不包括在内）
 
-中英标点转换详细内容见 `OCRC.ahk` 主程序中的全局变量 `C2EPuncs` 和 `E2CPuncs`
+中英标点转换详细内容见 `OCRC.ahk` 主程序中的全局变量 `Baidu_C2EPuncs` 和 `Baidu_E2CPuncs`
 
 ```autohotkey
-Global C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
-Global E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
+Global Baidu_C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
+Global Baidu_E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
 ```
 
 由于*智能标点*引擎是我自己写的，有很多不足之处，例如[这个 commit ](https://github.com/pilgrimlyieu/AutoHotkey-Script/commit/e5cf1d1f6c510758951dc6234e970753854ee9d5)下的评论：
@@ -169,16 +171,16 @@ Global E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", 
 
 ```autohotkey
 if (puncstyle = 1) {
-    for c, e in C2EPuncs
-        result := RegExReplace(result, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
-    for e, c in E2CPuncs
-        result := RegExReplace(result, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
+    for c, e in Baidu_C2EPuncs
+        result := RegExReplace(result, (c ~= "[“‘「『（【《]") ? c Baidu_IsEnglishAfter : Baidu_IsEnglishBefore c, e)
+    for e, c in Baidu_E2CPuncs
+        result := RegExReplace(result, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) Baidu_IsChineseAfter : Baidu_IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
     QPNumP := 1, QPNum := 1
     loop parse, result
     {
-        if (A_LoopField = """" and (SubStr(result, A_Index - 1, 1) ~= IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= IsChinese or A_Index = StrLen(result)))
+        if (A_LoopField = """" and (SubStr(result, A_Index - 1, 1) ~= Baidu_IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= Baidu_IsChinese or A_Index = StrLen(result)))
             PTR .= Mod(QPNumP ++, 2) ? "“" : "”"
-        else if (A_LoopField = "'" and (SubStr(result, A_Index - 1, 1) ~= IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= IsChinese or A_Index = StrLen(result)))
+        else if (A_LoopField = "'" and (SubStr(result, A_Index - 1, 1) ~= Baidu_IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= Baidu_IsChinese or A_Index = StrLen(result)))
             PTR .= Mod(QPNum ++, 2) ? "‘" : "’"
         else
             PTR .= A_LoopField
@@ -237,7 +239,7 @@ Space(hwnd := "") {
 
 ```autohotkey
 if (spacestyle = 1) {
-    for c, e in C2EPuncs
+    for c, e in Baidu_C2EPuncs
         result := RegExReplace(result, " ?(" c ") ?", "$1")
     result := RegExReplace(result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
     result := RegExReplace(result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
