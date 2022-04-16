@@ -1,15 +1,12 @@
 ﻿#Include <JSON>
 
 ReadIni(_ConfigFile, _key := "", _Section := "") {
-    if FileExist(_ConfigFile) {
-        Iniread, initmp, %_ConfigFile%, %_Section%, %_key%
-        return initmp
-    }
+    Iniread initmp, %_ConfigFile%, %_Section%, %_key%
+    return initmp
 }
 
 WriteIni(_ConfigFile, _value, _key, _Section := "Config") {
-    if (_value != "")
-        IniWrite %_value%, %_ConfigFile%, %_Section%, %_key%
+    IniWrite %_value%, %_ConfigFile%, %_Section%, %_key%
 }
 
 URLDownloadToVar(url, Encoding := "", Method := "GET", postData := "", headers := "") {
@@ -164,7 +161,7 @@ Gdip_CreateBitmapFromClipboard() {
         return -4
     if !DllCall("CloseClipboard")
         return -5
-    DeleteObject(hBitmap)
+    DllCall("DeleteObject", Ptr, hBitmap)
     return pBitmap
 }
 
@@ -172,35 +169,34 @@ Gdip_DisposeImage(pBitmap) {
     return DllCall("gdiplus\GdipDisposeImage", A_PtrSize ? "UPtr" : "UInt", pBitmap)
 }
 
-Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette := 0) {
+Gdip_CreateBitmapFromHBITMAP(hBitmap) {
     Ptr := A_PtrSize ? "UPtr" : "UInt"
 
-    DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", Ptr, hBitmap, Ptr, Palette, A_PtrSize ? "UPtr*" : "uint*", pBitmap)
+    DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", Ptr, hBitmap, Ptr, 0, A_PtrSize ? "UPtr*" : "uint*", pBitmap)
     return pBitmap
 }
 
-DeleteObject(hObject) {
-    return DllCall("DeleteObject", A_PtrSize ? "UPtr" : "UInt", hObject)
-}
-
-GetScreenShot() {
+GetScreenshot() {
     clipboard := ""
-    Send {f8}
-    Sleep 500
-    WinWaitNotActive Snipper - Snipaste, , 10
-    if ErrorLevel {
-        Send {Esc}
-        return -1
+    Global Advance_ThirdPartyScreenshotOnOff, Advance_ThirdPartyScreenshotPath
+    try {
+        if !Advance_ThirdPartyScreenshotOnOff
+            throw
+        Run % Advance_ThirdPartyScreenshotPath
     }
-    ClipWait 1, 1
+    catch e
+        Send {LWin Down}{LShift Down}s{LShift Up}{LWin Up}
+    ClipWait 10, 1
     if ErrorLevel
-        return -1
+        return
+    Sleep 500
+    return 1
 }
 
-Img2Base(Front := False) {
+Img2Base(Front := False, Quality := 75) {
     pToken := Gdip_Startup()
     pBitmap := Gdip_CreateBitmapFromClipboard()
-    base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG")
+    base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG", Quality)
     Gdip_DisposeImage(pBitmap)
     Gdip_Shutdown(pToken)
     return Front ? "data:image/jpg;base64," base64string : base64string

@@ -35,16 +35,18 @@
         Gui %id%:Color, EBEDF4
         Gui %id%:Font, s18, Microsoft YaHei
 
-        if latex_result {
+        if (latex_result and result = inline_result) {
             Gui %id%:Add, Text, x10 y20 w100 +Right, LaTeX
-            Gui %id%:Add, Edit, x120 yp w470 h36 vlatex_result ReadOnly -Multi -VScroll, %latex_result%
+            Gui %id%:Add, Edit, x120 yp w370 h36 vlatex_result ReadOnly -Multi -VScroll, %latex_result%
             Gui %id%:Add, Text, x10 y+20 w100 +Right, 行内公式
-            Gui %id%:Add, Edit, x120 yp w470 h36 vinline_result ReadOnly -Multi -VScroll, %inline_result%
+            Gui %id%:Add, Edit, x120 yp w370 h36 vinline_result ReadOnly -Multi -VScroll, %inline_result%
             Gui %id%:Add, Text, x10 y+20 w100 +Right, 行间公式
-            Gui %id%:Add, Edit, x120 yp w470 h36 vdisplay_result ReadOnly -Multi -VScroll, %display_result%
+            Gui %id%:Add, Edit, x120 yp w370 h36 vdisplay_result ReadOnly -Multi -VScroll, %display_result%
         }
-        Gui %id%:Add, Text, x10 y+20 w100 +Right, 文本公式
-        Gui %id%:Add, Edit, x120 yp w470 h36 vresult ReadOnly -Multi -VScroll, %result%
+        else {
+            Gui %id%:Add, Text, x10 y+20 w100 +Right, 文本公式
+            Gui %id%:Add, Edit, x120 yp w370 h36 vresult ReadOnly -Multi -VScroll, %result%
+        }
 
         if (confidence <= 20)
             progresscolor := "EC4D3D"
@@ -52,15 +54,15 @@
             progresscolor := "F8CD46"
         else
             progresscolor := "63C956"
-        Gui %id%:Add, Progress, x10 y+20 w580 h30 c%progresscolor%, %confidence%
-        Gui %id%:Add, Text, yp w600 +Center BackgroundTrans +0x1, %confidence%`%
+        Gui %id%:Add, Progress, x10 y+20 w480 h30 c%progresscolor%, %confidence%
+        Gui %id%:Add, Text, yp w500 +Center BackgroundTrans +0x1, %confidence%`%
 
-        if latex_result
+        if (latex_result and result = inline_result)
             this.FocusSelect("Edit" this.config.default_select)
         else
             this.FocusSelect("Edit1")
-        guiheight := latex_result ? 300 : 120
-        Gui %id%:Show, w600 h%guiheight%, % "OCRC (MathpixOCR) 识别结果"
+        guiheight := (latex_result and result = inline_result) ? 240 : 120
+        Gui %id%:Show, w500 h%guiheight%, % "OCRC (MathpixOCR) 识别结果"
 
         GroupAdd Mathpix, ahk_id %MRW%
         OnMessage(0x201, this.UpdateClip)

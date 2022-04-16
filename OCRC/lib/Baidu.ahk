@@ -159,16 +159,16 @@
         result := this.result
 
         if (puncstyle = 1) {
-            for c, e in C2EPuncs
-                result := RegExReplace(result, (c ~= "[“‘「『（【《]") ? c IsEnglishAfter : IsEnglishBefore c, e)
-            for e, c in E2CPuncs
-                result := RegExReplace(result, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) IsChineseAfter : IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
+            for c, e in Baidu_C2EPuncs
+                result := RegExReplace(result, (c ~= "[“‘「『（【《]") ? c Baidu_IsEnglishAfter : Baidu_IsEnglishBefore c, e)
+            for e, c in Baidu_E2CPuncs
+                result := RegExReplace(result, (e ~= "[([]") ? ((e ~= "[.?()[\]]") ? "\" e : e) Baidu_IsChineseAfter : Baidu_IsChineseBefore ((e ~= "[.?()[\]]") ? "\" e : e), c)
             QPNumP := 1, QPNum := 1
             loop parse, result
             {
-                if (A_LoopField = """" and (SubStr(result, A_Index - 1, 1) ~= IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= IsChinese or A_Index = StrLen(result)))
+                if (A_LoopField = """" and (SubStr(result, A_Index - 1, 1) ~= Baidu_IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= Baidu_IsChinese or A_Index = StrLen(result)))
                     PTR .= Mod(QPNumP ++, 2) ? "“" : "”"
-                else if (A_LoopField = "'" and (SubStr(result, A_Index - 1, 1) ~= IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= IsChinese or A_Index = StrLen(result)))
+                else if (A_LoopField = "'" and (SubStr(result, A_Index - 1, 1) ~= Baidu_IsChinese or A_Index = 1) and (SubStr(result, A_Index + 1, 1) ~= Baidu_IsChinese or A_Index = StrLen(result)))
                     PTR .= Mod(QPNum ++, 2) ? "‘" : "’"
                 else
                     PTR .= A_LoopField
@@ -178,11 +178,11 @@
         else if (puncstyle = 2)
             result := this.resultspacetemp ? this.resultspacetemp : this.resulttemp
         else if (puncstyle = 3) {
-            for EP, CP in E2CPuncs
+            for EP, CP in Baidu_E2CPuncs
                 result := StrReplace(result, EP, CP)
         }
         else if (puncstyle = 4) {
-            for CP, EP in C2EPuncs
+            for CP, EP in Baidu_C2EPuncs
                 result := StrReplace(result, CP, EP)
         }
 
@@ -201,7 +201,7 @@
         result := this.result
 
         if (spacestyle = 1) {
-            for c, e in C2EPuncs
+            for c, e in Baidu_C2EPuncs
                 result := RegExReplace(result, " ?(" c ") ?", "$1")
             result := RegExReplace(result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?=[\x{4e00}-\x{9fa5}a-zA-Z])", " $1 ")
             result := RegExReplace(result, "(?:[\x{4e00}-\x{9fa5}a-zA-Z])\K ?(\d[\d.:]*) ?(?![\x{4e00}-\x{9fa5}a-zA-Z])", " $1")
@@ -260,7 +260,7 @@
                 Run D:/Program Files/Everything/Everything.exe -home
         }
         else {
-            Run % Baidu_SEnginesP[searchengine] result
+            Run % Baidu_SearchEngines[searchengine] result
             if (searchengine = 4)
                 MsgBox 4144, 警告, 请勿在镜像站输入隐私信息！
         }
