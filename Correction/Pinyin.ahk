@@ -1,3 +1,13 @@
+IsChineseMode() {
+    DetectHiddenWindows On
+    WinGet winid, ID, A
+    wintitle := "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", winid, "Uint")
+    SendMessage 0x283, 0x001, 0, , %wintitle%
+    DetectHiddenWindows Off
+    return ErrorLevel = 1025
+}
+
+#If IsChineseMode()
 #Hotstring c r * ?
 ; ui <-> iu
 ::mui::miu
