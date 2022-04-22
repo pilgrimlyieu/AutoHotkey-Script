@@ -155,7 +155,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
   - Confidence
     - Bar
 
-[1.2.1]: 
+[1.2.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/b11d711...868ebb3
 [1.2.0 First Released Version]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/6fad68c...b11d711
 [1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/df92b84...6fad68c
 [1.1.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/980eebe...df92b84
