@@ -85,7 +85,9 @@ BaiduOCR:
                          , "puncstyle": Baidu_PuncStyle
                          , "spacestyle": Baidu_SpaceStyle
                          , "trantype": Baidu_TranType
-                         , "searchengine": Baidu_SearchEngine})
+                         , "searchengine": Baidu_SearchEngine
+                         , "everything": Advance_EverythingOnOff
+                         , "everythingpath": Advance_EverythingPath})
     BaiduOCR.Show()
 return
 
@@ -109,6 +111,9 @@ return
 Create_Config:
     IniWrite 1, %ConfigFile%, Basic, Basic_BaiduOCROnOff
     IniWrite 1, %ConfigFile%, Basic, Basic_MathpixOCROnOff
+    IniWrite 0, %ConfigFile%, Basic, Basic_AutoReloadOnOff
+    IniWrite 10, %ConfigFile%, Basic, Basic_SnipTime
+    IniWrite 500, %ConfigFile%, Basic, Basic_WaitSnipTime
 
     IniWrite 75, %ConfigFile%, Advance, Advance_EBto64SQuality
     IniWrite 0, %ConfigFile%, Advance, Advance_ThirdPartyScreenshotOnOff
@@ -141,12 +146,12 @@ Setting:
     if !FileExist(ConfigFile)
         Gosub Create_Config
 
-    Gui st:New, , 设置
-    Gui st:Default
-    Gui st:+AlwaysOnTop +HwndstHwnd
-    Gui st:Margin, 10, 10
-    Gui st:Font, s12, Microsoft YaHei
-    Gui st:Color, EBEDF4
+    Gui New, +hwndSettingHwnd, 设置
+    Gui Default
+    Gui +AlwaysOnTop +HwndstHwnd
+    Gui Margin, 10, 10
+    Gui Font, s12, Microsoft YaHei
+    Gui Color, EBEDF4
     Gui Add, Tab3, Choose1, Basic|Advance|BaiduOCR|MathpixOCR
 
     Gui Tab, Basic
@@ -154,19 +159,32 @@ Setting:
     Gui Add, CheckBox, x32 y80 w90 vBasic_BaiduOCROnOff gGETV Checked%Basic_BaiduOCROnOff% +Right, Baidu
     Gui Add, CheckBox, x32 y+15 w90 vBasic_MathpixOCROnOff gGETV Checked%Basic_MathpixOCROnOff% +Right, Mathpix
 
+    Gui Add, GroupBox, x20 y160 w310 h120, 截图
+    Gui Add, Text, x15 y190 w80 h25 +Right, 截图时间
+    Gui Add, Edit, x+15 w80 vBasic_SnipTime gGETV Number
+    Gui Add, UpDown, Range5-60, %Basic_SnipTime%
+    Gui Add, Text, x200 y190 w20 h25 +Left, 秒
+    Gui Add, Text, x15 y+15 w80 h25 +Right, 缓冲时间
+    Gui Add, Edit, x+15 w80 vBasic_WaitSnipTime gGETV Number
+    Gui Add, UpDown, Range100-5000 0x80, %Basic_WaitSnipTime%
+    Gui Add, Text, x200 y230 w40 h25 +Left, 毫秒
+
+    Gui Add, GroupBox, x20 y290 w310 h80, 设置
+    Gui Add, CheckBox, x32 y320 w90 vBasic_AutoReloadOnOff gGETV Checked%Basic_AutoReloadOnOff% +Right, 自动重启
+
     Gui Tab, Advance
     Gui Add, GroupBox, x20 y50 w310 h80, 高级设置
     Gui Add, Text, x15 y80 w90 h25 +Right, 编码精度
-    Gui Add, Edit, x+15 w60 vAdvance_EBto64SQuality gGETV
+    Gui Add, Edit, x+15 w60 vAdvance_EBto64SQuality gGETV Number
     Gui Add, UpDown, Range0-100, %Advance_EBto64SQuality%
 
     Gui Add, GroupBox, x20 y140 w310 h110, 外部截图软件支持
-    Gui Add, CheckBox, x32 y170 w90 vAdvance_ThirdPartyScreenshotOnOff gGETV Check3 Checked%Advance_ThirdPartyScreenshotOnOff% +Right, 启用
+    Gui Add, CheckBox, x32 y170 w90 vAdvance_ThirdPartyScreenshotOnOff gGETV Checked%Advance_ThirdPartyScreenshotOnOff% +Right, 启用
     Gui Add, Text, x15 y+15 w90 h25 +Right, 路径
     Gui Add, Edit, x+15 w200 h25 vAdvance_ThirdPartyScreenshotPath gGETV, %Advance_ThirdPartyScreenshotPath%
 
     Gui Add, GroupBox, x20 y260 w310 h70, Everything
-    Gui Add, CheckBox, x32 y290 w90 vAdvance_EverythingOnOff gGETV Check3 Checked%Advance_EverythingOnOff% +Right, 启用
+    Gui Add, CheckBox, x32 y290 w90 vAdvance_EverythingOnOff gGETV Checked%Advance_EverythingOnOff% +Right, 启用
     Gui Add, Text, x15 y+15 w90 h25 +Right, 路径
     Gui Add, Edit, x+15 w200 h25 vAdvance_EverythingPath gGETV, %Advance_EverythingPath%
 
@@ -211,10 +229,12 @@ Setting:
     Gui Add, Text, x15 y+15 w90 h25 +Right, 默认选择
     Gui Add, DropDownList, x+15 w200 vMathpix_DefaultSelect gGETV AltSubmit Choose%Mathpix_DefaultSelect%, LaTeX|行内公式|行间公式
 
-    Gui st:Show, , OCRC 设置
+    Gui Show, , OCRC 设置
 return
 
 GBaidu_Hotkey:
+    if !WinActive("ahk_id " SettingHwnd)
+        return
     GuiControlGet, tVa, , % A_GuiControl
     %A_GuiControl% := tVa
     WriteIni(ConfigFile, tVa, A_GuiControl, "BaiduOCR")
@@ -226,6 +246,8 @@ GBaidu_Hotkey:
 return
 
 GMathpix_Hotkey:
+    if !WinActive("ahk_id " SettingHwnd)
+        return
     GuiControlGet, tVa, , % A_GuiControl
     %A_GuiControl% := tVa
     WriteIni(ConfigFile, tVa, A_GuiControl, "MathpixOCR")
@@ -237,10 +259,20 @@ GMathpix_Hotkey:
 return
 
 GETV:
+    if !WinActive("ahk_id " SettingHwnd)
+        return
     GuiControlGet TabVar, , SysTabControl321
     GuiControlGet, tVa, , % A_GuiControl
     %A_GuiControl% := tVa
     WriteIni(ConfigFile, tVa, A_GuiControl, TabVar)
+    if A_GuiControl in Basic_BaiduOCROnOff,Basic_MathpixOCROnOff
+    {
+        if !Basic_AutoReloadOnOff
+            MsgBox 4132, OCRC, 是否要重启以使设置生效？, 10
+            IfMsgBox No
+                Return
+        Reload
+    }
 return
 
 ReloadSub:
@@ -250,3 +282,12 @@ return
 ExitSub:
 ExitApp
 return
+
+; Debug Function
+; !a::
+; ExitApp
+; return
+
+; +a::
+; Gosub Setting
+; return

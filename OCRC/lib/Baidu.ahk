@@ -63,7 +63,12 @@
         Gui %id%:Font, s16
         Gui %id%:Add, Text, x+15, 搜索
         Gui %id%:Font, s12
-        Gui %id%:Add, DropDownList, x+5 w105 hwndsearchhwnd AltSubmit Choose%searchengine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
+        if (this.config.everything and this.config.everythingpath)
+            Gui %id%:Add, DropDownList, x+5 w105 hwndsearchhwnd AltSubmit Choose%searchengine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
+        else {
+            searchengine := (searchengine = 7) ? 1 : searchengine
+            Gui %id%:Add, DropDownList, x+5 w105 hwndsearchhwnd AltSubmit Choose%searchengine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像
+        }
         this.searchhwnd := searchhwnd
         this.Update(searchhwnd, "Search")
 
@@ -253,11 +258,11 @@
 
         if (searchengine = 7) {
             if (!(result ~= "[*?""<>|]") and result ~= "[C-G]:(?:[\\/].+)+")
-                Run D:/Program Files/Everything/Everything.exe -path "%result%"
+                Run % this.config.everythingpath " -path """ result """"
             else if result
-                Run D:/Program Files/Everything/Everything.exe -search "%result%"
+                Run % this.config.everythingpath " -search """ result """"
             else
-                Run D:/Program Files/Everything/Everything.exe -home
+                Run % this.config.everythingpath " -home """
         }
         else {
             Run % Baidu_SearchEngines[searchengine] result

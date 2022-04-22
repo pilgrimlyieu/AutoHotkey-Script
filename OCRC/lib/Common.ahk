@@ -5,7 +5,7 @@ ReadIni(_ConfigFile, _key := "", _Section := "") {
     return initmp
 }
 
-WriteIni(_ConfigFile, _value, _key, _Section := "Config") {
+WriteIni(_ConfigFile, _value, _key, _Section) {
     IniWrite %_value%, %_ConfigFile%, %_Section%, %_key%
 }
 
@@ -178,18 +178,23 @@ Gdip_CreateBitmapFromHBITMAP(hBitmap) {
 
 GetScreenshot() {
     clipboard := ""
-    Global Advance_ThirdPartyScreenshotOnOff, Advance_ThirdPartyScreenshotPath
+    Global Basic_SnipTime, Basic_WaitSnipTime, Advance_ThirdPartyScreenshotOnOff, Advance_ThirdPartyScreenshotPath
     try {
         if !Advance_ThirdPartyScreenshotOnOff
             throw
         Run % Advance_ThirdPartyScreenshotPath
+        RegExMatch(Advance_ThirdPartyScreenshotPath, "(?P<Path>[^/\\]+\.exe).*", Snip)
     }
     catch e
         Send {LWin Down}{LShift Down}s{LShift Up}{LWin Up}
-    ClipWait 10, 1
+    SnipPath := SnipPath ? SnipPath : "ScreenClippingHost.exe"
+    Sleep %Basic_WaitSnipTime%
+    WinWaitNotActive ahk_exe %SnipPath%, , % Basic_SnipTime - Basic_WaitSnipTime / 1000
     if ErrorLevel
         return
-    Sleep 500
+    ClipWait 0.001, 1
+    if ErrorLevel
+        return
     return 1
 }
 

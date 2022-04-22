@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/lang/zh-CN/).
 
+## [1.2.1] (2022-04-23)
+
+### Added
+
+- General
+  - Custom Everything path support (1.2.0)
+  - Screenshot maximum time support
+  - Screenshot buffer time support
+  - Option of auto reload after crucial change
+
+### Fixed
+
+- General
+  - [Can not start another OCR immediately after cancel previous OCR](https://github.com/pilgrimlyieu/AutoHotkey-Script/issues/10)
+  - [Switch on OCR can not create a corresponding hotkey immediately](https://github.com/pilgrimlyieu/AutoHotkey-Script/issues/11) (Still should reload to update change)
+  - [Custom Everything not support](https://github.com/pilgrimlyieu/AutoHotkey-Script/issues/13)
+  - [Unknown issue about strange behavior of opening setting](https://github.com/pilgrimlyieu/AutoHotkey-Script/issues/15)
+
 ## [1.2.0 First Released Version] (2022-04-16)
 
 ### Added
@@ -13,7 +31,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
   - EncodingBitmap-to-64String quality support
   - Local screenshot support (Default)
   - Third-party screenshot support
-  - Everything path support
+  - ~~Everything path support~~
 
 ### Changed
 
@@ -137,6 +155,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
   - Confidence
     - Bar
 
+[1.2.1]: 
 [1.2.0 First Released Version]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/6fad68c...b11d711
 [1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/df92b84...6fad68c
 [1.1.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/980eebe...df92b84
