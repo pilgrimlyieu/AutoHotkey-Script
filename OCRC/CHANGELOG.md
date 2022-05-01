@@ -4,16 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/lang/zh-CN/).
 
-[1.0.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/pull/8
-[1.1.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/3aa1fb2...53b2361
-[1.1.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/53b2361...980eebe
-[1.1.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/980eebe...df92b84
-[1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/df92b84...6fad68c
-[1.2.0 First Released Version]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/6fad68c...b11d711
-[1.2.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/b11d711...868ebb3
-[1.2.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/868ebb3...3cb6aae
+- [1.2.2 [release]](#122-releasehttpsgithubcompilgrimlyieuautohotkey-scriptreleasestagocrc-v122-2022-05-01)
+- [1.2.1 [release]](#121-releasehttpsgithubcompilgrimlyieuautohotkey-scriptreleasestagocrc-v121-2022-04-23)
+- [1.2.0 [release]](#120-first-released-version-releasehttpsgithubcompilgrimlyieuautohotkey-scriptreleasestagocrc-v120-2022-04-16)
+- [1.1.3](#113-2022-04-05)
+- [1.1.2](#112-2022-04-04)
+- [1.1.1](#111-2022-04-04)
+- [1.1.0](#110-2022-04-04)
+- [1.0.0](#100-2022-04-03)
 
-## [1.2.2] (2022-05-01)
+## [1.2.2] [[release](https://github.com/pilgrimlyieu/AutoHotkey-Script/releases/tag/OCRC-v1.2.2)] (2022-05-01)
 
 ### Changed
 
@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
 - Mathpix
   - Show TextResult only when it is different from InlineResult and it doesn't contain "\begin{xxx}" which LaTeXResult does
 
-## [1.2.1] (2022-04-23)
+## [1.2.1] [[release](https://github.com/pilgrimlyieu/AutoHotkey-Script/releases/tag/OCRC-v1.2.1)] (2022-04-23)
 
 ### Added
 
@@ -43,7 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
   - [Custom Everything not support](https://github.com/pilgrimlyieu/AutoHotkey-Script/issues/13)
   - [Unknown issue about strange behavior of opening setting](https://github.com/pilgrimlyieu/AutoHotkey-Script/issues/15)
 
-## [1.2.0 First Released Version] (2022-04-16)
+## [1.2.0 First Released Version] [[release](https://github.com/pilgrimlyieu/AutoHotkey-Script/releases/tag/OCRC-v1.2.0)] (2022-04-16)
 
 ### Added
 
@@ -175,3 +175,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
     - Click to Clip
   - Confidence
     - Bar
+
+[1.2.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/868ebb3...3cb6aae
+[1.2.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/b11d711...868ebb3
+[1.2.0 First Released Version]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/6fad68c...b11d711
+[1.1.3]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/df92b84...6fad68c
+[1.1.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/980eebe...df92b84
+[1.1.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/53b2361...980eebe
+[1.1.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/3aa1fb2...53b2361
+[1.0.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/pull/8
