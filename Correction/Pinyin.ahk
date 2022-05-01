@@ -1,3 +1,5 @@
+#NoTrayIcon
+
 IsChineseMode() {
     DetectHiddenWindows On
     WinGet winid, ID, A
