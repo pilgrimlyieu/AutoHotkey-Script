@@ -23,10 +23,10 @@
         searchengine  := this.config.searchengine
 
         this.Format()
-        this.Punc()
-        this.Space()
         if this.config.probtype
             this.Prob()
+        this.Punc()
+        this.Space()
 
         Gui %id%:New, % "+Label" this.__Class ".Gui"
         Gui %id%:+MinimizeBox
@@ -105,10 +105,10 @@
                 MsgBox 4112, % "BaiduOCR " returnjson.error, % returnjson.error_description
             else {
                 expiration += returnjson.expires_in, seconds
-                WriteIni(ConfigFile, expiration, "Baidu_TokenExpiration", "BaiduOCR")
+                IniWrite %expiration%, %ConfigFile%, BaiduOCR, Baidu_TokenExpiration
             }
             this.token := returnjson.access_token
-            WriteIni(ConfigFile, this.token, "Baidu_Token", "BaiduOCR")
+            IniWrite % this.token, %ConfigFile%, BaiduOCR, Baidu_Token
         }
     }
 

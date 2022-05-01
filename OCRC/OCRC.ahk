@@ -1,8 +1,8 @@
-﻿;@Ahk2Exe-SetMainIcon Icon\OCRC_icon.ico
+﻿;@Ahk2Exe-SetMainIcon Icon\OCRC.ico
 
 ; Optical Character Recognition Commander
 ; by PilgrimLyieu
-; v1.2.0
+; v1.2.2
 
 #Include <Common>
 #Include <JSON>
@@ -235,9 +235,9 @@ return
 GBaidu_Hotkey:
     if !WinActive("ahk_id " SettingHwnd)
         return
-    GuiControlGet, tVa, , % A_GuiControl
+    GuiControlGet, tVa, , %A_GuiControl%
     %A_GuiControl% := tVa
-    WriteIni(ConfigFile, tVa, A_GuiControl, "BaiduOCR")
+    IniWrite %tVa%, %ConfigFile%, BaiduOCR, %A_GuiControl%
     Hotkey %Baidu_HotkeyTemp%, BaiduOCR, Off
     if (Basic_BaiduOCROnOff and Baidu_Hotkey) {
         Hotkey %Baidu_Hotkey%, BaiduOCR, On
@@ -248,9 +248,9 @@ return
 GMathpix_Hotkey:
     if !WinActive("ahk_id " SettingHwnd)
         return
-    GuiControlGet, tVa, , % A_GuiControl
+    GuiControlGet, tVa, , %A_GuiControl%
     %A_GuiControl% := tVa
-    WriteIni(ConfigFile, tVa, A_GuiControl, "MathpixOCR")
+    IniWrite %tVa%, %ConfigFile%, MathpixOCR, %A_GuiControl%
     Hotkey %Mathpix_HotkeyTemp%, MathpixOCR, Off
     if (Basic_MathpixOCROnOff and Mathpix_Hotkey) {
         Hotkey %Mathpix_Hotkey%, MathpixOCR, On
@@ -262,9 +262,9 @@ GETV:
     if !WinActive("ahk_id " SettingHwnd)
         return
     GuiControlGet TabVar, , SysTabControl321
-    GuiControlGet, tVa, , % A_GuiControl
+    GuiControlGet, tVa, , %A_GuiControl%
     %A_GuiControl% := tVa
-    WriteIni(ConfigFile, tVa, A_GuiControl, TabVar)
+    IniWrite %tVa%, %ConfigFile%, %TabVar%, %A_GuiControl%
     if A_GuiControl in Basic_BaiduOCROnOff,Basic_MathpixOCROnOff
     {
         if !Basic_AutoReloadOnOff

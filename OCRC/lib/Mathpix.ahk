@@ -35,17 +35,20 @@
         Gui %id%:Color, EBEDF4
         Gui %id%:Font, s18, Microsoft YaHei
 
-        if (latex_result and result = inline_result) {
+        if (result = inline_result or latex_result ~= "\\begin\{") {
             Gui %id%:Add, Text, x10 y20 w100 +Right, LaTeX
             Gui %id%:Add, Edit, x120 yp w370 h36 vlatex_result ReadOnly -Multi -VScroll, %latex_result%
             Gui %id%:Add, Text, x10 y+20 w100 +Right, 行内公式
             Gui %id%:Add, Edit, x120 yp w370 h36 vinline_result ReadOnly -Multi -VScroll, %inline_result%
             Gui %id%:Add, Text, x10 y+20 w100 +Right, 行间公式
             Gui %id%:Add, Edit, x120 yp w370 h36 vdisplay_result ReadOnly -Multi -VScroll, %display_result%
+            this.FocusSelect("Edit" this.config.default_select)
         }
-        else {
+        if (result != inline_result and (!(latex_result ~= "\\begin\{") or result ~= "\\begin\{")) {
             Gui %id%:Add, Text, x10 y+20 w100 +Right, 文本公式
             Gui %id%:Add, Edit, x120 yp w370 h36 vresult ReadOnly -Multi -VScroll, %result%
+            if (result != inline_result and !(latex_result ~= "\\begin\{"))
+                this.FocusSelect("Edit1")
         }
 
         if (confidence <= 20)
@@ -57,11 +60,7 @@
         Gui %id%:Add, Progress, x10 y+20 w480 h30 c%progresscolor%, %confidence%
         Gui %id%:Add, Text, yp w500 +Center BackgroundTrans +0x1, %confidence%`%
 
-        if (latex_result and result = inline_result)
-            this.FocusSelect("Edit" this.config.default_select)
-        else
-            this.FocusSelect("Edit1")
-        guiheight := (latex_result and result = inline_result) ? 240 : 120
+        guiheight := (result = inline_result or latex_result ~= "\\begin\{") ? (result != inline_result and (!(latex_result ~= "\\begin\{") or result ~= "\\begin\{")) ? 295 : 240 : 120
         Gui %id%:Show, w500 h%guiheight%, % "OCRC (MathpixOCR) 识别结果"
 
         GroupAdd Mathpix, ahk_id %MRW%

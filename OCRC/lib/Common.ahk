@@ -5,10 +5,6 @@ ReadIni(_ConfigFile, _key := "", _Section := "") {
     return initmp
 }
 
-WriteIni(_ConfigFile, _value, _key, _Section) {
-    IniWrite %_value%, %_ConfigFile%, %_Section%, %_key%
-}
-
 URLDownloadToVar(url, Encoding := "", Method := "GET", postData := "", headers := "") {
     hObject := ComObjCreate("WinHttp.WinHttpRequest.5.1")
     hObject.SetTimeouts(30000, 30000, 1200000, 1200000) 
@@ -192,7 +188,7 @@ GetScreenshot() {
     WinWaitNotActive ahk_exe %SnipPath%, , % Basic_SnipTime - Basic_WaitSnipTime / 1000
     if ErrorLevel
         return
-    ClipWait 0.001, 1
+    ClipWait 0.1, 1
     if ErrorLevel
         return
     return 1
