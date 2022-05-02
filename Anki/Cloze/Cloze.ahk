@@ -1,5 +1,4 @@
-﻿#IfWinActive ahk_exe G:\Movable Computer\Movable Software\Program Files\Anki\anki.exe
-Cloze(keep := 0) {
+﻿Cloze(keep := 0) {
     Global turn
     Send {Ctrl Down}x{Ctrl Up}
     Clipboard := Trim(Clipboard)
@@ -11,7 +10,7 @@ Cloze(keep := 0) {
         turn ++
     }
     else if (InStr(Clipboard, "{{c", 1) = 1 and SubStr(Clipboard, -1, 2) = "}}" and InStr(Clipboard, "::") > 4) {
-        Clipboard := SubStr(Clipboard, InStr(Clipboard, "::") + 2, StrLen(clipboard) - 8)
+        Clipboard := SubStr(Clipboard, InStr(Clipboard, "::") + 2, StrLen(clipboard) - 8) " "
         Send {Ctrl Down}v{Ctrl Up}
     }
     else {
@@ -28,15 +27,22 @@ Cloze(keep := 0) {
 }
 turn := 1
 
-!c::
+#IfWinActive ahk_exe G:\Movable Computer\Movable Software\Program Files\Anki\anki.exe
+f2::
 Cloze()
 return
 
-^+c::
+f3::
 Cloze(1)
 return
 
-+c::
+f1::
 turn := 1
 return
+
+Enter::
+Send {Text}<br>
+Send {Enter}
+return
+
 #IfWinActive
