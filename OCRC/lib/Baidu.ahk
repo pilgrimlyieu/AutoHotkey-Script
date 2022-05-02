@@ -2,14 +2,15 @@
     __New(post := "", config := "") {
         clipboard := ""
         this.config := config
-        this.Token()
+        this.__Token()
         postdata := "image=" UrlEncode(this.config.imgbase64)
         for key, value in post
             postdata .= "&" key "=" value
         this.json := JSON.Load(URLDownloadToVar("https://aip.baidubce.com/rest/2.0/ocr/v1/" this.config.recogtype "?access_token=" this.token, "UTF-8", "POST", postdata, {"Content-Type":"application/x-www-form-urlencoded"}))
+        this.__Show()
     }
 
-    Show() {
+    __Show() {
         if this.json.error_msg {
             MsgBox 4112, BaiduOCR ERROR, % this.json.error_msg
             return
@@ -22,11 +23,11 @@
         trantype  := this.config.trantype
         searchengine  := this.config.searchengine
 
-        this.Format()
+        this.__Format()
         if this.config.probtype
-            this.Prob()
-        this.Punc()
-        this.Space()
+            this.__Prob()
+        this.__Punc()
+        this.__Space()
 
         Gui %id%:New, % "+Label" this.__Class ".Gui"
         Gui %id%:+MinimizeBox
@@ -35,30 +36,30 @@
 
         Gui %id%:Add, Text, x20, 排版
         Gui %id%:Font, s12
-        Gui %id%:Add, DropDownList, x+5 w90 hwndformathwnd gFormat AltSubmit Choose%formatstyle%, 智能段落|合并多行|拆分多行
+        Gui %id%:Add, DropDownList, x+5 w90 hwndformathwnd AltSubmit Choose%formatstyle%, 智能段落|合并多行|拆分多行
         this.formathwnd := formathwnd
-        this.Update(formathwnd, "Format")
+        this.__Update(formathwnd, "__Format")
 
         Gui %id%:Font, s16
         Gui %id%:Add, Text, x+15, 标点
         Gui %id%:Font, s12
         Gui %id%:Add, DropDownList, x+5 w90 hwndpunchwnd AltSubmit Choose%puncstyle%, 智能标点|原始结果|中文标点|英文标点
         this.punchwnd := punchwnd
-        this.Update(punchwnd, "Punc")
+        this.__Update(punchwnd, "__Punc")
 
         Gui %id%:Font, s16
         Gui %id%:Add, Text, x+15, 空格
         Gui %id%:Font, s12
         Gui %id%:Add, DropDownList, x+5 w90 hwndspacehwnd AltSubmit Choose%spacestyle%, 智能空格|原始结果|去除空格
         this.spacehwnd := spacehwnd
-        this.Update(spacehwnd, "Space")
+        this.__Update(spacehwnd, "__Space")
 
         Gui %id%:Font, s16
         Gui %id%:Add, Text, x+15, 翻译
         Gui %id%:Font, s12
         Gui %id%:Add, DropDownList, x+5 w90 hwndtranhwnd AltSubmit Choose%trantype%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
         this.tranhwnd := tranhwnd
-        this.Update(tranhwnd, "Tran")
+        this.__Update(tranhwnd, "__Tran")
 
         Gui %id%:Font, s16
         Gui %id%:Add, Text, x+15, 搜索
@@ -70,12 +71,12 @@
             Gui %id%:Add, DropDownList, x+5 w105 hwndsearchhwnd AltSubmit Choose%searchengine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像
         }
         this.searchhwnd := searchhwnd
-        this.Update(searchhwnd, "Search")
+        this.__Update(searchhwnd, "__Search")
 
         Gui %id%:Font, s18
         Gui %id%:Add, Edit, x20 y50 w760 h400 hwndmainhwnd, % this.result
         this.mainhwnd := mainhwnd
-        this.Update(mainhwnd, "Clip")
+        this.__Update(mainhwnd, "__Clip")
 
         if this.config.probtype {
             if (this.probability <= 60)
@@ -91,15 +92,15 @@
         Gui %id%:Show, w800 h%guiheight%, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[this.config.recogtype] "」识别结果"
     }
 
-    Update(hwnd, func) {
+    __Update(hwnd, func) {
         bindfunc := ObjBindMethod(this, func)
         GuiControl +g, %hwnd%, %bindfunc%
     }
 
-    Token() {
-        if (this.config.token and A_Now < this.config.token_expiration)
-            this.token := this.config.token
-        else {
+    __Token() {
+        this.token := ReadIni(ConfigFile, "Baidu_Token", "BaiduOCR")
+        this.token_expiration := ReadIni(ConfigFile, "Baidu_TokenExpiration", "BaiduOCR")
+        if !(this.token and A_Now < this.token_expiration) {
             returnjson := JSON.Load(URLDownloadToVar("https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" this.config.api_key "&client_secret=" this.config.secret_key))
             if returnjson.error
                 MsgBox 4112, % "BaiduOCR " returnjson.error, % returnjson.error_description
@@ -112,7 +113,7 @@
         }
     }
 
-    Prob() {
+    __Prob() {
         if (this.config.probtype = 1) {
             for index, value in this.json.words_result
                 probadd += value.probability.average * StrLen(value.words)
@@ -125,7 +126,7 @@
         }
     }
 
-    Format(hwnd := "") {
+    __Format(hwnd := "") {
         if hwnd
             GuiControlGet formatstyle, , %hwnd%
         else
@@ -153,10 +154,10 @@
         this.resulttemp := result
         if hwnd
             GuiControl Text, % this.mainhwnd, % result
-        this.Clip()
+        this.__Clip()
     }
 
-    Punc(hwnd := "") {
+    __Punc(hwnd := "") {
         if hwnd
             GuiControlGet puncstyle, , %hwnd%
         else
@@ -195,10 +196,10 @@
         this.result := result
         if hwnd
             GuiControl Text, % this.mainhwnd, % result
-        this.Clip()
+        this.__Clip()
     }
 
-    Space(hwnd := "") {
+    __Space(hwnd := "") {
         if hwnd
             GuiControlGet spacestyle, , %hwnd%
         else
@@ -243,13 +244,13 @@
         this.result := result
         if hwnd
             GuiControl Text, % this.mainhwnd, % result
-        this.Clip()
+        this.__Clip()
     }
 
-    Translate(hwnd := "") {
+    __Tran(hwnd := "") {
     }
 
-    Search(hwnd := "") {
+    __Search(hwnd := "") {
         if hwnd
             GuiControlGet searchengine, , %hwnd%
         else
@@ -271,7 +272,7 @@
         }
     }
 
-    Clip(hwnd := "") {
+    __Clip(hwnd := "") {
         clipboard := ""
         if hwnd {
             GuiControlGet result, , %hwnd%

@@ -20,7 +20,7 @@ Global Baidu_IsEnglishBefore := "([\w\d]\s?)\K"
 Global Baidu_IsEnglishAfter := "(?=\s?[\w\d])"
 Global Baidu_C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
 Global Baidu_E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
-Global Baidu_SearchEngines := ["https://www.baidu.com/s?wd=", "https://cn.bing.com/search?q=", "https://www.google.com/search?q=", "https://google.pem.app/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
+Global Baidu_SearchEngines := ["https://www.baidu.com/s?wd=", "https://cn.bing.com/search?q=", "https://www.google.com/search?q=", "https://search.aust.cf/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
 
 Global Mathpix_InlineStyles := [["$", "$"], ["\(", "\)"]]
 Global Mathpix_DisplayStyles := [["$$", "$$"], ["\[", "\]"]]
@@ -76,8 +76,6 @@ BaiduOCR:
                          , "probability": Baidu_ProbType ? "true" : "false"}
                          ,{"api_key": Baidu_APIKey
                          , "secret_key": Baidu_SecretKey
-                         , "token": Baidu_Token
-                         , "token_expiration": Baidu_TokenExpiration
                          , "imgbase64": base64string
                          , "recogtype": Baidu_RecogTypes[Baidu_RecogType]
                          , "probtype": Baidu_ProbType
@@ -88,7 +86,6 @@ BaiduOCR:
                          , "searchengine": Baidu_SearchEngine
                          , "everything": Advance_EverythingOnOff
                          , "everythingpath": Advance_EverythingPath})
-    BaiduOCR.Show()
 return
 
 MathpixOCR:
@@ -105,7 +102,6 @@ MathpixOCR:
                              , "app_key": Mathpix_AppKey
                              , "imgbase64": base64string
                              , "default_select": Mathpix_DefaultSelect})
-    MathpixOCR.Show()
 return
 
 Create_Config:

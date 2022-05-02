@@ -9,13 +9,14 @@
                   , "formats": ["text", "latex_styled"]}
         for key, value in post
             postdata[key] := value
-        this.UpdateClip := ObjBindMethod(this, "WM_LBUTTONDOWN")
+        this.UpdateClip := ObjBindMethod(this, "__Clip")
         this.post := post
         this.config := config
         this.json := Json.Load(URLDownloadToVar("https://api.mathpix.com/v3/text", "UTF-8", "POST", JSON.Dump(postdata), headers))
+        this.__Show()
     }
 
-    Show() {
+    __Show() {
         static latex_result, inline_result, display_result, result
 
         if this.json.error {
@@ -42,13 +43,13 @@
             Gui %id%:Add, Edit, x120 yp w370 h36 vinline_result ReadOnly -Multi -VScroll, %inline_result%
             Gui %id%:Add, Text, x10 y+20 w100 +Right, 行间公式
             Gui %id%:Add, Edit, x120 yp w370 h36 vdisplay_result ReadOnly -Multi -VScroll, %display_result%
-            this.FocusSelect("Edit" this.config.default_select)
+            this.__FocusSelect("Edit" this.config.default_select)
         }
         if (result != inline_result and (!(latex_result ~= "\\begin\{") or result ~= "\\begin\{")) {
             Gui %id%:Add, Text, x10 y+20 w100 +Right, 文本公式
             Gui %id%:Add, Edit, x120 yp w370 h36 vresult ReadOnly -Multi -VScroll, %result%
             if (result != inline_result and !(latex_result ~= "\\begin\{"))
-                this.FocusSelect("Edit1")
+                this.__FocusSelect("Edit1")
         }
 
         if (confidence <= 20)
@@ -67,14 +68,14 @@
         OnMessage(0x201, this.UpdateClip)
     }
 
-    FocusSelect(control) {
+    __FocusSelect(control) {
         GuiControlGet hwndvar, Hwnd, %control%
         GuiControlGet clipvar, , %control%
         ControlFocus , , ahk_id %hwndvar%
         clipboard := clipvar
     }
 
-    WM_LBUTTONDOWN(wParam, lParam, msg, hwnd) {
+    __Clip(wParam, lParam, msg, hwnd) {
         if !WinExist("ahk_group Mathpix") {
             OnMessage(0x201, this.UpdateClip, 0)
             return
