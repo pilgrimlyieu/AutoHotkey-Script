@@ -18,7 +18,7 @@ Cloze(keep := 0) {
     Clipboard := ""
     (!keep or !turn) ? turn ++
     if (Text = "") {
-        SendInput {Text}{{c%turn%::}} `
+        SendInput % "{Text}{{c" turn "::}} "
         SendInput {Left 3}
     }
     else if (SubStr(Text, 1, 3) = "{{c" and SubStr(Text, -1, 2) = "}}" and InStr(Text, "::") > 4) {

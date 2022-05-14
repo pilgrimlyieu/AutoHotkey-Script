@@ -43,16 +43,14 @@ URLDownloadToVar(url, Encoding := "", Method := "GET", postData := "", headers :
 }
 
 StrPutVar(sVar, ByRef sbin, encoding) {
-    VarSetCapacity(sbin, StrPut(sVar, encoding) * ((encoding = "utf-16" || encoding = "cp1200")  ? 2 : 1))
-    return (StrPut(sVar, &sbin, encoding) -1) * ((encoding = "utf-16" || encoding = "cp1200")  ? 2 : 1)
+    VarSetCapacity(sbin, StrPut(sVar, encoding))
+    return (StrPut(sVar, &sbin, encoding) -1)
 }
 
-UrlEncode(string, encoding := "utf-8") {
-    bt := StrPutVar(string, sb, encoding)
+UrlEncode(string) {
+    bt := StrPutVar(string, sb, "utf-8")
     loop % bt {
         hex := format("{1:02x}", hex2 := NumGet(&sb, A_index - 1, "Uchar"))
-
-        if hex2
         if (hex2 == 33 || (hex2 >= 39 && hex2 <= 42) || hex2 == 45 || hex2 == 46 || (hex2 >= 48 && hex2 <= 57) || (hex2 >= 65 && hex2 <= 90) || hex2 == 95 || (hex2 >= 97 && hex2 <= 122) || hex2 == 126)
             content .= Chr(hex2)
         else
@@ -179,7 +177,7 @@ GetScreenshot() {
         if !Advance_ThirdPartyScreenshotOnOff
             throw
         Run % Advance_ThirdPartyScreenshotPath
-        RegExMatch(Advance_ThirdPartyScreenshotPath, "(?P<Path>[^/\\]+\.exe).*", Snip)
+        RegExMatch(Advance_ThirdPartyScreenshotPath, "(?P<Path>[^/\\]+\.(?:exe|EXE)).*", Snip)
     }
     catch e
         Send {LWin Down}{LShift Down}s{LShift Up}{LWin Up}
