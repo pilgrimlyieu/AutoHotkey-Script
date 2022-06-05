@@ -32,7 +32,7 @@ Put() {
         Board.Definition := ""
     }
     else {
-        SendInput % "{Text}《" Board.Prefix "》：" StrReplace(Board.Sentence, Temp, "<b>" Temp "</b>")
+        SendInput % "{Text}《" Board.Prefix "》：" Board.Sentence
         Temp := ""
     }
 }

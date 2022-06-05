@@ -27,7 +27,7 @@ Hint(WarnMinute) {
     }
 }
 
-SDTime := A_Year A_MM A_DD 232000
+SDTime := A_Year A_MM A_DD 230000
 WarnMinutes := [5, 3, 1, 0]
 ExtendLevel := 1
 ExtendMinute := 5

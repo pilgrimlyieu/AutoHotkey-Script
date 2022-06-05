@@ -1,4 +1,4 @@
 ﻿#NoTrayIcon
 
 #IfWinActive ahk_class Vim
-CapsLock::SendInput {Alt Down}v{Alt Up}
+CapsLock::SendInput {Alt Down}t{Alt Up}
