@@ -13,9 +13,11 @@
 ;;;;;;; CapsLock       输入 <br> 并换行   Send <br> and break new line
 
 Cloze(keep := 0) {
+    clip := Clipboard
     SendInput {Ctrl Down}x{Ctrl Up}
+    ClipWait 0
     Text := Trim(Clipboard, " `t`r`n")
-    Clipboard := ""
+    Clipboard := clip
     (!keep or !turn) ? turn ++
     if (Text = "") {
         SendInput % "{Text}{{c" turn "::}} "
