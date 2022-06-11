@@ -34,7 +34,7 @@ Cloze(keep := 0) {
 
 Global turn := 0
 
-; #IfWinActive ahk_exe anki.exe
+#IfWinActive ahk_exe anki.exe
 f1::turn := 0
 f2::Cloze(1)
 f3::Cloze()
