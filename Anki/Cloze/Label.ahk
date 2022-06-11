@@ -7,7 +7,7 @@ Insert_Label(text, start_label, end_label) {
 }
 
 Delete_Label(text, start_label, end_label) {
-    return SubStr(text, StrLen(start_label) + 1, StrLen(text) - StrLen(end_label) - StrLen(start_label))
+    return SubStr(text, StrLen(start_label) + 1, - StrLen(end_label))
 }
 
 Label(label) {
