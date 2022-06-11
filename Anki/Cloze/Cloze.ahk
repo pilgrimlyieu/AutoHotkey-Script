@@ -14,17 +14,18 @@
 
 Cloze(keep := 0) {
     clip := Clipboard
+    Clipboard := ""
     SendInput {Ctrl Down}x{Ctrl Up}
     ClipWait 0
     Text := Trim(Clipboard, " `t`r`n")
     Clipboard := clip
-    (!keep or !turn) ? turn ++
+    (!(keep and turn)) ? turn ++
     if (Text = "") {
         SendInput % "{Text}{{c" turn "::}} "
         SendInput {Left 3}
     }
     else if (SubStr(Text, 1, 3) = "{{c" and SubStr(Text, -1, 2) = "}}" and InStr(Text, "::") > 4) {
-        (!keep or !turn) ? turn --
+        (!(keep and turn)) ? turn --
         SendInput % "{Text}" SubStr(Text, InStr(Text, "::") + 2, StrLen(Text) - 8) " "
     }
     else
@@ -33,7 +34,7 @@ Cloze(keep := 0) {
 
 Global turn := 0
 
-#IfWinActive ahk_exe anki.exe
+; #IfWinActive ahk_exe anki.exe
 f1::turn := 0
 f2::Cloze(1)
 f3::Cloze()

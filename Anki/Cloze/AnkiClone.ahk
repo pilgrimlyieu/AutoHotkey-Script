@@ -9,7 +9,7 @@ class AnkiCloze {
             SendInput {Ctrl Down}x{Ctrl Up}
         else
             SendInput {Ctrl Down}c{Ctrl Up}
-        ClipWait 0.5
+        ClipWait 0
         this.text := Clipboard
     }
 

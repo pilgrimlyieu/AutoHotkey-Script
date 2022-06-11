@@ -20,7 +20,7 @@
 Get() {
     Clipboard := ""
     SendInput {Ctrl Down}c{Ctrl Up}
-    ClipWait 0.5
+    ClipWait 0
     return Clipboard
 }
 Clip(Text) {

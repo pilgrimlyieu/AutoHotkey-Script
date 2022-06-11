@@ -186,7 +186,7 @@ GetScreenshot() {
     WinWaitNotActive ahk_exe %SnipPath%, , % Basic_SnipTime - Basic_WaitSnipTime / 1000
     if ErrorLevel
         return
-    ClipWait 0.5, 1
+    ClipWait 0, 1
     if ErrorLevel
         return
     return 1
