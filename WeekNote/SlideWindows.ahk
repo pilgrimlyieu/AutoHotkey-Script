@@ -9,7 +9,6 @@ IndexOf(item, list) {
     for index, value in list
         if (value = item)
             return index
-    return 0
 }
 
 Global windows := []

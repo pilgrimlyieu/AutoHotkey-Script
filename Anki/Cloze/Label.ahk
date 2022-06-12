@@ -10,14 +10,20 @@ Delete_Label(text, start_label, end_label) {
     return SubStr(text, StrLen(start_label) + 1, - StrLen(end_label))
 }
 
-Label(label) {
+Label(label, html = 1) {
     clip := Clipboard
     Clipboard := ""
     SendInput {Ctrl Down}x{Ctrl Up}
     ClipWait 0
     text := Trim(Clipboard, " `t`r`n")
-    start_label := "<" label ">"
-    end_label := "</" label ">"
+    if html {
+        start_label := "<" label ">"
+        end_label := "</" label ">"
+    }
+    else {
+        start_label := label
+        end_label := label
+    }
     Clipboard := clip
     if (text = "") {
         SendInput % "{Text}" start_label end_label
@@ -32,4 +38,8 @@ Label(label) {
         SendInput % "{Text}" Insert_Label(text, start_label, end_label)
 }
 
-!a::Label("nhl")
+^b::Label("**", 0)
+!b::Label("b")
+^s::Label("*", 0)
+!s::Label("i")
+^w::Label("u")

@@ -6,6 +6,6 @@ Global browser := "", note := ""
 win := WinActive("A")
 if (win = note)
     WinActivate ahk_id %browser%
-else if (win = browser)
+else
     WinActivate ahk_id %note%
 return
