@@ -86,35 +86,35 @@ colorscheme onedark
 " Key Mappings {{{1
 let g:mapleader = ","
 
-noremap <Up> <Nop>
-noremap <Down> <Nop>
-noremap <Left> <Nop>
-noremap <Right> <Nop>
-inoremap <Up> <Nop>
-inoremap <Down> <Nop>
-inoremap <Left> <Nop>
-inoremap <Right> <Nop>
-nnoremap <Esc> <Nop>
-inoremap <Esc> <Nop>
-inoremap jk <Esc>
-inoremap kj <Esc>
-nmap H 0
-nnoremap L $
-nnoremap U <C-r>
-nnoremap ; :
-nnoremap : ;
-nnoremap k gk
-nnoremap gk k
-nnoremap j gj
-nnoremap gj j
-inoremap <silent><C-q> <C-o>:x<Cr>
-inoremap <silent><C-S-q> <C-o>:q!<Cr>
-nnoremap <silent><C-q> :x<Cr>
-nnoremap <silent><C-S-q> :q!<Cr>
-nnoremap <expr>0 col('.') == 1 ? '^': '0'
-noremap <silent><leader>/ :noh<Cr>
-noremap <ScrollWheelUp> <nop>
-noremap <ScrollWheelDown> <nop>
+noremap  <Up>              <Nop>
+noremap  <Down>            <Nop>
+noremap  <Left>            <Nop>
+noremap  <Right>           <Nop>
+inoremap <Up>              <Nop>
+inoremap <Down>            <Nop>
+inoremap <Left>            <Nop>
+inoremap <Right>           <Nop>
+nnoremap <Esc>             <Nop>
+inoremap <Esc>             <Nop>
+inoremap jk                <Esc>
+inoremap kj                <Esc>
+nmap     H                 0
+nnoremap L                 $
+nnoremap U                 <C-r>
+nnoremap ;                 :
+nnoremap :                 ;
+nnoremap k                 gk
+nnoremap gk                k
+nnoremap j                 gj
+nnoremap gj                j
+inoremap <silent><C-q>     <C-o>:x<Cr>
+inoremap <silent><C-S-q>   <C-o>:q!<Cr>
+nnoremap <silent><C-q>     :x<Cr>
+nnoremap <silent><C-S-q>   :q!<Cr>
+nnoremap <expr>0           col('.') == 1 ? '^': '0'
+noremap  <silent><leader>/ :noh<Cr>
+noremap  <ScrollWheelUp>   <nop>
+noremap  <ScrollWheelDown> <nop>
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -132,16 +132,16 @@ noremap <ScrollWheelDown> <nop>
 " Markdown {{{1
 setlocal spell spelllang=en_us,cjk
 
-inoremap <silent><C-n> <C-g>u<Esc>[s1z=`'a<C-g>u
-inoremap <silent><C-w> <C-o>:CocCommand markdown-preview-enhanced.openPreview<Cr>
-nnoremap <silent><C-w> :CocCommand markdown-preview-enhanced.openPreview<Cr>
-inoremap <silent><C-x> <Cr><Cr><hr class="section"><Cr><Cr>
+inoremap <silent><C-n>             <C-g>u<Esc>[s1z=`'a<C-g>u
+inoremap <silent><C-w>             <C-o>:CocCommand markdown-preview-enhanced.openPreview<Cr>
+nnoremap <silent><C-w>             :CocCommand markdown-preview-enhanced.openPreview<Cr>
+inoremap <silent><C-x>             <Cr><Cr><hr class="section"><Cr><Cr>
 inoremap <buffer><silent><leader>p <C-o>:call mdip#MarkdownClipboardImage()<CR>
 
-let b:coc_pairs_disabled = ["'"]
-let g:mdip_imgdir = 'images'
-let g:mdip_imgname = ''
-let g:tex_conceal = ''
+let b:coc_pairs_disabled            = ["'"]
+let g:mdip_imgdir                   = 'images'
+let g:mdip_imgname                  = ''
+let g:tex_conceal                   = ''
 let g:vimtex_syntax_conceal_disable = 1
 " }}}1
 
@@ -158,12 +158,12 @@ let g:vimtex_syntax_conceal_disable = 1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " UltiSnips {{{1
-let g:UltiSnipsExpandTrigger = 'ô'
-let g:UltiSnipsListSnippets = '<C-Tab>'
-let g:UltiSnipsJumpForwardTrigger = '<Tab>'
+let g:UltiSnipsExpandTrigger       = 'ô'
+let g:UltiSnipsListSnippets        = '<C-Tab>'
+let g:UltiSnipsJumpForwardTrigger  = '<Tab>'
 let g:UltiSnipsJumpBackwardTrigger = '<S-Tab>'
-let g:UltiSnipsEditSplit = "vertical"
-let g:UltiSnipsSnippetDirectories = ['Snips']
+let g:UltiSnipsEditSplit           = "vertical"
+let g:UltiSnipsSnippetDirectories  = ['Snips']
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -181,25 +181,25 @@ let g:UltiSnipsSnippetDirectories = ['Snips']
 " Easy Motion {{{1
 let g:EasyMotion_enter_jump_first = 1
 
-nnoremap <leader>j <Plug>(easymotion-j)
-nnoremap <leader>k <Plug>(easymotion-k)
-nnoremap <leader>h <Plug>(easymotion-linebackward)
-nnoremap <leader>l <Plug>(easymotion-lineforward)
-nnoremap <leader>. <Plug>(easymotion-repeat)
-nnoremap <leader>f <Plug>(easymotion-f)
-nnoremap <leader>F <Plug>(easymotion-F)
-nnoremap <leader>t <Plug>(easymotion-t)
-nnoremap <leader>T <Plug>(easymotion-T)
+nnoremap <leader>j         <Plug>(easymotion-j)
+nnoremap <leader>k         <Plug>(easymotion-k)
+nnoremap <leader>h         <Plug>(easymotion-linebackward)
+nnoremap <leader>l         <Plug>(easymotion-lineforward)
+nnoremap <leader>.         <Plug>(easymotion-repeat)
+nnoremap <leader>f         <Plug>(easymotion-f)
+nnoremap <leader>F         <Plug>(easymotion-F)
+nnoremap <leader>t         <Plug>(easymotion-t)
+nnoremap <leader>T         <Plug>(easymotion-T)
 nnoremap <leader><leader>f <Plug>(easymotion-f2)
 nnoremap <leader><leader>F <Plug>(easymotion-F2)
 nnoremap <leader><leader>t <Plug>(easymotion-t2)
 nnoremap <leader><leader>T <Plug>(easymotion-T2)
-nnoremap <leader>s <Plug>(easymotion-s)
-nnoremap <leader>S <Plug>(easymotion-s2)
-nnoremap / <Plug>(easymotion-sn)
-onoremap / <Plug>(easymotion-tn)
-nnoremap n <Plug>(easymotion-next)
-nnoremap N <Plug>(easymotion-prev)
+nnoremap <leader>s         <Plug>(easymotion-s)
+nnoremap <leader>S         <Plug>(easymotion-s2)
+nnoremap /                 <Plug>(easymotion-sn)
+onoremap /                 <Plug>(easymotion-tn)
+nnoremap n                 <Plug>(easymotion-next)
+nnoremap N                 <Plug>(easymotion-prev)
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -215,12 +215,12 @@ nnoremap N <Plug>(easymotion-prev)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " vim-visual-multi {{{1
-let g:VM_maps = {}
-let g:VM_maps["Exit"] = '<C-c>'
+let g:VM_maps                    = {}
+let g:VM_maps["Exit"]            = '<C-c>'
 let g:VM_maps["Add Cursor Down"] = '<A-s>'
-let g:VM_maps["Add Cursor Up"] = '<A-w>'
-let g:VM_maps["Select l"] = '<A-d>'
-let g:VM_maps["Select h"] = '<A-a>'
+let g:VM_maps["Add Cursor Up"]   = '<A-w>'
+let g:VM_maps["Select l"]        = '<A-d>'
+let g:VM_maps["Select h"]        = '<A-a>'
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

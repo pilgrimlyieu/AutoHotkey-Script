@@ -59,9 +59,8 @@
         Run % "gvim.exe " this.TempDir this.TempFileName order " -u " this.Vimrc, % this.VimDir, , process_id
         this.process_id := process_id
         Process Priority, %process_id%, Realtime
-        WinWaitActive ahk_pid %process_id%, , 3
-        WinSet Style, -0xC00000, ahk_pid %process_id%
-        WinSet Style, -0x40000, ahk_pid %process_id%
+        WinWait ahk_pid %process_id%, , 1
+        WinSet Style, -0xC40000, ahk_pid %process_id%
         win_xpos := xcursor
         win_ypos := ycursor - this.PopSizes[2] - 20
         WinMove ahk_pid %process_id%, , % (win_xpos > 0) ? ((win_xpos > A_ScreenWidth  - this.PopSizes[1]) ? A_ScreenWidth  - this.PopSizes[1] : win_xpos) : 0, % (win_ypos > 0) ? ((win_ypos > A_ScreenHeight - this.PopSizes[2]) ? A_ScreenHeight - this.PopSizes[2] : win_ypos) : 0, % this.PopSizes[1], % this.PopSizes[2]
@@ -122,6 +121,7 @@ VimAnki := new Vanki(Settings)
 ^r::VimAnki.Close(-1)
 
 #IfWinNotActive ahk_class Vim
+
 ^q::VimAnki.Open()
 ^t::VimAnki.Combine()
 ^y::VimAnki.Clear()

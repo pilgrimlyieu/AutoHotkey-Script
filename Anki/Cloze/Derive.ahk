@@ -23,12 +23,14 @@ Get() {
     ClipWait 0
     return Clipboard
 }
+
 Clip(Text) {
     Text := RegexRePlace(Trim(Text, " `t`r`n"), "(n|v|adj|adv|prep|conj|vt|vi)\.\s?", "$1. ")
     for e, c in {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
         Text := RegexReplace(Text, (e ~= "[([]") ? ((e ~= "[.?()[\]]" ? "\" e : e) "(?=\s?[\x{4e00}-\x{9fa5}])") : ("(?:[\x{4e00}-\x{9fa5}]\s?)\K" (e ~= "[.?()[\]]" ? "\" e : e)), c)
     return "{Text}" Text
 }
+
 Put(clean := 1) {
     for index, value in Board {
         if (index < 3) {
@@ -66,10 +68,10 @@ MsgBox % msg
 return
 
 #IfWinActive ahk_exe anki.exe
+
 f1::SendInput % Clip(Board.RemoveAt(1))
 f2::SendInput % "{Text}{{c1::" Trim(Board.RemoveAt(1), " `t`r`n") "}} "
 f3::Put()
 f4::Put(0)
 `::SendInput {Ctrl Down}{Enter}{Ctrl Up}
 CapsLock::SendInput {Text}<br>`n
-#IfWinActive

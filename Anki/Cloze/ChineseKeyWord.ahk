@@ -51,6 +51,7 @@ MsgBox % msg
 return
 
 #IfWinActive ahk_exe anki.exe
+
 f1::Put()
 f2::
 loop 3 {
