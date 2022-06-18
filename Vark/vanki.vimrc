@@ -141,6 +141,8 @@ inoremap <buffer><silent><leader>p <C-o>:call mdip#MarkdownClipboardImage()<CR>
 let b:coc_pairs_disabled = ["'"]
 let g:mdip_imgdir = 'images'
 let g:mdip_imgname = ''
+let g:tex_conceal = ''
+let g:vimtex_syntax_conceal_disable = 1
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

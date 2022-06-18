@@ -1,6 +1,10 @@
 #NoTrayIcon
 
+SetWinDelay -1
+Process Priority, , Realtime
+
 #IfWinNotActive ahk_class Vim
+
 !q::
 Clip := Clipboard
 Clipboard := ""
@@ -12,6 +16,7 @@ else if (Clipboard = "")
     Run gvim.exe, C:\Program Files\Vim\vim82, , process_id
 Process Priority, %process_id%, High
 WinWaitActive ahk_pid %process_id%, , 3
-WinSet Style, -0xC00000, ahk_pid %process_id%
+WinSet Style, -0x840000, ahk_pid %process_id%
+WinMaximize ahk_pid %process_id%
 Clipboard := Clip
 return
