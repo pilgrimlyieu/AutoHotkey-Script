@@ -64,7 +64,7 @@
         WinSet Style, -0x40000, ahk_pid %process_id%
         win_xpos := xcursor
         win_ypos := ycursor - this.PopSizes[2] - 20
-        WinMove ahk_pid %process_id%, , % (win_xpos > 0) ? win_xpos : 0, % (win_ypos > 0) ? win_ypos : 0, % this.PopSizes[1], % this.PopSizes[2]
+        WinMove ahk_pid %process_id%, , % (win_xpos > 0) ? ((win_xpos > 1980 - this.PopSizes[1]) ? 1980 - this.PopSizes[1] : win_xpos) : 0, % (win_ypos > 0) ? ((win_ypos > 1080 - this.PopSizes[2]) ? 1080 - this.PopSizes[2] : win_ypos) : 0, % this.PopSizes[1], % this.PopSizes[2]
         WinActivate ahk_pid %process_id%
         WinWaitNotActive ahk_pid %process_id%
         if WinExist("ahk_pid " process_id)
@@ -111,7 +111,7 @@ Global Settings := {"tempdir": "G:\Temp\.vanki\"
                   , "tempfilename": "Temp_"
                   , "mixfilename": "Mix.md"
                   , "combinefilename": "Combine.md"
-                  , "popsizes": [960, 240]
+                  , "popsizes": [1080, 240]
                   , "delimiter": "`r`n<hr class='section'>`r`n`r`n"}
 
 VimAnki := new Vanki(Settings)
