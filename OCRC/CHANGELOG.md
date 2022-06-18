@@ -4,9 +4,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/lang/zh-CN/).
 
-- [1.2.2 [release]](#122-releasehttpsgithubcompilgrimlyieuautohotkey-scriptreleasestagocrc-v122-2022-05-01)
-- [1.2.1 [release]](#121-releasehttpsgithubcompilgrimlyieuautohotkey-scriptreleasestagocrc-v121-2022-04-23)
-- [1.2.0 [release]](#120-first-released-version-releasehttpsgithubcompilgrimlyieuautohotkey-scriptreleasestagocrc-v120-2022-04-16)
+- [1.2.2 [release]](#122-release-2022-05-01)
+- [1.2.1 [release]](#121-release-2022-04-23)
+- [1.2.0 [release]](#120-first-released-version-release-2022-04-16)
 - [1.1.3](#113-2022-04-05)
 - [1.1.2](#112-2022-04-04)
 - [1.1.1](#111-2022-04-04)
