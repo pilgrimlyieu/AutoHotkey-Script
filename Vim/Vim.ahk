@@ -13,6 +13,5 @@ else if (Clipboard = "")
 Process Priority, %process_id%, High
 WinWaitActive ahk_pid %process_id%, , 3
 WinSet Style, -0xC00000, ahk_pid %process_id%
-WinActivate ahk_pid %process_id%
 Clipboard := Clip
 return

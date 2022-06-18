@@ -2,16 +2,17 @@
     __New(settings) {
          this.TempDir := settings.tempdir
          this.AssetDir := settings.assetdir
-         this.MixDir := settings.mixdir
+         this.HistoryDir := settings.historydir
+         this.VimDir := settings.vimdir
+         this.Vimrc := settings.vimrc
          this.TempFileName := settings.tempfilename
          this.MixFileName := settings.mixfilename
+         this.CombineFileName := settings.combinefilename
          this.PopSizes := settings.popsizes
          this.Delimiter := settings.delimiter
-
          this.order := 1
-
          FileCreateDir % this.TempDir
-         FileCreateDir % this.MixDir
+         FileCreateDir % this.HistoryDir
     }
 
     Open() {
@@ -20,14 +21,19 @@
     }
 
     Close(remain) {
-        this.remaining := (remain = 1) ? 1 : 0
-        if !WinActive("ahk_pid " this.process_id)
+        if !WinExist("ahk_pid " this.process_id)
             return
+        this.remaining := (remain > 0) ? 1 : 0
         this.remain_last_window := remain
-        SendInput {,}q
-        WinWaitNotActive % "ahk_pid" this.process_id
-        this.process_id := ""
+        WinActivate % "ahk_pid " this.process_id
+        WinWaitActive % "ahk_pid " this.process_id
         if (remain = -1)
+            SendInput {Ctrl Down}{Shift Down}q{Shift Up}{Ctrl Up}
+        else
+            SendInput {Ctrl Down}q{Ctrl Up}
+        WinWaitNotActive % "ahk_pid " this.process_id
+        this.process_id := ""
+        if (remain = -1 or remain = 2)
             return
         if (this.remaining = 0)
             this.Mix(this.order)
@@ -36,38 +42,51 @@
 
     Mix(order) {
         FileRead temp, % this.TempDir this.TempFileName order
-        FileAppend % temp this.Delimiter, % this.MixDir this.MixFileName
+        FileAppend % temp this.Delimiter, % this.TempDir this.MixFileName
+        FileCopy % this.TempDir this.MixFileName, % this.HistoryDir "Temp_" order ".md"
     }
 
     Temp(order) {
-        FileAppend % "", % this.TempDir this.TempFileName order
+        if !FileExist(this.TempDir this.TempFileName order)
+            FileAppend % "", % this.TempDir this.TempFileName order
     }
 
     Popout(order) {
-        MouseGetPos mouse_xpos, mouse_ypos
-        Run % "gvim.exe " this.TempDir this.TempFileName order " -u G:\Settings\anki.vimrc", C:\Program Files\Vim\vim82, , process_id
+        xcursor := A_CaretX
+        ycursor := A_CaretY
+        if !(xcursor and ycursor)
+            return
+        Run % "gvim.exe " this.TempDir this.TempFileName order " -u " this.Vimrc, % this.VimDir, , process_id
         this.process_id := process_id
         Process Priority, %process_id%, Realtime
         WinWaitActive ahk_pid %process_id%, , 1
         WinSet Style, -0xC00000, ahk_pid %process_id%
         WinSet Style, -0x40000, ahk_pid %process_id%
-        win_xpos := mouse_xpos - this.PopSizes[1] / 2
-        win_ypos := mouse_ypos - this.PopSizes[2] - 30
+        win_xpos := xcursor
+        win_ypos := ycursor - this.PopSizes[2] - 20
         WinMove ahk_pid %process_id%, , % (win_xpos > 0) ? win_xpos : 0, % (win_ypos > 0) ? win_ypos : 0, % this.PopSizes[1], % this.PopSizes[2]
         WinActivate ahk_pid %process_id%
-
         WinWaitNotActive ahk_pid %process_id%
-        if !this.remain_last_window
+        if WinExist("ahk_pid " process_id)
+            this.Close(2)
+        if (this.remain_last_window = 0)
             this.order ++
     }
 
     Content(order) {
         FileRead content, % this.TempDir this.TempFileName order
         SendInput % "{Text}" content
+        SendInput {BackSpace}
     }
 
-    Review() {
-        Run % "gvim.exe " this.MixDir this.MixFileName, C:\Program Files\Vim\vim82
+    Combine() {
+        file := ""
+        Loop Files, % this.TempDir this.TempFileName "*"
+        {
+            FileRead content, %A_LoopFilePath%
+            file .= content this.Delimiter
+        }
+        FileAppend %file%, % this.TempDir this.CombineFileName
     }
 
     Clear() {
@@ -76,26 +95,32 @@
             return
         FileRemoveDir % this.TempDir, 1
         FileCreateDir % this.TempDir
-        FileCreateDir % this.MixDir
+        FileCreateDir % this.HistoryDir
         this.order := 1
     }
 }
 
-CoordMode Mouse
+CoordMode Caret
+SetWinDelay -1
 
 Global Settings := {"tempdir": "G:\Temp\.vanki\"
                   , "assetdir": "G:\Temp\.vanki\images\"
-                  , "mixdir": "G:\Temp\.vanki\.mix\"
+                  , "historydir": "G:\Temp\.vanki\.history\"
+                  , "vimdir": "C:\Program Files\Vim\vim82"
+                  , "vimrc": "G:\Assets\Tool\AutoHotkey\Vark\vanki.vimrc"
                   , "tempfilename": "Temp_"
                   , "mixfilename": "Mix.md"
-                  , "popsizes": [960, 280]
-                  , "delimiter": "`r`n`r`n<hr class='section'>`r`n`r`n"}
+                  , "combinefilename": "Combine.md"
+                  , "popsizes": [960, 240]
+                  , "delimiter": "`r`n<hr class='section'>`r`n`r`n"}
 
-Test := new Vanki(Settings)
+VimAnki := new Vanki(Settings)
 
-^q::Test.Open()
-^w::Test.Close(0)
-^e::Test.Close(1)
-^r::Test.Close(-1)
-^t::Test.Review()
-^y::Test.Clear()
+^w::VimAnki.Close(0)
+^e::VimAnki.Close(1)
+^r::VimAnki.Close(-1)
+
+#IfWinNotActive ahk_class Vim
+^q::VimAnki.Open()
+^t::VimAnki.Combine()
+^y::VimAnki.Clear()
