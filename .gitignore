@@ -42,6 +42,7 @@ Test.*
 /TextReplace
 /SmartTranslator
 /WordsCorrect
+/Window/WinDrag
 
 # 工具
 /AutoHotkeyTools
