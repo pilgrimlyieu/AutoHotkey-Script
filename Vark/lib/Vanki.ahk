@@ -1,9 +1,5 @@
 ﻿#Include <Vark>
 
-Process     Priority, , Realtime
-CoordMode   Caret
-SetWinDelay -1
-
 class Vanki extends Vark {
     __New(settings) {
          this.TempDir         := settings.tempdir

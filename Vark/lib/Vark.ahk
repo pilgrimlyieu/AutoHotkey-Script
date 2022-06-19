@@ -1,8 +1,4 @@
-﻿Process     Priority, , Realtime
-CoordMode   Caret
-SetWinDelay -1
-
-class Vark {
+﻿class Vark {
     __New(settings) {
          this.TempDir      := settings.tempdir
          this.VimDir       := settings.vimdir
@@ -71,13 +67,13 @@ class Vark {
         xcursor := A_CaretX
         ycursor := A_CaretY
         if !(xcursor and ycursor)
-            return
+            MouseGetPos xcursor, ycursor
 
         Run % "gvim.exe " path " -u " this.Vimrc, % this.VimDir, , process_id
         this.process_id := process_id
 
         Process Priority, %process_id%, Realtime
-        WinWait ahk_pid %process_id%, , 1
+        WinWait ahk_pid %process_id%, , 3
         WinSet  Style, -0xC40000, ahk_pid %process_id%
 
         win_xpos := xcursor

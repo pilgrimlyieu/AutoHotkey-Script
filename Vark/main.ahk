@@ -1,5 +1,6 @@
 Process     Priority, , Realtime
 CoordMode   Caret
+CoordMode   Mouse
 SetWinDelay -1
 
 #Include <Vark>
@@ -18,7 +19,7 @@ VimHere := new Vark(Settings)
 #w::VimHere.Close(1)
 #e::VimHere.Close(-1)
 
-#IfWinNotActive ahk_class Vim
+#If !WinActive("ahk_pid " VimHere.process_id)
 
 #v::VimHere.Open()
 #+v::VimHere.Clear()

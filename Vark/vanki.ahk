@@ -1,5 +1,6 @@
 Process     Priority, , Realtime
 CoordMode   Caret
+CoordMode   Mouse
 SetWinDelay -1
 
 #Include <Vanki>
