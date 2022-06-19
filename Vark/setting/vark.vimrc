@@ -1,8 +1,8 @@
-" Settings {{{1
+" Set {{{1
 set fileformat=unix
 set fileencodings=utf-8,gbk2312,gbk,gb18030,cp936
 set encoding=utf-8
-set filetype=markdown
+set nobomb
 set mouse=
 set magic
 set smartcase
@@ -52,50 +52,88 @@ set shortmess+=FW
 set noruler
 set noshowmode
 set noshowcmd
-set laststatus=0
 set showtabline=0
+" }}}
+
+augroup spell_check
+" spell_check {{{1
+    autocmd!
+    autocmd FileType tex,markdown,gitcommit setlocal spell spelllang=en_us,cjk
+    autocmd FileType tex,markdown,gitcommit inoremap <silent><C-n> <C-g>u<Esc>[s1z=`'a<C-g>u
+" }}}1
+augroup end
+
+let g:python3_host_skip_check = 1
+let g:python3_host_prog       = '/usr/local/bin/python3'
+let $LANG                     = 'en_US.UTF-8'
+
+" win-clipboard {{{1
+let g:clipboard = {
+\ 'name': 'win32yank',
+\ 'copy': {
+\ '+': 'win32yank.exe -i --crlf',
+\ '*': 'win32yank.exe -i --crlf',
+\ },
+\ 'paste': {
+\ '+': 'win32yank.exe -o --lf',
+\ '*': 'win32yank.exe -o --lf',
+\ },
+\ 'cache_enabled': 0,
+\ }
 " }}}1
 
 start
 filetype plugin indent on
 syntax enable
 
+let g:language_types = ['python', 'javascript', 'vim']
 call plug#begin("~/vimfiles/plugged")
-" Plugins {{{1
+" Plug {{{1
 Plug 'joshdick/onedark.vim'
 Plug 'yianwillis/vimcdoc'
-Plug 'neoclide/coc.nvim'
+Plug 'itchyny/lightline.vim'
+Plug 'maximbaz/lightline-ale',        { 'for': g:language_types }
+Plug 'junegunn/vim-easy-align'
+Plug 'neoclide/coc.nvim',             { 'branch': 'release' }
+Plug 'dense-analysis/ale',            { 'for': g:language_types }
 Plug 'SirVer/ultisnips'
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'easymotion/vim-easymotion'
 Plug 'mg979/vim-visual-multi'
-Plug 'lervag/vimtex'
-Plug 'ferrine/md-img-paste.vim'
+Plug 'Yggdroot/indentLine',           { 'for': g:language_types }
+Plug 'luochen1990/rainbow',           { 'for': g:language_types }
+Plug 'lervag/vimtex',                 { 'for': ['tex', 'markdown'] }
+" Plug 'python-mode/python-mode',   { 'for': 'python', 'branch': 'develop' }
 " }}}1
 call plug#end()
 
 colorscheme onedark
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"                                                                                              "
-"                                         Key Mappings                                         "
-"                                                                                              "
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""
+"                Force to Adapt                "
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Key Mappings {{{1
+noremap  <Up>    <Nop>
+noremap  <Down>  <Nop>
+noremap  <Left>  <Nop>
+noremap  <Right> <Nop>
+inoremap <Up>    <Nop>
+inoremap <Down>  <Nop>
+inoremap <Left>  <Nop>
+inoremap <Right> <Nop>
+nnoremap <Esc>   <Nop>
+inoremap <Esc>   <Nop>
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""
 
 " Key Mappings {{{1
 let g:mapleader = ","
 
-noremap  <Up>              <Nop>
-noremap  <Down>            <Nop>
-noremap  <Left>            <Nop>
-noremap  <Right>           <Nop>
-inoremap <Up>              <Nop>
-inoremap <Down>            <Nop>
-inoremap <Left>            <Nop>
-inoremap <Right>           <Nop>
-nnoremap <Esc>             <Nop>
-inoremap <Esc>             <Nop>
 inoremap jk                <Esc>
 inoremap kj                <Esc>
 nmap     H                 0
@@ -115,8 +153,24 @@ nnoremap <expr>0           col('.') == 1 ? '^': '0'
 noremap  <silent><leader>/ :noh<Cr>
 noremap  <ScrollWheelUp>   <nop>
 noremap  <ScrollWheelDown> <nop>
-inoremap  <ScrollWheelUp>   <nop>
-inoremap  <ScrollWheelDown> <nop>
+inoremap <ScrollWheelUp>   <nop>
+inoremap <ScrollWheelDown> <nop>
+nnoremap <silent>ft        :set filetype=
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                           Markdown                                           "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Markdown {{{1
+autocmd FileType markdown let b:coc_pairs_disabled = ["'"]
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -127,24 +181,86 @@ inoremap  <ScrollWheelDown> <nop>
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                                                                              "
-"                                           Markdown                                           "
+"                                            VimTeX                                            "
 "                                                                                              "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Markdown {{{1
-setlocal spell spelllang=en_us,cjk
+" TeX {{{1
+let g:tex_conceal = ''
 
-inoremap <silent><C-n>             <C-g>u<Esc>[s1z=`'a<C-g>u
-inoremap <silent><C-w>             <C-o>:CocCommand markdown-preview-enhanced.openPreview<Cr>
-nnoremap <silent><C-w>             :CocCommand markdown-preview-enhanced.openPreview<Cr>
-inoremap <silent><C-x>             <Cr><Cr><hr class="section"><Cr><Cr>
-inoremap <buffer><silent><leader>p <C-o>:call mdip#MarkdownClipboardImage()<CR>
+" This is necessary for VimTeX to load properly. The "indent" is optional.
+" Note that most plugin managers will do this automatically.
+filetype plugin indent on
 
-let b:coc_pairs_disabled            = ["'"]
-let g:mdip_imgdir                   = 'images'
-let g:mdip_imgname                  = ''
-let g:tex_conceal                   = ''
-let g:vimtex_syntax_conceal_disable = 1
+" This enables Vim's and neovim's syntax-related features. Without this, some
+" VimTeX features will not work (see ":help vimtex-requirements" for more
+" info).
+syntax enable
+
+" Viewer options: One may configure the viewer either by specifying a built-in
+" viewer method:
+" let g:vimtex_view_method = 'SumatraPDF'
+
+" Or with a generic interface:
+let g:vimtex_view_general_viewer = 'SumatraPDF' 
+
+" SumatraPDF Setting
+" gvim --servername GVIM --remote-send "<C-\><C-n>:drop %f<CR>:%l<CR>:normal! zzzv<CR>:execute 'drop ' . fnameescape('%f')<CR>:%l<CR>:normal! zzzv<CR>:call remote_foreground('GVIM')<CR><CR>"
+
+let g:vimtex_view_general_options = '-reuse-instance -forward-search @tex @line @pdf'
+
+" VimTeX uses latexmk as the default compiler backend. If you use it, which is
+" strongly recommended, you probably don't need to configure anything. If you
+" want another compiler backend, you can change it as follows. The list of
+" supported backends and further explanation is provided in the documentation,
+" see ":help vimtex-compiler".
+let g:vimtex_compiler_method = 'latexmk'
+
+" Most VimTeX mappings rely on localleader and this can be changed with the
+" following line. The default is usually fine and is the symbol "\".
+let maplocalleader = ","
+
+let g:tex_flavor = "latex"
+
+let g:vimtex_texcount_custom_arg = " -ch -total"
+
+autocmd FileType tex noremap <buffer> <silent> <leader>lw :VimtexCountWords! <CR><CR>
+
+let g:Tex_ViewRule_pdf = 'D:\Program Files\SumatraPDF\SumatraPDF.exe -reuse-instance -inverse-search "gvim -c \":RemoteOpen +\%l \%f\""'
+
+let g:vimtex_compiler_latexmk_engines = {
+    \ '_'                : '-pdf',
+    \ 'pdflatex'         : '-pdf',
+    \ 'dvipdfex'         : '-pdfdvi',
+    \ 'lualatex'         : '-lualatex',
+    \ 'xelatex'          : '-xelatex',
+    \ 'context (pdftex)' : '-pdf -pdflatex=texexec',
+    \ 'context (luatex)' : '-pdf -pdflatex=context',
+    \ 'context (xetex)'  : '-pdf -pdflatex=''texexec --xtx''',
+    \}
+
+let g:vimtex_compiler_latexmk = {
+    \ 'build_dir'  : {-> 'out'},
+    \ 'callback'   : 1,
+    \ 'continuous' : 1,
+    \ 'executable' : 'latexmk',
+    \ 'hooks'      : [],
+    \ 'options'    : [
+    \   '-verbose',
+    \   '-file-line-error',
+    \   '-shell-escape',
+    \   '-synctex=1',
+    \   '-interaction=nonstopmode',
+    \ ],
+    \}
+
+let g:vimtex_syntax_conceal_disable   = 1
+let g:vimtex_quickfix_open_on_warning = 0
+
+augroup vimtex_config
+  autocmd!
+  autocmd User VimtexEventQuit call vimtex#compiler#clean(0)
+augroup end
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -233,6 +349,43 @@ let g:VM_maps["Select h"]        = '<A-a>'
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                                                                              "
+"                                        vim-easy-align                                        "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" vim-easy-align {{{1
+nnoremap ga <Plug>(EasyAlign)
+xnoremap ga <Plug>(EasyAlign)
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                             ale                                              "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" ale {{{1
+let g:ale_sign_error   = '>>'
+let g:ale_sign_warning = '--'
+let g:ale_linters      = {
+\   'python': ['pylint'],
+\}
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
 "                                             coc                                              "
 "                                                                                              "
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -246,7 +399,7 @@ set nobackup
 set nowritebackup
 
 " Give more space for displaying messages.
-" set cmdheight=1
+set cmdheight=1
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
@@ -406,7 +559,158 @@ imap <Plug> <Plug>(coc-snippets-select)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-"
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                            Python                                            "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Python {{{1
+" map <silent><F5> :call CompileRunGcc()<CR>
+
+" function! CompileRunGcc()
+"     exec "w" 
+"     if &filetype == 'c' 
+"         exec '!g++ % -o %<'
+"         exec '!time ./%<'
+"     elseif &filetype == 'cpp'
+"         exec '!g++ % -o %<'
+"         exec '!time ./%<'
+"     elseif &filetype == 'python'
+"         exec '!time python %'
+"     elseif &filetype == 'sh'
+"         :!time bash %
+"     endif                                                                              
+" endfunction
+
+" let g:pymode_python = 'python3'
+" let g:pymode_breakpoint_bind = '<F4>'
+" let g:pymode_run_bind = '<F5>'
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                          lightLine                                           "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" lightLine {{{1
+let g:lightline = {
+\ 'colorscheme': 'onedark',
+\ 'active': {
+\   'left': [ [ 'mode', 'paste' ],
+\             [ 'readonly' ] ],
+\   'right': [ [ 'lineinfo' ],
+\              [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
+\              [ 'fileformat', 'fileencoding', 'filetype'] ]
+\ },
+\ 'component_expand': {
+\   'linter_checking' : 'lightline#ale#checking',
+\   'linter_infos'    : 'lightline#ale#infos',
+\   'linter_warnings' : 'lightline#ale#warnings',
+\   'linter_errors'   : 'lightline#ale#errors',
+\   'linter_ok'       : 'lightline#ale#ok',
+\ },
+\ 'component_type': {
+\   'linter_warnings' : 'warning',
+\   'linter_errors'   : 'error',
+\   'linter_ok'       : 'ale',
+\ },
+\ 'component_function': {
+\   'lineinfo'  : 'LightLineLineInfo',
+\ },
+\ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
+\ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
+\}
+
+function! LightLineLineInfo()
+  return printf(' %d/%d | %d/%d', line('.'), line('$'), col('.'), col('$'))
+endfunction
+
+let s:palette = g:lightline#colorscheme#onedark#palette
+let s:palette.tabline.ale = [['#282C34', '#26A69A', 0, 21]]
+
+let g:lightline#ale#indicator_checking     = '⏳'
+let g:lightline#ale#indicator_infos        = '📜'
+let g:lightline#ale#indicator_errors       = '💥'
+let g:lightline#ale#indicator_warnings     = '⚡'
+let g:lightline#ale#indicator_ok           = '✨'
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                           Rainbow                                            "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Rainbow {{{1
+let g:rainbow_active = 1
+
+let g:rainbow_conf = {
+\    'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+\    'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+\    'operators': '_,_',
+\    'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+\    'separately': {
+\        '*': {},
+\        'tex': {
+\            'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+\        },
+\        'lisp': {
+\            'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+\        },
+\        'vim': {
+\            'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+\        },
+\        'html': {
+\            'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+\        },
+\        'css': 0,
+\    }
+\}
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                         Indent Line                                          "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Indent Line {{{1
+let g:indentLine_fileTypeExclude = ['json', 'markdown']
+let g:indentLine_conceallevel    = 2
+let g:indentLine_concealcursor   = ''
+let g:indent_guides_guide_size   = 1
+let g:indent_guides_start_level  = 1
+let g:indentLine_setConceal      = 0
+let g:indentLine_enabled         = 1
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                                                                              "
 "                                            Tabout                                            "

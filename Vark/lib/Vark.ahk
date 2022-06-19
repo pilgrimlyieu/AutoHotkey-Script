@@ -20,6 +20,22 @@ class Vark {
         this.Popout(temp_path)
     }
 
+    Save(option) {
+        if !WinExist("ahk_pid " this.process_id)
+            return
+
+        WinActivate   % "ahk_pid " this.process_id
+        WinWaitActive % "ahk_pid " this.process_id
+
+        if (option = -1)
+            SendInput {Ctrl Down}{Shift Down}q{Shift Up}{Ctrl Up}
+        else
+            SendInput {Ctrl Down}q{Ctrl Up}
+
+        WinWaitNotActive % "ahk_pid " this.process_id
+        this.process_id := ""
+    }
+
     /**
      *    |-----------------------|
      *    |        option?        |
@@ -36,24 +52,14 @@ class Vark {
      *    |-------+-------+-------|
      */
     Close(option) {
-        if !WinExist("ahk_pid " this.process_id)
-            return
+        this.Save(option)
 
-        WinActivate   % "ahk_pid " this.process_id
-        WinWaitActive % "ahk_pid " this.process_id
-
-        if (option = -1)
-            SendInput {Ctrl Down}{Shift Down}q{Shift Up}{Ctrl Up}
-        else
-            SendInput {Ctrl Down}q{Ctrl Up}
-
-        WinWaitNotActive % "ahk_pid " this.process_id
-        this.process_id := ""
-
-        if (option = 0 or option = 1)
-            this.Content(thiw.TempPath)
-        if (option < 1)
+        if (!option or option = 1)
+            this.Content(this.TempPath)
+        if (!option or (option = -1 and !this.remaining))
             FileDelete % this.TempPath
+
+        this.remaining := option > 0
     }
 
     Temp(path) {
@@ -95,11 +101,7 @@ class Vark {
     }
 
     Clear() {
-        MsgBox 4388, 清除临时文件夹, 是否要清除临时文件夹？（此操作不可逆！）, 5
-        IfMsgBox No
-            return
-
-        FileRemoveDir % this.TempDir, 1
-        FileCreateDir % this.TempDir
+        FileDelete % this.TempPath
+        this.remaining := 0
     }
 }
