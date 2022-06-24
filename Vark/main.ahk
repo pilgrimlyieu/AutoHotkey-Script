@@ -1,7 +1,8 @@
-Process     Priority, , Realtime
-CoordMode   Caret
-CoordMode   Mouse
-SetWinDelay -1
+Process      Priority, , Realtime
+FileEncoding UTF-8
+CoordMode    Caret
+CoordMode    Mouse
+SetWinDelay  -1
 
 #Include <Vark>
 

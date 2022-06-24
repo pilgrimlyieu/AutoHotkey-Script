@@ -14,6 +14,7 @@ class Vanki extends Vark {
          this.MixPath         := this.TempDir this.MixFileName
          this.CombinePath     := this.TempDir this.CombineFileName
          this.order           := 1
+         this.suffix          := 0
 
          FileCreateDir % this.TempDir
          FileCreateDir % this.HistoryDir
@@ -44,18 +45,40 @@ class Vanki extends Vark {
         if this.Save(option)
             return
 
-        if (!option or option = 1)
-            this.Content(this.TempPath)
-        if !option {
-            this.Mix(this.TempPath)
+        if (option = 0) {
+            FileRead file, % this.TempPath
+            this.Content(file)
+            this.Mix(file)
+            if FileExist(this.TempPath "_1")
+                FileDelete % this.TempPath
             this.order ++
         }
+        else if (option = 1) {
+            FileRead file, % this.TempPath
+            this.Content(file)
+            this.suffix ++
+            this.Suf(this.TempPath, file, this.suffix)
+            this.Mix(file, this.suffix)
+        }
+        else
+            this.suffix := 0
     }
 
-    Mix(path) {
-        FileRead   temp, % path
-        FileAppend % temp this.Delimiter, % this.MixPath
-        FileCopy   % this.MixPath, % this.HistoryDir "Temp_" this.order ".md"
+    Empty() {
+        SendInput jkgg{Shift Down}v{Shift Up}Gd
+        this.Close(0)
+    }
+
+    Suf(path, file, suffix) {
+        if file
+            FileAppend %file%, % path "_" suffix
+    }
+
+    Mix(file, suffix = 0) {
+        if !file
+            return
+        FileAppend % file this.Delimiter, % this.MixPath
+        FileCopy   % this.MixPath, % this.HistoryDir this.TempFileName this.order (suffix ? "_" suffix : "") ".md"
     }
 
     Combine() {
@@ -63,7 +86,8 @@ class Vanki extends Vark {
         Loop Files, % this.TempDir this.TempFileName "*"
         {
             FileRead content, %A_LoopFilePath%
-            file .= content this.Delimiter
+            if content
+                file .= content this.Delimiter
         }
         FileAppend %file%, % this.CombinePath
     }
@@ -76,6 +100,7 @@ class Vanki extends Vark {
         FileRemoveDir % this.TempDir, 1
         FileCreateDir % this.TempDir
         FileCreateDir % this.HistoryDir
-        this.order := 1
+        this.order  := 1
+        this.suffix := 0
     }
 }

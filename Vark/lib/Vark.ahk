@@ -52,7 +52,8 @@
             return
 
         if (!option or option = 1)
-            this.Content(this.TempPath)
+            FileRead content, % this.TempPath
+            this.Content(content)
         if (!option or (option = -1 and !this.remaining))
             FileDelete % this.TempPath
 
@@ -61,7 +62,7 @@
 
     Temp(path) {
         if !FileExist(path)
-            FileAppend % "", % path
+            FileAppend % "", %path%
     }
 
     Popout(path) {
@@ -91,8 +92,7 @@
             this.Close(2)
     }
 
-    Content(path) {
-        FileRead  content, % path
+    Content(content) {
         SendInput % "{Text}" content
         SendInput {BackSpace}
     }

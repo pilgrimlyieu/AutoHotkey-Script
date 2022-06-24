@@ -1,7 +1,8 @@
-Process     Priority, , Realtime
-CoordMode   Caret
-CoordMode   Mouse
-SetWinDelay -1
+Process      Priority, , Realtime
+FileEncoding UTF-8
+CoordMode    Caret
+CoordMode    Mouse
+SetWinDelay  -1
 
 #Include <Vanki>
 
@@ -17,11 +18,14 @@ Global Settings := {"tempdir"         :  "G:\Temp\.vanki\"
 
 VimAnki := new Vanki(Settings)
 
+; #IfWinActive ahk_class Vim
+
 #q::VimAnki.Close(0)
 #w::VimAnki.Close(1)
 #e::VimAnki.Close(-1)
+#r::VimAnki.Empty()
 
-#IfWinNotActive ahk_class Vim
+; #IfWinNotActive ahk_class Vim
 
 #1::VimAnki.Open()
 #t::VimAnki.Combine()
