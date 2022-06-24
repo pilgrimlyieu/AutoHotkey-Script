@@ -93,8 +93,7 @@
     }
 
     Content(content) {
-        SendInput % "{Text}" content
-        SendInput {BackSpace}
+        SendInput % "{Text}" RegExReplace(content, "(\n|\r)*$", "")
     }
 
     Clear() {

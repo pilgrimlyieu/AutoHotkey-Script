@@ -36,7 +36,7 @@ class Vanki extends Vark {
      *    |-------+-------+-------+-------+-------|
      *    |   0   |   Y   |   Y   |   N   |   Y   |
      *    |-------+-------+-------+-------+-------|
-     *    |   1   |   Y   |   Y   |   Y   |   N   |
+     *    |   1   |   Y   |   Y   |   Y   |   Y   |
      *    |-------+-------+-------+-------+-------|
      *    |   2   |   Y   |   N   |   Y   |   N   |
      *    |-------+-------+-------+-------+-------|
@@ -49,24 +49,23 @@ class Vanki extends Vark {
             FileRead file, % this.TempPath
             this.Content(file)
             this.Mix(file)
-            if FileExist(this.TempPath "_1")
-                FileDelete % this.TempPath
+            this.ExtraSuf(file)
             this.order ++
         }
         else if (option = 1) {
             FileRead file, % this.TempPath
-            this.Content(file)
             this.suffix ++
+            this.Content(file)
             this.Suf(this.TempPath, file, this.suffix)
             this.Mix(file, this.suffix)
         }
         else
-            this.suffix := 0
+            this.ExtraSuf(file)
     }
 
     Empty() {
         SendInput jkgg{Shift Down}v{Shift Up}Gd
-        this.Close(0)
+        this.Close(this.suffix ? 0 : 2)
     }
 
     Suf(path, file, suffix) {
@@ -74,10 +73,21 @@ class Vanki extends Vark {
             FileAppend %file%, % path "_" suffix
     }
 
+    ExtraSuf(file) {
+        if this.suffix {
+            if file {
+                FileAppend %file%, % this.TempDir this.TempFileName this.order "_" (this.suffix + 1)
+                FileCopy % this.MixPath, % this.HistoryDir this.TempFileName this.order "_" (this.suffix + 1) ".md"
+            }
+            FileDelete % this.TempPath
+            FileDelete % this.HistoryDir this.TempFileName this.order ".md"
+        }
+        this.suffix := 0
+    }
+
     Mix(file, suffix = 0) {
-        if !file
-            return
-        FileAppend % file this.Delimiter, % this.MixPath
+        if file
+            FileAppend % file this.Delimiter, % this.MixPath
         FileCopy   % this.MixPath, % this.HistoryDir this.TempFileName this.order (suffix ? "_" suffix : "") ".md"
     }
 
