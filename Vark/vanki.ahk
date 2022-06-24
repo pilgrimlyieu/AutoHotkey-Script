@@ -17,8 +17,6 @@ Global Settings := {"tempdir"         :  "G:\Temp\.vanki\"
 
 VimAnki := new Vanki(Settings)
 
-#If WinActive("ahk_pid " VimAnki.process_id)
-
 #q::VimAnki.Close(0)
 #w::VimAnki.Close(1)
 #e::VimAnki.Close(-1)

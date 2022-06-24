@@ -18,7 +18,7 @@
 
     Save(option) {
         if !WinExist("ahk_pid " this.process_id)
-            return
+            return 1
 
         WinActivate   % "ahk_pid " this.process_id
         WinWaitActive % "ahk_pid " this.process_id
@@ -48,7 +48,8 @@
      *    |-------+-------+-------|
      */
     Close(option) {
-        this.Save(option)
+        if this.Save(option)
+            return
 
         if (!option or option = 1)
             this.Content(this.TempPath)
@@ -73,7 +74,7 @@
         this.process_id := process_id
 
         Process Priority, %process_id%, Realtime
-        WinWait ahk_pid %process_id%, , 3
+        WinWait ahk_pid %process_id%, , 5
         WinSet  Style, -0xC40000, ahk_pid %process_id%
 
         win_xpos := xcursor

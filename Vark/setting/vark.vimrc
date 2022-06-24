@@ -82,7 +82,6 @@ let g:clipboard = {
 \ }
 " }}}1
 
-start
 filetype plugin indent on
 syntax enable
 

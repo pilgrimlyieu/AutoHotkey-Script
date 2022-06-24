@@ -41,7 +41,8 @@ class Vanki extends Vark {
      *    |-------+-------+-------+-------+-------|
      */
     Close(option) {
-        this.Save(option)
+        if this.Save(option)
+            return
 
         if (!option or option = 1)
             this.Content(this.TempPath)
