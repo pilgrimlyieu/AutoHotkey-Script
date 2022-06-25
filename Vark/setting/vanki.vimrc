@@ -60,6 +60,14 @@ start
 filetype plugin indent on
 syntax enable
 
+augroup auto_view
+" auto_view {{{1
+    autocmd!
+    autocmd BufWinLeave Temp_* silent mkview
+    autocmd BufWinEnter Temp_* silent loadview
+" }}}1
+augroup end
+
 call plug#begin("~/vimfiles/plugged")
 " Plugins {{{1
 Plug 'joshdick/onedark.vim'
