@@ -8,7 +8,7 @@ SetWinDelay  -1
 
 Global Settings := {"tempdir"         :  "G:\Temp\.vanki\"
                   , "historydir"      :  "G:\Temp\.vanki\.history\"
-                  , "vimdir"          :  "C:\Program Files\Vim\vim82"
+                  , "vimdir"          :  "D:\Program Files\Vim\vim90"
                   , "vimrc"           :  "G:\Assets\Tool\AutoHotkey\Vark\setting\vanki.vimrc"
                   , "tempfilename"    :  "Temp_"
                   , "mixfilename"     :  "Mix.md"

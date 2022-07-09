@@ -7,7 +7,7 @@ SetWinDelay  -1
 #Include <Vark>
 
 Global Settings := {"tempdir"      :  "G:\Temp\.vark\"
-                  , "vimdir"       :  "C:\Program Files\Vim\vim82"
+                  , "vimdir"       :  "D:\Program Files\Vim\vim90"
                   , "vimrc"        :  "G:\Assets\Tool\AutoHotkey\Vark\setting\vark.vimrc"
                   , "tempfilename" :  "Temp"
                   , "popsizes"     :  [960, 240]}
@@ -22,5 +22,5 @@ VimHere := new Vark(Settings)
 
 #If !WinActive("ahk_pid " VimHere.process_id)
 
-#v::VimHere.Open()
-#+v::VimHere.Clear()
+#c::VimHere.Open()
+#+c::VimHere.Clear()
