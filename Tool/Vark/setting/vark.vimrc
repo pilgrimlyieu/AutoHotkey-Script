@@ -53,6 +53,7 @@ set noruler
 set noshowmode
 set noshowcmd
 set showtabline=0
+set filetype=markdown
 " }}}
 
 augroup auto_view
@@ -90,6 +91,7 @@ let g:clipboard = {
 \ }
 " }}}1
 
+start
 filetype plugin indent on
 syntax enable
 

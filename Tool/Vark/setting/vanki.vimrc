@@ -3,7 +3,6 @@ set nocompatible
 set fileformat=unix
 set fileencodings=utf-8,gbk2312,gbk,gb18030,cp936
 set encoding=utf-8
-set filetype=markdown
 set mouse=
 set magic
 set smartcase
@@ -55,6 +54,7 @@ set noshowcmd
 set laststatus=0
 set showtabline=0
 set background=dark
+set filetype=markdown
 " }}}1
 
 start

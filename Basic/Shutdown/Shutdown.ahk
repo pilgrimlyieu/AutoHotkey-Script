@@ -24,7 +24,7 @@ Hint(WarnMinute) {
         Shutdown 1
 }
 
-Global SDTime := A_Year A_MM A_DD 230000
+Global SDTime := A_Year A_MM A_DD 235959
 Global WarnMinutes := [5, 3, 1, 0]
 Global ExtendLevel := 1
 Global ExtendMinute := 5

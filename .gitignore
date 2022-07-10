@@ -1,6 +1,7 @@
 # 文件夹
 /.vscode
 /_Compile
+/Fork
 **/Test
 
 # 文件名
@@ -38,11 +39,4 @@ Test.*
 *.ini
 
 # 非原创
-/Translation-Terminator
-/TextReplace
-/SmartTranslator
-/WordsCorrect
-/Window/WinDrag
-
-# 工具
-/AutoHotkeyTools
+*/Window/WinDrag
