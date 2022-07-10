@@ -1,17 +1,16 @@
 Dir := A_WorkingDir "\"
 
 Scripts := ["Tips\Run"
+          , "Shutdown\Shutdown"
+          , "Window\WinDrag\main"
+          , "Remap\Fn"
 
           , "Correction\Pinyin"
-
-          , "Shutdown\Shutdown"
-
-          , "Window\WinDrag\main"
+          , "Abbreviation\Common"
 
           , "Vim\Vim"
           , "Vim\KeyMap"
-
           , "Vark\main"]
 
 For index, script in Scripts
-    Run % "AutoHotkey.exe /restart " Dir script ".ahk"
+    Run % "AutoHotkey.exe /restart /CP65001 " Dir script ".ahk"

@@ -3,17 +3,19 @@
 #f::
     Clip := Clipboard
     Clipboard := ""
-    Send {Ctrl Down}c{Ctrl Up}
-    Clipboard := Trim(Clipboard)
-    if (!(Clipboard ~= "[*?""<>|]") and Clipboard ~= "^[C-G]:(?:[\\/].+)*[\\/][^.]+$")
-    	Run D:/Program Files/Everything/Everything.exe -path %Clipboard%
-    else if (Clipboard != "")
-    	Run D:/Program Files/Everything/Everything.exe -search "%Clipboard%"
+    SendInput {Ctrl Down}c{Ctrl Up}
+    ClipWait 0
+    selected := Trim(Clipboard)
+    if (!(selected ~= "[*?""<>|]") and selected ~= "^[C-G]:(?:[\\/].+)*[\\/][^.]+$")
+    	Run D:/Program Files/Everything/Everything.exe -path %selected%
+    else if (selected != "")
+    	Run D:/Program Files/Everything/Everything.exe -search "%selected%"
     else
     	Run D:/Program Files/Everything/Everything.exe -home
     Clipboard := Clip
 return
 
 #s::WinMinimize A
+#+s::WinMaximize A
 
 #a::WinSet AlwaysOnTop, , A
