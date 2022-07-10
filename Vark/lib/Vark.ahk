@@ -77,6 +77,7 @@
         Process Priority, %process_id%, Realtime
         WinWait ahk_pid %process_id%, , 5
         WinSet  Style, -0xC40000, ahk_pid %process_id%
+        WinSet  AlwaysOnTop, On, ahk_pid %process_id%
 
         win_xpos := xcursor
         win_ypos := ycursor - this.PopSizes[2] - 20
@@ -88,8 +89,6 @@
         WinActivate ahk_pid %process_id%
 
         WinWaitNotActive ahk_pid %process_id%
-        if WinExist("ahk_pid " process_id)
-            this.Close(2)
     }
 
     Content(content) {

@@ -23,10 +23,11 @@ VimAnki := new Vanki(Settings)
 #q::VimAnki.Close(0)
 #w::VimAnki.Close(1)
 #e::VimAnki.Close(-1)
-#r::VimAnki.Empty()
+#r::VimAnki.Close(2)
+#t::VimAnki.Empty()
 
 #IfWinNotActive ahk_class Vim
 
 #1::VimAnki.Open()
-#t::VimAnki.Combine()
+#y::VimAnki.Combine()
 #+1::VimAnki.Clear()

@@ -19,6 +19,7 @@ VimHere := new Vark(Settings)
 #q::VimHere.Close(0)
 #w::VimHere.Close(1)
 #e::VimHere.Close(-1)
+#r::VimHere.Close(2)
 
 #If !WinActive("ahk_pid " VimHere.process_id)
 

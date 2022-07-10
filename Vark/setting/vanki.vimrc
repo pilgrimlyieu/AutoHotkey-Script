@@ -1,4 +1,5 @@
 " Settings {{{1
+set nocompatible
 set fileformat=unix
 set fileencodings=utf-8,gbk2312,gbk,gb18030,cp936
 set encoding=utf-8
@@ -6,7 +7,6 @@ set filetype=markdown
 set mouse=
 set magic
 set smartcase
-set nocompatible
 set laststatus=2
 set showtabline=2
 set history=256
@@ -45,15 +45,16 @@ set expandtab
 set softtabstop=4
 set shiftwidth=4
 set viewoptions-=options
+set undofile
 set undodir=D:\.vim\.undo\
 set directory=D:\.vim\.swap\
-
-set shortmess+=FW
+set shortmess+=FWA
 set noruler
 set noshowmode
 set noshowcmd
 set laststatus=0
 set showtabline=0
+set background=dark
 " }}}1
 
 start
@@ -70,7 +71,7 @@ augroup end
 
 call plug#begin("~/vimfiles/plugged")
 " Plugins {{{1
-Plug 'joshdick/onedark.vim'
+Plug 'morhetz/gruvbox'
 Plug 'yianwillis/vimcdoc'
 Plug 'neoclide/coc.nvim'
 Plug 'SirVer/ultisnips'
@@ -83,7 +84,7 @@ Plug 'ferrine/md-img-paste.vim'
 " }}}1
 call plug#end()
 
-colorscheme onedark
+colorscheme gruvbox
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                                                                              "
@@ -125,6 +126,9 @@ noremap  <ScrollWheelUp>   <nop>
 noremap  <ScrollWheelDown> <nop>
 inoremap  <ScrollWheelUp>   <nop>
 inoremap  <ScrollWheelDown> <nop>
+nnoremap * :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
+nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
+nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -143,10 +147,8 @@ inoremap  <ScrollWheelDown> <nop>
 setlocal spell spelllang=en_us,cjk
 
 inoremap <silent><C-n>             <C-g>u<Esc>[s1z=`'a<C-g>u
-inoremap <silent><C-w>             <C-o>:CocCommand markdown-preview-enhanced.openPreview<Cr>
-nnoremap <silent><C-w>             :CocCommand markdown-preview-enhanced.openPreview<Cr>
-inoremap <silent><C-x>             <Cr><Cr><hr class="section"><Cr><Cr>
-inoremap <buffer><silent><leader>p <C-o>:call mdip#MarkdownClipboardImage()<CR>
+inoremap <silent><C-x>             <Cr><Cr><hr class='section'><Cr><Cr>
+inoremap <buffer><silent><leader>p <C-o>:call mdip#MarkdownClipboardImage()<Cr>
 
 let b:coc_pairs_disabled            = ["'"]
 let g:mdip_imgdir                   = 'images'
@@ -294,91 +296,15 @@ endif
 inoremap <silent><expr> <C-c> pumvisible() ? coc#_select_confirm()
                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window.
-" nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if CocAction('hasProvider', 'hover')
-    call CocActionAsync('doHover')
-  else
-    call feedkeys('K', 'in')
-  endif
-endfunction
-
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
 
-" Formatting selected code.
-" xmap <leader>f  <Plug>(coc-format-selected)
-" nmap <leader>f  <Plug>(coc-format-selected)
-
-augroup mygroup
-  autocmd!
-  " Setup formatexpr specified filetype(s).
-  autocmd FileType typEscript,json setl formatexpr=CocAction('formatSelected')
-  " Update signature help on jump placeholder.
-  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-augroup end
-
-" Applying codeAction to the selected region.
-" Example: `<leader>aap` for current paragraph
-" xmap <leader>a  <Plug>(coc-codeaction-selected)
-" nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <leader>qf  <Plug>(coc-fix-current)
-
-" Run the Code Lens action on the current line.
-nmap <leader>cl  <Plug>(coc-codelens-action)
-
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-" xmap if <Plug>(coc-funcobj-i)
-" omap if <Plug>(coc-funcobj-i)
-" xmap af <Plug>(coc-funcobj-a)
-" omap af <Plug>(coc-funcobj-a)
-" xmap ic <Plug>(coc-classobj-i)
-" omap ic <Plug>(coc-classobj-i)
-" xmap ac <Plug>(coc-classobj-a)
-" omap ac <Plug>(coc-classobj-a)
-
 " Remap <C-f> and <C-b> for scroll float windows/popups.
-" nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-" nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-" inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-" inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-" vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-" vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-
-" Use CTRL-S for selections ranges.
-" Requires 'textDocument/selectionRange' support of language server.
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
-
-" Add `:Format` command to format current buffer.
-command! -nargs=0 Format :call CocActionAsync('format')
-
-" Add `:Fold` command to fold current buffer.
-command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-
-" Add `:OR` command for organize imports of the current buffer.
-command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
+inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
 
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
@@ -402,11 +328,6 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
-
-imap <Plug> <Plug>(coc-convert-snippet)
-imap <Plug> <Plug>(coc-snippets-expand)
-imap <Plug> <Plug>(coc-snippets-expand-jump)
-imap <Plug> <Plug>(coc-snippets-select)
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
