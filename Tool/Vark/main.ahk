@@ -1,3 +1,5 @@
+#NoTrayIcon
+
 Process      Priority, , Realtime
 FileEncoding UTF-8
 CoordMode    Caret

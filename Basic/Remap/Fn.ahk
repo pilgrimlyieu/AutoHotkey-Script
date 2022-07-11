@@ -1,3 +1,5 @@
+#NoTrayIcon
+
 Fn_Status := 0
 
 #Space::

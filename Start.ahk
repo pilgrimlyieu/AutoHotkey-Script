@@ -7,6 +7,7 @@ Scripts := ["Basic\Shutdown\Shutdown"
           , "General\Tips\Run"
           , "General\Correction\Pinyin"
           , "General\Abbreviation\Common"
+          , "General\AHKMapCheatSheet\Mappings"
 
           , "Specific\Vim\Vim"
           , "Specific\Vim\KeyMap"
