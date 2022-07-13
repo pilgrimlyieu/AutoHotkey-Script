@@ -35,10 +35,11 @@ Global turn := 0
 
 #IfWinActive ahk_exe anki.exe
 
-f1::turn := 0
-f2::Cloze(1)
-f3::Cloze()
++f1::turn := 0
+f5::Cloze(1)
+f6::Cloze()
+`::SendInput {Text}<br>`n
 
 #InputLevel 1
 
-`::SendInput {Ctrl Down}{Enter}{Ctrl Up}{F1}
++`::SendInput {Ctrl Down}{Enter}{Ctrl Up}{Shift Down}{F1}{Shift Up}

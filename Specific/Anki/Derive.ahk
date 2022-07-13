@@ -25,9 +25,9 @@ Get() {
 }
 
 Clip(Text) {
-    Text := RegexRePlace(Trim(Text, " `t`r`n"), "(n|v|adj|adv|prep|conj|vt|vi)\.\s?", "$1. ")
+    Text := RegExReplace(RegExReplace(Trim(Text, " `t`r`n"), "(n|v|adj|adv|prep|conj|vt|vi)\.\s?", "$1. "), "(*UCP)\s+", " ")
     for e, c in {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
-        Text := RegexReplace(Text, (e ~= "[([]") ? ((e ~= "[.?()[\]]" ? "\" e : e) "(?=\s?[\x{4e00}-\x{9fa5}])") : ("(?:[\x{4e00}-\x{9fa5}]\s?)\K" (e ~= "[.?()[\]]" ? "\" e : e)), c)
+        Text := RegExReplace(Text, (e ~= "[([]") ? ((e ~= "[.?()[\]]" ? "\" e : e) "(?=\s?[\x{4e00}-\x{9fa5}])") : ("(?:[\x{4e00}-\x{9fa5}]\s?)\K" (e ~= "[.?()[\]]" ? "\" e : e)), c)
     return "{Text}" Text
 }
 
@@ -73,5 +73,4 @@ f1::SendInput % Clip(Board.RemoveAt(1))
 f2::SendInput % "{Text}{{c1::" Trim(Board.RemoveAt(1), " `t`r`n") "}} "
 f3::Put()
 f4::Put(0)
-`::SendInput {Ctrl Down}{Enter}{Ctrl Up}
-CapsLock::SendInput {Text}<br>`n
++CapsLock::SendInput {Text}<i>eg.</i> `
