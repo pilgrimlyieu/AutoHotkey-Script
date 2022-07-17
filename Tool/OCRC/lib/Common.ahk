@@ -28,14 +28,14 @@ URLDownloadToVar(url, Encoding := "", Method := "GET", postData := "", headers :
     }
 
     if (Encoding && hObject.ResponseBody) {
-        oADO := ComObjCreate("adodb.stream")
+        oADO      := ComObjCreate("adodb.stream")
         oADO.Type := 1
         oADO.Mode := 3
         oADO.Open()
         oADO.Write(hObject.ResponseBody)
         oADO.Position := 0
-        oADO.Type := 2
-        oADO.Charset := Encoding
+        oADO.Type     := 2
+        oADO.Charset  := Encoding
         return oADO.ReadText(), oADO.Close()
     }
     try 
@@ -171,7 +171,7 @@ Gdip_CreateBitmapFromHBITMAP(hBitmap) {
 }
 
 GetScreenshot() {
-    clipboard := ""
+    Clipboard := ""
     Global Basic_SnipTime, Basic_WaitSnipTime, Advance_ThirdPartyScreenshotOnOff, Advance_ThirdPartyScreenshotPath
     try {
         if !Advance_ThirdPartyScreenshotOnOff
@@ -193,8 +193,8 @@ GetScreenshot() {
 }
 
 Img2Base(Front := False, Quality := 75) {
-    pToken := Gdip_Startup()
-    pBitmap := Gdip_CreateBitmapFromClipboard()
+    pToken       := Gdip_Startup()
+    pBitmap      := Gdip_CreateBitmapFromClipboard()
     base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG", Quality)
     Gdip_DisposeImage(pBitmap)
     Gdip_Shutdown(pToken)

@@ -11,27 +11,27 @@
 
 Global ConfigFile := A_ScriptDir "\OCRC.privacy.ini"
 
-Global Baidu_RecogTypes := ["general_basic", "accurate_basic", "handwriting", "webimage"]
-Global Baidu_RecogTypesP := {"general_basic": "通用文字（标准）识别", "accurate_basic": "通用文字（高精度）识别", "handwriting": "手写文字识别", "webimage": "网络图片文字识别"}
-Global Baidu_IsChinese := "[\x{4e00}-\x{9fa5}]"
+Global Baidu_RecogTypes      := ["general_basic", "accurate_basic", "handwriting", "webimage"]
+Global Baidu_RecogTypesP     := {"general_basic": "通用文字（标准）识别", "accurate_basic": "通用文字（高精度）识别", "handwriting": "手写文字识别", "webimage": "网络图片文字识别"}
+Global Baidu_IsChinese       := "[\x{4e00}-\x{9fa5}]"
 Global Baidu_IsChineseBefore := "(?:[\x{4e00}-\x{9fa5}]\s?)\K"
-Global Baidu_IsChineseAfter := "(?=\s?[\x{4e00}-\x{9fa5}])"
+Global Baidu_IsChineseAfter  := "(?=\s?[\x{4e00}-\x{9fa5}])"
 Global Baidu_IsEnglishBefore := "([\w\d]\s?)\K"
-Global Baidu_IsEnglishAfter := "(?=\s?[\w\d])"
-Global Baidu_C2EPuncs := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
-Global Baidu_E2CPuncs := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
-Global Baidu_SearchEngines := ["https://www.baidu.com/s?wd=", "https://cn.bing.com/search?q=", "https://www.google.com/search?q=", "https://search.aust.cf/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
+Global Baidu_IsEnglishAfter  := "(?=\s?[\w\d])"
+Global Baidu_C2EPuncs        := {"，": ",", "。": ".", "？": "?", "！": "!", "、": ",", "：": ":", "；": ";", "“": """", "”": """", "‘": "'", "’": "'", "「": """", "」": """", "『": "'", "』": "'", "（": "(", "）": ")", "【": "[", "】": "]", "《": "", "》": ""}
+Global Baidu_E2CPuncs        := {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
+Global Baidu_SearchEngines   := ["https://www.baidu.com/s?wd=", "https://cn.bing.com/search?q=", "https://www.google.com/search?q=", "https://search.aust.cf/search?q=", "https://baike.baidu.com/item/", "https://zh.wikipedia.iwiki.eu.org/wiki/"]
 
-Global Mathpix_InlineStyles := [["$", "$"], ["\(", "\)"]]
+Global Mathpix_InlineStyles  := [["$", "$"], ["\(", "\)"]]
 Global Mathpix_DisplayStyles := [["$$", "$$"], ["\[", "\]"]]
 
-Menu, Tray, NoStandard
-Menu, Tray, Tip, OCRC
-Menu, Tray, Click, 1
-Menu, Tray, Add, 设置, Setting
-Menu, Tray, Default, 设置
-Menu, Tray, Add, 重启, ReloadSub
-Menu, Tray, Add, 退出, ExitSub
+Menu Tray, NoStandard
+Menu Tray, Tip, OCRC
+Menu Tray, Click, 1
+Menu Tray, Add, 设置, Setting
+Menu Tray, Default, 设置
+Menu Tray, Add, 重启, ReloadSub
+Menu Tray, Add, 退出, ExitSub
 
 if !A_IsAdmin {
     try {
@@ -72,19 +72,19 @@ BaiduOCR:
         return
     base64string := Img2Base(False, Advance_EBto64SQuality)
 
-    BaiduOCR := new Baidu({"paragraph": "true"
-                         , "probability": Baidu_ProbType ? "true" : "false"}
-                         ,{"api_key": Baidu_APIKey
-                         , "secret_key": Baidu_SecretKey
-                         , "imgbase64": base64string
-                         , "recogtype": Baidu_RecogTypes[Baidu_RecogType]
-                         , "probtype": Baidu_ProbType
-                         , "formatstyle": Baidu_FormatStyle
-                         , "puncstyle": Baidu_PuncStyle
-                         , "spacestyle": Baidu_SpaceStyle
-                         , "trantype": Baidu_TranType
-                         , "searchengine": Baidu_SearchEngine
-                         , "everything": Advance_EverythingOnOff
+    BaiduOCR := new Baidu({"paragraph"     : "true"
+                         , "probability"   : Baidu_ProbType ? "true" : "false"}
+                         ,{"api_key"       : Baidu_APIKey
+                         , "secret_key"    : Baidu_SecretKey
+                         , "imgbase64"     : base64string
+                         , "recogtype"     : Baidu_RecogTypes[Baidu_RecogType]
+                         , "probtype"      : Baidu_ProbType
+                         , "formatstyle"   : Baidu_FormatStyle
+                         , "puncstyle"     : Baidu_PuncStyle
+                         , "spacestyle"    : Baidu_SpaceStyle
+                         , "trantype"      : Baidu_TranType
+                         , "searchengine"  : Baidu_SearchEngine
+                         , "everything"    : Advance_EverythingOnOff
                          , "everythingpath": Advance_EverythingPath})
 return
 
@@ -96,46 +96,46 @@ MathpixOCR:
         return
     base64string := Img2Base(True, Advance_EBto64SQuality)
 
-    MathpixOCR := new Mathpix({"math_inline_delimiters": Mathpix_InlineStyles[Mathpix_InlineStyle]
+    MathpixOCR := new Mathpix({"math_inline_delimiters" : Mathpix_InlineStyles[Mathpix_InlineStyle]
                              , "math_display_delimiters": Mathpix_DisplayStyles[Mathpix_DisplayStyle]}
-                             ,{"app_id": Mathpix_AppID
-                             , "app_key": Mathpix_AppKey
-                             , "imgbase64": base64string
-                             , "default_select": Mathpix_DefaultSelect})
+                             ,{"app_id"                 : Mathpix_AppID
+                             , "app_key"                : Mathpix_AppKey
+                             , "imgbase64"              : base64string
+                             , "default_select"         : Mathpix_DefaultSelect})
 return
 
 Create_Config:
-    IniWrite 1, %ConfigFile%, Basic, Basic_BaiduOCROnOff
-    IniWrite 1, %ConfigFile%, Basic, Basic_MathpixOCROnOff
-    IniWrite 0, %ConfigFile%, Basic, Basic_AutoReloadOnOff
-    IniWrite 10, %ConfigFile%, Basic, Basic_SnipTime
+    IniWrite 1,   %ConfigFile%, Basic, Basic_BaiduOCROnOff
+    IniWrite 1,   %ConfigFile%, Basic, Basic_MathpixOCROnOff
+    IniWrite 0,   %ConfigFile%, Basic, Basic_AutoReloadOnOff
+    IniWrite 10,  %ConfigFile%, Basic, Basic_SnipTime
     IniWrite 500, %ConfigFile%, Basic, Basic_WaitSnipTime
 
-    IniWrite 75, %ConfigFile%, Advance, Advance_EBto64SQuality
-    IniWrite 0, %ConfigFile%, Advance, Advance_ThirdPartyScreenshotOnOff
+    IniWrite 75,   %ConfigFile%, Advance, Advance_EBto64SQuality
+    IniWrite 0,    %ConfigFile%, Advance, Advance_ThirdPartyScreenshotOnOff
     IniWrite % "", %ConfigFile%, Advance, Advance_ThirdPartyScreenshotPath
-    IniWrite 1, %ConfigFile%, Advance, Advance_EverythingOnOff
+    IniWrite 1,    %ConfigFile%, Advance, Advance_EverythingOnOff
     IniWrite C:/Program Files/Everything/Everything.exe, %ConfigFile%, Advance, Advance_EverythingPath
 
-    IniWrite F7, %ConfigFile%, BaiduOCR, Baidu_Hotkey
-    IniWrite % "", %ConfigFile%, BaiduOCR, Baidu_APIKey
-    IniWrite % "", %ConfigFile%, BaiduOCR, Baidu_SecretKey
-    IniWrite % "", %ConfigFile%, BaiduOCR, Baidu_Token
+    IniWrite F7,      %ConfigFile%, BaiduOCR, Baidu_Hotkey
+    IniWrite % "",    %ConfigFile%, BaiduOCR, Baidu_APIKey
+    IniWrite % "",    %ConfigFile%, BaiduOCR, Baidu_SecretKey
+    IniWrite % "",    %ConfigFile%, BaiduOCR, Baidu_Token
     IniWrite %A_Now%, %ConfigFile%, BaiduOCR, Baidu_TokenExpiration
-    IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_RecogType
-    IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_ProbType
-    IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_FormatStyle
-    IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_PuncStyle
-    IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_SpaceStyle
-    IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_TranType
-    IniWrite 1, %ConfigFile%, BaiduOCR, Baidu_SearchEngine
+    IniWrite 1,       %ConfigFile%, BaiduOCR, Baidu_RecogType
+    IniWrite 1,       %ConfigFile%, BaiduOCR, Baidu_ProbType
+    IniWrite 1,       %ConfigFile%, BaiduOCR, Baidu_FormatStyle
+    IniWrite 1,       %ConfigFile%, BaiduOCR, Baidu_PuncStyle
+    IniWrite 1,       %ConfigFile%, BaiduOCR, Baidu_SpaceStyle
+    IniWrite 1,       %ConfigFile%, BaiduOCR, Baidu_TranType
+    IniWrite 1,       %ConfigFile%, BaiduOCR, Baidu_SearchEngine
 
-    IniWrite F4, %ConfigFile%, MathpixOCR, Mathpix_Hotkey
+    IniWrite F4,   %ConfigFile%, MathpixOCR, Mathpix_Hotkey
     IniWrite % "", %ConfigFile%, MathpixOCR, Mathpix_AppID
     IniWrite % "", %ConfigFile%, MathpixOCR, Mathpix_AppKey
-    IniWrite 1, %ConfigFile%, MathpixOCR, Mathpix_InlineStyle
-    IniWrite 1, %ConfigFile%, MathpixOCR, Mathpix_DisplayStyle
-    IniWrite 1, %ConfigFile%, MathpixOCR, Mathpix_DefaultSelect
+    IniWrite 1,    %ConfigFile%, MathpixOCR, Mathpix_InlineStyle
+    IniWrite 1,    %ConfigFile%, MathpixOCR, Mathpix_DisplayStyle
+    IniWrite 1,    %ConfigFile%, MathpixOCR, Mathpix_DefaultSelect
 return
 
 Setting:
@@ -155,74 +155,74 @@ Setting:
     Gui Add, CheckBox, x32 y80 w90 vBasic_BaiduOCROnOff gGETV Checked%Basic_BaiduOCROnOff% +Right, Baidu
     Gui Add, CheckBox, x32 y+15 w90 vBasic_MathpixOCROnOff gGETV Checked%Basic_MathpixOCROnOff% +Right, Mathpix
 
-    Gui Add, GroupBox, x20 y160 w310 h120, 截图
-    Gui Add, Text, x15 y190 w80 h25 +Right, 截图时间
-    Gui Add, Edit, x+15 w80 vBasic_SnipTime gGETV Number
-    Gui Add, UpDown, Range5-60, %Basic_SnipTime%
-    Gui Add, Text, x200 y190 w20 h25 +Left, 秒
-    Gui Add, Text, x15 y+15 w80 h25 +Right, 缓冲时间
-    Gui Add, Edit, x+15 w80 vBasic_WaitSnipTime gGETV Number
-    Gui Add, UpDown, Range100-5000 0x80, %Basic_WaitSnipTime%
-    Gui Add, Text, x200 y230 w40 h25 +Left, 毫秒
+    Gui Add, GroupBox, x20 y160 w310 h120,      截图
+    Gui Add, Text,     x15 y190 w80 h25 +Right, 截图时间
+    Gui Add, Edit,     x+15 w80 vBasic_SnipTime gGETV Number
+    Gui Add, UpDown,   Range5-60,               %Basic_SnipTime%
+    Gui Add, Text,     x200 y190 w20 h25 +Left, 秒
+    Gui Add, Text,     x15 y+15 w80 h25 +Right, 缓冲时间
+    Gui Add, Edit,     x+15 w80 vBasic_WaitSnipTime gGETV Number
+    Gui Add, UpDown,   Range100-5000 0x80,      %Basic_WaitSnipTime%
+    Gui Add, Text,     x200 y230 w40 h25 +Left, 毫秒
 
     Gui Add, GroupBox, x20 y290 w310 h80, 设置
     Gui Add, CheckBox, x32 y320 w90 vBasic_AutoReloadOnOff gGETV Checked%Basic_AutoReloadOnOff% +Right, 自动重启
 
     Gui Tab, Advance
-    Gui Add, GroupBox, x20 y50 w310 h80, 高级设置
-    Gui Add, Text, x15 y80 w90 h25 +Right, 编码精度
-    Gui Add, Edit, x+15 w60 vAdvance_EBto64SQuality gGETV Number
-    Gui Add, UpDown, Range0-100, %Advance_EBto64SQuality%
+    Gui Add, GroupBox, x20 y50 w310 h80,       高级设置
+    Gui Add, Text,     x15 y80 w90 h25 +Right, 编码精度
+    Gui Add, Edit,     x+15 w60 vAdvance_EBto64SQuality gGETV Number
+    Gui Add, UpDown,   Range0-100,             %Advance_EBto64SQuality%
 
-    Gui Add, GroupBox, x20 y140 w310 h110, 外部截图软件支持
+    Gui Add, GroupBox, x20 y140 w310 h110,                                                                                      外部截图软件支持
     Gui Add, CheckBox, x32 y170 w90 vAdvance_ThirdPartyScreenshotOnOff gGETV Checked%Advance_ThirdPartyScreenshotOnOff% +Right, 启用
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 路径
-    Gui Add, Edit, x+15 w200 h25 vAdvance_ThirdPartyScreenshotPath gGETV, %Advance_ThirdPartyScreenshotPath%
+    Gui Add, Text,     x15 y+15 w90 h25 +Right,                                                                                 路径
+    Gui Add, Edit,     x+15 w200 h25 vAdvance_ThirdPartyScreenshotPath gGETV,                                                   %Advance_ThirdPartyScreenshotPath%
 
-    Gui Add, GroupBox, x20 y260 w310 h70, Everything
+    Gui Add, GroupBox, x20 y260 w310 h70,                                                                   Everything
     Gui Add, CheckBox, x32 y290 w90 vAdvance_EverythingOnOff gGETV Checked%Advance_EverythingOnOff% +Right, 启用
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 路径
-    Gui Add, Edit, x+15 w200 h25 vAdvance_EverythingPath gGETV, %Advance_EverythingPath%
+    Gui Add, Text,     x15 y+15 w90 h25 +Right,                                                             路径
+    Gui Add, Edit,     x+15 w200 h25 vAdvance_EverythingPath gGETV,                                         %Advance_EverythingPath%
 
     Gui Tab, BaiduOCR
-    Gui Add, GroupBox, x20 y50 w310 h230, 基础设置
-    Gui Add, Text, x15 y80 w90 h25 +Right, 热键
-    Gui Add, Hotkey, x+15 w200 h25 vBaidu_Hotkey gGBaidu_Hotkey, %Baidu_Hotkey%
-    Gui Add, Text, x15 y+15 w90 h25 +Right, API Key
-    Gui Add, Edit, x+15 w200 h25 vBaidu_APIKey gGETV, %Baidu_APIKey%
-    Gui Add, Text, x15 y+15 w90 h25 +Right, Secret Key
-    Gui Add, Edit, x+15 w200 h25 vBaidu_SecretKey gGETV, %Baidu_SecretKey%
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 识别类型
-    Gui Add, DropDownList, x+15 w200 vBaidu_RecogType gGETV AltSubmit Choose%Baidu_RecogType%, 通用文字（标准）识别|通用文字（高精度）识别|手写文字识别|网络图片文字识别
-    Gui Add, CheckBox, x32 y+15 w90 vBaidu_ProbType gGETV Check3 Checked%Baidu_ProbType% +Right, 置信度
+    Gui Add, GroupBox,     x20 y50 w310 h230,                                                        基础设置
+    Gui Add, Text,         x15 y80 w90 h25 +Right,                                                   热键
+    Gui Add, Hotkey,       x+15 w200 h25 vBaidu_Hotkey gGBaidu_Hotkey,                               %Baidu_Hotkey%
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                  API Key
+    Gui Add, Edit,         x+15 w200 h25 vBaidu_APIKey gGETV,                                        %Baidu_APIKey%
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                  Secret Key
+    Gui Add, Edit,         x+15 w200 h25 vBaidu_SecretKey gGETV,                                     %Baidu_SecretKey%
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                  识别类型
+    Gui Add, DropDownList, x+15 w200 vBaidu_RecogType gGETV AltSubmit Choose%Baidu_RecogType%,       通用文字（标准）识别|通用文字（高精度）识别|手写文字识别|网络图片文字识别
+    Gui Add, CheckBox,     x32 y+15 w90 vBaidu_ProbType gGETV Check3 Checked%Baidu_ProbType% +Right, 置信度
 
-    Gui Add, GroupBox, x20 y290 w310 h250, 默认选项
-    Gui Add, Text, x15 y320 w90 h25 +Right, 默认排版
-    Gui Add, DropDownList, x+15 w200 vBaidu_FormatStyle gGETV AltSubmit Choose%Baidu_FormatStyle%, 智能段落|合并多行|拆分多行
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 默认标点
-    Gui Add, DropDownList, x+15 w200 vBaidu_PuncStyle gGETV AltSubmit Choose%Baidu_PuncStyle%, 智能标点|原始结果|中文标点|英文标点
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 默认空格
-    Gui Add, DropDownList, x+15 w200 vBaidu_SpaceStyle gGETV AltSubmit Choose%Baidu_SpaceStyle%, 智能空格|原始结果|去除空格
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 默认翻译
-    Gui Add, DropDownList, x+15 w200 vBaidu_TranType gGETV AltSubmit Choose%Baidu_TranType%, 自动检测|英⟹中|中⟹英|繁⟹简|日⟹中
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 默认搜索
+    Gui Add, GroupBox,     x20 y290 w310 h250,                                                       默认选项
+    Gui Add, Text,         x15 y320 w90 h25 +Right,                                                  默认排版
+    Gui Add, DropDownList, x+15 w200 vBaidu_FormatStyle gGETV AltSubmit Choose%Baidu_FormatStyle%,   智能段落|合并多行|拆分多行
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                  默认标点
+    Gui Add, DropDownList, x+15 w200 vBaidu_PuncStyle gGETV AltSubmit Choose%Baidu_PuncStyle%,       智能标点|原始结果|中文标点|英文标点
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                  默认空格
+    Gui Add, DropDownList, x+15 w200 vBaidu_SpaceStyle gGETV AltSubmit Choose%Baidu_SpaceStyle%,     智能空格|原始结果|去除空格
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                  默认翻译
+    Gui Add, DropDownList, x+15 w200 vBaidu_TranType gGETV AltSubmit Choose%Baidu_TranType%,         自动检测|英->中|中->英|繁->简|日->中
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                  默认搜索
     Gui Add, DropDownList, x+15 w200 vBaidu_SearchEngine gGETV AltSubmit Choose%Baidu_SearchEngine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
 
     Gui Tab, MathpixOCR
-    Gui Add, GroupBox, x20 y50 w310 h150, 基础设置
-    Gui Add, Text, x15 y80 w90 h25 +Right, 热键
-    Gui Add, Hotkey, x+15 w200 h25 vMathpix_Hotkey gGMathpix_Hotkey, %Mathpix_Hotkey%
-    Gui Add, Text, x15 y+15 w90 h25 +Right, App ID
-    Gui Add, Edit, x+15 w200 h25 vMathpix_AppID gGETV, %Mathpix_AppID%
-    Gui Add, Text, x15 y+15 w90 h25 +Right, App Key
-    Gui Add, Edit, x+15 w200 h25 vMathpix_AppKey gGETV, %Mathpix_AppKey%
+    Gui Add, GroupBox, x20 y50 w310 h150,                              基础设置
+    Gui Add, Text,     x15 y80 w90 h25 +Right,                         热键
+    Gui Add, Hotkey,   x+15 w200 h25 vMathpix_Hotkey gGMathpix_Hotkey, %Mathpix_Hotkey%
+    Gui Add, Text,     x15 y+15 w90 h25 +Right,                        App ID
+    Gui Add, Edit,     x+15 w200 h25 vMathpix_AppID gGETV,             %Mathpix_AppID%
+    Gui Add, Text,     x15 y+15 w90 h25 +Right,                        App Key
+    Gui Add, Edit,     x+15 w200 h25 vMathpix_AppKey gGETV,            %Mathpix_AppKey%
 
-    Gui Add, GroupBox, x20 y210 w310 h160, 默认选项
-    Gui Add, Text, x15 y240 w90 h25 +Right, 行内公式
-    Gui Add, DropDownList, x+15 w200 vMathpix_InlineStyle gGETV AltSubmit Choose%Mathpix_InlineStyle%, $...$|\(...\)
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 行间公式
-    Gui Add, DropDownList, x+15 w200 vMathpix_DisplayStyle gGETV AltSubmit Choose%Mathpix_DisplayStyle%, $$...$$|\[...\]
-    Gui Add, Text, x15 y+15 w90 h25 +Right, 默认选择
+    Gui Add, GroupBox,     x20 y210 w310 h160,                                                             默认选项
+    Gui Add, Text,         x15 y240 w90 h25 +Right,                                                        行内公式
+    Gui Add, DropDownList, x+15 w200 vMathpix_InlineStyle gGETV AltSubmit Choose%Mathpix_InlineStyle%,     $...$|\(...\)
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                        行间公式
+    Gui Add, DropDownList, x+15 w200 vMathpix_DisplayStyle gGETV AltSubmit Choose%Mathpix_DisplayStyle%,   $$...$$|\[...\]
+    Gui Add, Text,         x15 y+15 w90 h25 +Right,                                                        默认选择
     Gui Add, DropDownList, x+15 w200 vMathpix_DefaultSelect gGETV AltSubmit Choose%Mathpix_DefaultSelect%, LaTeX|行内公式|行间公式
 
     Gui Show, , OCRC 设置
@@ -258,7 +258,7 @@ GETV:
     if !WinActive("ahk_id " SettingHwnd)
         return
     GuiControlGet TabVar, , SysTabControl321
-    GuiControlGet, tVa, , %A_GuiControl%
+    GuiControlGet tVa, , %A_GuiControl%
     %A_GuiControl% := tVa
     IniWrite %tVa%, %ConfigFile%, %TabVar%, %A_GuiControl%
     if A_GuiControl in Basic_BaiduOCROnOff,Basic_MathpixOCROnOff
@@ -278,12 +278,3 @@ return
 ExitSub:
 ExitApp
 return
-
-; Debug Function
-; !a::
-; ExitApp
-; return
-
-; +a::
-; Gosub Setting
-; return
