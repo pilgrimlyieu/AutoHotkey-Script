@@ -1,0 +1,11 @@
+Global TargetTime := A_YYYY A_MM A_DD 220000
+Global CheckInterval := 30
+
+TargetTime -= %A_Now%, seconds
+Sleep % 1000 * TargetTime
+MsgBox 4160, TODO, It's TIME to Anki!!!, 10
+
+while 1 {
+    WinActivate ahk_exe Anki.exe
+    Sleep % 1000 * CheckInterval
+}

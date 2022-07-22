@@ -3,6 +3,8 @@ Dir := A_WorkingDir "\"
 Scripts := ["Basic\Shutdown\Shutdown"
           , "Basic\Window\WinDrag\main"
           , "Basic\Remap\Fn"
+          , "Basic\Remap\NumLock"
+          , "Basic\Remap\Others"
 
           , "General\Tips\Run"
           , "General\Correction\Pinyin"
@@ -11,8 +13,9 @@ Scripts := ["Basic\Shutdown\Shutdown"
 
           , "Specific\Vim\Vim"
           , "Specific\Vim\KeyMap"
+          , "Specific\Anki\Must"
 
           , "Tool\Vark\main"]
 
-For index, script in Scripts
+for index, script in Scripts
     Run % "AutoHotkey.exe /restart /CP65001 " Dir script ".ahk"

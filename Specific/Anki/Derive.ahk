@@ -17,6 +17,8 @@
 ;;;;; 自定义捷径
 ;;;;;;; 添加 <key>::<command>
 
+SetTitleMatchMode 3
+
 Get() {
     Clipboard := ""
     SendInput {Ctrl Down}c{Ctrl Up}
@@ -67,7 +69,7 @@ for index, value in Board
 MsgBox % msg
 return
 
-#IfWinActive ahk_exe anki.exe
+#IfWinActive Add
 
 f1::SendInput % Clip(Board.RemoveAt(1))
 f2::SendInput % "{Text}{{c1::" Trim(Board.RemoveAt(1), " `t`r`n") "}} "
