@@ -107,14 +107,14 @@ Plug 'neoclide/coc.nvim',             { 'branch': 'release' }
 Plug 'dense-analysis/ale',            { 'for': g:language_types }
 Plug 'SirVer/ultisnips'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'pilgrimlyieu/vim-surround'
 Plug 'easymotion/vim-easymotion'
 Plug 'mg979/vim-visual-multi'
 Plug 'Yggdroot/indentLine',           { 'for': g:language_types }
 Plug 'luochen1990/rainbow',           { 'for': g:language_types }
 Plug 'lervag/vimtex',                 { 'for': ['tex', 'markdown'] }
-" Plug 'python-mode/python-mode',   { 'for': 'python', 'branch': 'develop' }
+Plug 'python-mode/python-mode',       { 'for': 'python', 'branch': 'develop' }
 " }}}1
 call plug#end()
 
@@ -163,8 +163,9 @@ inoremap <ScrollWheelUp>   <nop>
 inoremap <ScrollWheelDown> <nop>
 " }}}1
 
-""""""""""""""""""""""""""""""""""""""""""""""
-""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
 
@@ -175,6 +176,16 @@ inoremap <ScrollWheelDown> <nop>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Markdown {{{1
+autocmd FileType markdown inoremap <silent><leader>mo <C-o>:GenTocGFM<Cr>
+autocmd FileType markdown inoremap <silent><leader>mt <C-o>:UpdateToc<Cr>
+autocmd FileType markdown nnoremap <silent><leader>mt :UpdateToc<Cr>
+autocmd FileType markdown vnoremap <silent><leader>vl :EasyAlign */\\\@<!<Bar>/<Cr>
+autocmd FileType markdown vnoremap <silent><leader>vr :EasyAlign */\\\@<!<Bar>/ar<Cr>
+autocmd FileType markdown vnoremap <silent><leader>vv :EasyAlign */\\\@<!<Bar>/ac<Cr>
+autocmd FileType markdown nmap     <silent><leader>vl gaip*<C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nmap     <silent><leader>vr gaip*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nmap     <silent><leader>vv gaip*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
+
 autocmd FileType markdown let b:coc_pairs_disabled = ["'"]
 " }}}1
 
@@ -261,11 +272,6 @@ let g:vimtex_compiler_latexmk = {
 
 let g:vimtex_syntax_conceal_disable   = 1
 let g:vimtex_quickfix_open_on_warning = 0
-
-augroup vimtex_config
-  autocmd!
-  autocmd User VimtexEventQuit call vimtex#compiler#clean(0)
-augroup end
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -344,6 +350,8 @@ let g:VM_maps["Add Cursor Down"] = '<A-s>'
 let g:VM_maps["Add Cursor Up"]   = '<A-w>'
 let g:VM_maps["Select l"]        = '<A-d>'
 let g:VM_maps["Select h"]        = '<A-a>'
+let g:VM_maps["Move Left"]       = '<A-S-a>'
+let g:VM_maps["Move Right"]      = '<A-S-d>'
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -498,8 +506,12 @@ inoremap <silent><F5> <C-O>:call RunProgram()<CR>
 
 autocmd FileType python,javascript nnoremap <silent><leader>Q :call CloseTerminal()<CR>
 
-let g:support_f5_filetypes = ['python', 'javascript', 'autohotkey']
-let g:terminal_settings = {'vertical': 1}
+let g:python3_host_skip_check = 1
+let g:python3_host_prog       = '/usr/local/bin/python3'
+let g:support_f5_filetypes    = ['python', 'javascript', 'autohotkey', 'markdown']
+let g:terminal_settings       = {'vertical': 1}
+
+highlight default link Terminal Normal
 
 function! RunProgram()
     if index(g:support_f5_filetypes, &filetype) >= 0
@@ -517,7 +529,9 @@ function! RunProgram()
             call term_start('node '. l:filename, l:opts)
         elseif &filetype == 'autohotkey'
             execute 'silent execute "!start \"D:/Program Files/AutoHotkey/autohotkey.exe\" /restart /CP65001 %:p"'
-        endif                                                                              
+        elseif &filetype == 'markdown'
+            execute 'silent execute "CocCommand markdown-preview-enhanced.openPreview"'
+        endif
 
     endif
 endfunction

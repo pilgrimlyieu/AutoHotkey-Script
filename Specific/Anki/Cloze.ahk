@@ -15,7 +15,7 @@
 ;;;;; Shift + `             保存卡片并清除序数        Save card and Reset Cloze order
 
 Cloze(keep := 0) {
-    clip := Clipboard
+    clip := ClipboardAll
     Clipboard := ""
     SendInput {Ctrl Down}x{Ctrl Up}
     ClipWait 0

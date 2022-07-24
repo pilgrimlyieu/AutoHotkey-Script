@@ -11,7 +11,7 @@ Delete_Label(text, start_label, end_label) {
 }
 
 Label(label, html = 1) {
-    clip := Clipboard
+    clip := ClipboardAll
     Clipboard := ""
     SendInput {Ctrl Down}x{Ctrl Up}
     ClipWait 0
@@ -38,8 +38,8 @@ Label(label, html = 1) {
         SendInput % "{Text}" Insert_Label(text, start_label, end_label)
 }
 
-^b::Label("**", 0)
-!b::Label("b")
-^s::Label("*", 0)
-!s::Label("i")
-^w::Label("u")
+; ^b::Label("**", 0)
+; ^s::Label("*", 0)
+!a::Label("b")
+!s::Label("u")
+!d::Label("i")

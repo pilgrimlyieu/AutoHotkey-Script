@@ -8,11 +8,12 @@ SetWinDelay  -1
 
 #Include <Vark>
 
-Global Settings := {"tempdir"      :  "G:\Temp\.vark\"
-                  , "vimdir"       :  "D:\Program Files\Vim\vim90"
-                  , "vimrc"        :  "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vark.vimrc"
-                  , "tempfilename" :  "Temp"
-                  , "popsizes"     :  [960, 240]}
+Global Settings := {"tempdir"     : "G:\Temp\.vark\"
+                  , "vimdir"      : "D:\Program Files\Vim\vim90"
+                  , "vimrc"       : "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vark.vimrc"
+                  , "tempfilename": "Temp"
+                  , "savetoclip"  : 1
+                  , "popsizes"    : [960, 320]}
 
 VimHere := new Vark(Settings)
 

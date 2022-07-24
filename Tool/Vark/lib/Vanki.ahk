@@ -9,6 +9,7 @@ class Vanki extends Vark {
          this.TempFileName    := settings.tempfilename
          this.MixFileName     := settings.mixfilename
          this.CombineFileName := settings.combinefilename
+         this.SaveToClip      := settings.savetoclip
          this.PopSizes        := settings.popsizes
          this.Delimiter       := settings.delimiter
          this.MixPath         := this.TempDir this.MixFileName

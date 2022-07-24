@@ -6,15 +6,16 @@ SetWinDelay  -1
 
 #Include <Vanki>
 
-Global Settings := {"tempdir"         :  "G:\Temp\.vanki\"
-                  , "historydir"      :  "G:\Temp\.vanki\.history\"
-                  , "vimdir"          :  "D:\Program Files\Vim\vim90"
-                  , "vimrc"           :  "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vanki.vimrc"
-                  , "tempfilename"    :  "Temp_"
-                  , "mixfilename"     :  "Mix.md"
-                  , "combinefilename" :  "Combine.md"
-                  , "popsizes"        :  [960, 240]
-                  , "delimiter"       :  "`r`n<hr class='section'>`r`n`r`n"}
+Global Settings := {"tempdir"        : "G:\Temp\.vanki\"
+                  , "historydir"     : "G:\Temp\.vanki\.history\"
+                  , "vimdir"         : "D:\Program Files\Vim\vim90"
+                  , "vimrc"          : "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vanki.vimrc"
+                  , "tempfilename"   : "Temp_"
+                  , "mixfilename"    : "Mix.md"
+                  , "combinefilename": "Combine.md"
+                  , "savetoclip"     : 0
+                  , "popsizes"       : [960, 300]
+                  , "delimiter"      : "`r`n<hr class='section'>`r`n`r`n"}
 
 VimAnki := new Vanki(Settings)
 

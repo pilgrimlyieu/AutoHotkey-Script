@@ -75,8 +75,8 @@ Plug 'morhetz/gruvbox'
 Plug 'yianwillis/vimcdoc'
 Plug 'neoclide/coc.nvim'
 Plug 'SirVer/ultisnips'
-Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
+Plug 'pilgrimlyieu/vim-surround'
 Plug 'easymotion/vim-easymotion'
 Plug 'mg979/vim-visual-multi'
 Plug 'lervag/vimtex'
@@ -124,11 +124,11 @@ nnoremap <expr>0           col('.') == 1 ? '^': '0'
 noremap  <silent><leader>/ :noh<Cr>
 noremap  <ScrollWheelUp>   <nop>
 noremap  <ScrollWheelDown> <nop>
-inoremap  <ScrollWheelUp>   <nop>
-inoremap  <ScrollWheelDown> <nop>
-nnoremap * :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
-nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
-nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
+inoremap <ScrollWheelUp>   <nop>
+inoremap <ScrollWheelDown> <nop>
+nnoremap *                 :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
+nnoremap /                 :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
+nnoremap ?                 :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -149,6 +149,12 @@ setlocal spell spelllang=en_us,cjk
 inoremap <silent><C-n>             <C-g>u<Esc>[s1z=`'a<C-g>u
 inoremap <silent><C-x>             <Cr><Cr><hr class='section'><Cr><Cr>
 inoremap <buffer><silent><leader>p <C-o>:call mdip#MarkdownClipboardImage()<Cr>
+vnoremap <silent><leader>vl        :EasyAlign */\\\@<!<Bar>/<Cr>
+vnoremap <silent><leader>vr        :EasyAlign */\\\@<!<Bar>/ar<Cr>
+vnoremap <silent><leader>vv        :EasyAlign */\\\@<!<Bar>/ac<Cr>
+nmap     <silent><leader>vl        gaip*<C-x>\\\@<!<Bar><Cr>
+nmap     <silent><leader>vr        gaip*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
+nmap     <silent><leader>vv        gaip*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
 
 let b:coc_pairs_disabled            = ["'"]
 let g:mdip_imgdir                   = 'images'
@@ -233,6 +239,8 @@ let g:VM_maps["Add Cursor Down"] = '<A-s>'
 let g:VM_maps["Add Cursor Up"]   = '<A-w>'
 let g:VM_maps["Select l"]        = '<A-d>'
 let g:VM_maps["Select h"]        = '<A-a>'
+let g:VM_maps["Move Left"]       = '<A-S-a>'
+let g:VM_maps["Move Right"]      = '<A-S-d>'
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

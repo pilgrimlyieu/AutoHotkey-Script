@@ -4,6 +4,7 @@
          this.VimDir       := settings.vimdir
          this.Vimrc        := settings.vimrc
          this.TempFileName := settings.tempfilename
+         this.SaveToClip   := settings.savetoclip
          this.PopSizes     := settings.popsizes
          this.TempPath     := this.TempDir this.TempFileName
 
@@ -92,7 +93,10 @@
     }
 
     Content(content) {
-        SendInput % "{Text}" RegExReplace(content, "(\n|\r)*$", "")
+        content := RegExReplace(content, "(\n|\r)*$", "")
+        SendInput % "{Text}" content
+        if this.SaveToClip
+            Clipboard := content
     }
 
     Clear() {

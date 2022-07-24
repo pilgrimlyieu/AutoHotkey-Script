@@ -1,7 +1,7 @@
 #NoTrayIcon
 
 #f::
-    Clip := Clipboard
+    Clip := ClipboardAll
     Clipboard := ""
     SendInput {Ctrl Down}c{Ctrl Up}
     ClipWait 0

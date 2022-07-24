@@ -8,7 +8,7 @@ VIMPATH := "D:\Program Files\Vim\vim90"
 #IfWinNotActive ahk_class Vim
 
 !q::
-Clip := Clipboard
+Clip := ClipboardAll
 Clipboard := ""
 SendInput {Ctrl Down}c{Ctrl Up}
 ClipWait 0
