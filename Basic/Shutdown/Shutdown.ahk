@@ -12,8 +12,8 @@ Warn(WarnMinute) {
 Hint(WarnMinute) {
     DeltaTime := SDTime
     DeltaTime -= %A_Now%, Seconds
+    Sleep % 1000 * (DeltaTime - WarnMinute * 60)
     if WarnMinute {
-        Sleep % 1000 * (DeltaTime - WarnMinute * 60)
         MsgBox % 4416 - ExtendLevel * 28, 即将关机, % Warn(WarnMinute), 10
         IfMsgBox Yes
         {
