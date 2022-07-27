@@ -12,7 +12,7 @@
         this.UpdateClip := ObjBindMethod(this, "__Clip")
         this.post       := post
         this.config     := config
-        this.json       := Json.Load(URLDownloadToVar("https://api.mathpix.com/v3/text", "UTF-8", "POST", JSON.Dump(postdata), headers))
+        this.json       := Json.Load(Request("https://api.mathpix.com/v3/text", "UTF-8", "POST", JSON.Dump(postdata), headers))
         this.__Show()
     }
 

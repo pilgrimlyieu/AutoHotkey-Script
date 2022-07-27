@@ -5,7 +5,7 @@ ReadIni(_ConfigFile, _key := "", _Section := "") {
     return initmp
 }
 
-URLDownloadToVar(url, Encoding := "", Method := "GET", postData := "", headers := "") {
+Request(url, Encoding := "", Method := "GET", postData := "", headers := "") {
     hObject := ComObjCreate("WinHttp.WinHttpRequest.5.1")
     hObject.SetTimeouts(30000, 30000, 1200000, 1200000) 
     try
@@ -18,9 +18,10 @@ URLDownloadToVar(url, Encoding := "", Method := "GET", postData := "", headers :
         }
     }
     if postData {
-        try
+        try {
             hObject.Send(postData)
-        hObject.WaitForResponse(-1)
+            hObject.WaitForResponse(-1)
+        }
     }
     else {
         try
@@ -42,17 +43,19 @@ URLDownloadToVar(url, Encoding := "", Method := "GET", postData := "", headers :
         return hObject.ResponseText
 }
 
-StrPutVar(sVar, ByRef sbin, encoding) {
-    VarSetCapacity(sbin, StrPut(sVar, encoding))
-    return (StrPut(sVar, &sbin, encoding) -1)
+StrPutVar(sVar, ByRef sbin) {
+    VarSetCapacity(sbin, StrPut(sVar, "utf-8"))
+    return (StrPut(sVar, &sbin, "utf-8") -1)
 }
 
 UrlEncode(string) {
     bt := StrPutVar(string, sb, "utf-8")
     loop % bt {
         hex := format("{1:02x}", hex2 := NumGet(&sb, A_index - 1, "Uchar"))
-        if (hex2 == 33 || (hex2 >= 39 && hex2 <= 42) || hex2 == 45 || hex2 == 46 || (hex2 >= 48 && hex2 <= 57) || (hex2 >= 65 && hex2 <= 90) || hex2 == 95 || (hex2 >= 97 && hex2 <= 122) || hex2 == 126)
-            content .= Chr(hex2)
+
+        if hex2
+            if (hex2 == 33 || (hex2 >= 39 && hex2 <= 42) || hex2 == 45 || hex2 == 46 || (hex2 >= 48 && hex2 <= 57) || (hex2 >= 65 && hex2 <= 90) || hex2 == 95 || (hex2 >= 97 && hex2 <= 122) || hex2 == 126)
+                content .= Chr(hex2)
         else
             content .= "`%" hex
     }

@@ -12,6 +12,7 @@ Scripts := ["Basic\Shutdown\Shutdown"
           , "General\AHKMapCheatSheet\Mappings"
 
           , "Specific\Vim\Vim"
+          , "Specific\Vim\JK"
           , "Specific\Vim\KeyMap"
           , "Specific\Anki\Must"
 

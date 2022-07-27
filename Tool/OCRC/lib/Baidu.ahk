@@ -6,7 +6,7 @@
         postdata := "image=" UrlEncode(this.config.imgbase64)
         for key, value in post
             postdata .= "&" key "=" value
-        this.json := JSON.Load(URLDownloadToVar("https://aip.baidubce.com/rest/2.0/ocr/v1/" this.config.recogtype "?access_token=" this.token, "UTF-8", "POST", postdata, {"Content-Type":"application/x-www-form-urlencoded"}))
+        this.json := JSON.Load(Request("https://aip.baidubce.com/rest/2.0/ocr/v1/" this.config.recogtype "?access_token=" this.token, "UTF-8", "POST", postdata, {"Content-Type":"application/x-www-form-urlencoded"}))
         this.__Show()
     }
 
@@ -101,7 +101,7 @@
         this.token            := ReadIni(ConfigFile, "Baidu_Token", "BaiduOCR")
         this.token_expiration := ReadIni(ConfigFile, "Baidu_TokenExpiration", "BaiduOCR")
         if !(this.token and A_Now < this.token_expiration) {
-            returnjson := JSON.Load(URLDownloadToVar("https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" this.config.api_key "&client_secret=" this.config.secret_key))
+            returnjson := JSON.Load(Request("https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" this.config.api_key "&client_secret=" this.config.secret_key))
             if returnjson.error
                 MsgBox 4112, % "BaiduOCR " returnjson.error, % returnjson.error_description
             else {

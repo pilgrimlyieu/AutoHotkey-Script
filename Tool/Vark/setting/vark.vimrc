@@ -48,7 +48,13 @@ set viewoptions-=options
 set undofile
 set undodir=D:\.vim\.undo\
 set directory=D:\.vim\.swap\
+set viewdir=D:\.vim\.view\
 set shortmess+=FWA
+set background=dark
+set listchars=tab:!!,trail:·,lead:·
+set list
+set gdefault
+let $LANG = 'en_US'
 set noruler
 set noshowmode
 set noshowcmd
