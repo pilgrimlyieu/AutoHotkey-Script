@@ -54,12 +54,14 @@ set background=dark
 set listchars=tab:!!,trail:·,lead:·
 set list
 set gdefault
-let $LANG = 'en_US'
 set noruler
 set noshowmode
 set noshowcmd
 set showtabline=0
 set filetype=markdown
+set titlestring=GVim\ Mode:\ %{mode()}\ \&\ Sever\ Name:\ %{v:servername}
+
+let $LANG = 'en_US'
 " }}}
 
 augroup auto_view
@@ -116,10 +118,13 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
 Plug 'pilgrimlyieu/vim-surround'
 Plug 'easymotion/vim-easymotion'
+Plug 'ZSaberLv0/vim-easymotion-chs'
 Plug 'mg979/vim-visual-multi'
-Plug 'Yggdroot/indentLine',           { 'for': g:language_types }
-Plug 'luochen1990/rainbow',           { 'for': g:language_types }
+Plug 'luochen1990/rainbow'
+Plug 'Yggdroot/indentLine'
 Plug 'lervag/vimtex',                 { 'for': ['tex', 'markdown'] }
+Plug 'pilgrimlyieu/md-img-paste.vim', { 'for': 'markdown' }
+Plug 'mzlogin/vim-markdown-toc',      { 'for': 'markdown'}
 Plug 'python-mode/python-mode',       { 'for': 'python', 'branch': 'develop' }
 " }}}1
 call plug#end()
@@ -133,7 +138,12 @@ colorscheme gruvbox
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Key Mappings {{{1
-let g:mapleader = ","
+let g:mapleader = " "
+
+function! Execute(cmd)
+    execute a:cmd
+    return ''
+endfunction
 
 noremap  <Up>    <Nop>
 noremap  <Down>  <Nop>
@@ -143,26 +153,68 @@ inoremap <Up>    <Nop>
 inoremap <Down>  <Nop>
 inoremap <Left>  <Nop>
 inoremap <Right> <Nop>
-nnoremap <Esc>   <Nop>
-inoremap <Esc>   <Nop>
+nnoremap <Space> <Nop>
 
-inoremap jk                <Esc>
-inoremap kj                <Esc>
-nmap     H                 0
-nnoremap L                 $
-nnoremap U                 <C-r>
-nnoremap ;                 :
-nnoremap :                 ;
-nnoremap k                 gk
-nnoremap gk                k
-nnoremap j                 gj
-nnoremap gj                j
-inoremap <silent><C-q>     <C-o>:x<Cr>
-inoremap <silent><C-S-q>   <C-o>:q!<Cr>
-nnoremap <silent><C-q>     :x<Cr>
-nnoremap <silent><C-S-q>   :q!<Cr>
-nnoremap <expr>0           col('.') == 1 ? '^': '0'
-noremap  <silent><leader>/ :noh<Cr>
+inoremap jk      <Esc>
+inoremap kj      <Esc>
+inoremap jj      <Esc>
+inoremap kk      <Esc>
+nnoremap U       <C-r>
+nnoremap ;       :
+nnoremap :       ,
+nnoremap ,       ;
+nnoremap <expr>0 col('.') == 1 ? '^' : '0'
+nmap     H       0
+nmap     L       $
+omap     H       0
+omap     L       $
+
+nnoremap <silent><leader>/ :noh<Cr>
+vnoremap /                 /\v
+nnoremap ?                 ?\v
+vnoremap ?                 ?\v
+
+inoremap <silent><C-j> <C-r>=Execute('normal! <C-v><C-w>j<C-v><Esc>')<Cr>
+inoremap <silent><C-k> <C-r>=Execute('normal! <C-v><C-w>k<C-v><Esc>')<Cr>
+inoremap <silent><C-h> <C-r>=Execute('normal! <C-v><C-w>h<C-v><Esc>')<Cr>
+inoremap <silent><C-l> <C-r>=Execute('normal! <C-v><C-w>l<C-v><Esc>')<Cr>
+nnoremap <C-j>         <C-W>j
+nnoremap <C-k>         <C-W>k
+nnoremap <C-h>         <C-W>h
+nnoremap <C-l>         <C-W>l
+nnoremap <C-S-j>       <C-W>-
+nnoremap <C-S-k>       <C-W>+
+nnoremap <C-S-h>       <C-W><
+nnoremap <C-S-l>       <C-W>>
+
+nnoremap k  gk
+nnoremap gk k
+nnoremap j  gj
+nnoremap gj j
+
+nnoremap <C-q>             ZZ
+nnoremap <C-S-q>           ZQ
+nnoremap <leader>q         ZZ
+nnoremap <leader>Q         ZQ
+inoremap <silent><C-s>     <C-r>=Execute('w')<Cr>
+inoremap <silent><C-q>     <C-r>=Execute('x')<Cr>
+inoremap <silent><C-S-q>   <C-r>=Execute('q!')<Cr>
+inoremap <silent><C-S-c>   <C-r>=Execute('bw')<Cr>
+nnoremap <silent><C-s>     :w<Cr>
+nnoremap <silent><C-S-c>   :bw<Cr>
+nnoremap <silent><leader>w :w<Cr>
+nnoremap <silent><leader>C :bw<Cr>
+nnoremap <silent><S-Esc>   :qa!<Cr>
+
+tnoremap <F1>           <C-W>N
+tnoremap <S-F1>         <C-W><C-C>
+tnoremap <silent><S-F5> <C-W>N:bw!<Cr>
+nnoremap <silent><S-F5> :call CloseTerminal()<CR>
+
+nnoremap Q  <Nop>
+nnoremap gq Q
+
+set mouse=
 noremap  <ScrollWheelUp>   <nop>
 noremap  <ScrollWheelDown> <nop>
 inoremap <ScrollWheelUp>   <nop>
@@ -207,17 +259,27 @@ let g:surround_{char2nr('”')}  = "『\r』"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Markdown {{{1
-autocmd FileType markdown inoremap <silent><leader>mo <C-o>:GenTocGFM<Cr>
-autocmd FileType markdown inoremap <silent><leader>mt <C-o>:UpdateToc<Cr>
+autocmd FileType markdown inoremap <silent><C-x>      <Cr><Cr><hr class='section'><Cr><Cr>
+autocmd FileType markdown inoremap <silent><C-t>      <C-r>=Execute('UpdateToc')<Cr>
+autocmd FileType markdown inoremap <silent><C-p>      <C-r>=Execute('call mdip#MarkdownClipboardImage()')<Cr>
 autocmd FileType markdown nnoremap <silent><leader>mt :UpdateToc<Cr>
 autocmd FileType markdown vnoremap <silent><leader>vl :EasyAlign */\\\@<!<Bar>/<Cr>
 autocmd FileType markdown vnoremap <silent><leader>vr :EasyAlign */\\\@<!<Bar>/ar<Cr>
 autocmd FileType markdown vnoremap <silent><leader>vv :EasyAlign */\\\@<!<Bar>/ac<Cr>
-autocmd FileType markdown nmap     <silent><leader>vl gaip*<C-x>\\\@<!<Bar><Cr>
-autocmd FileType markdown nmap     <silent><leader>vr gaip*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
-autocmd FileType markdown nmap     <silent><leader>vv gaip*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nmap     <silent><leader>vl <Plug>(EasyAlign)ip*<C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nmap     <silent><leader>vr <Plug>(EasyAlign)ip*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nmap     <silent><leader>vv <Plug>(EasyAlign)ip*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
 
 autocmd FileType markdown let b:coc_pairs_disabled = ["'"]
+
+autocmd FileType markdown inoreabbrev <silent>toc <C-r>=Execute('GenTocGFM')<Cr>
+
+let g:vmt_auto_update_on_save = 0
+let g:vmt_fence_text          = 'TOC Start'
+let g:vmt_fence_closing_text  = 'TOC End'
+let g:vmt_list_item_char      = '-'
+let g:mdip_imgdir             = 'images'
+let g:mdip_imgname            = ''
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -356,8 +418,8 @@ nnoremap <leader><leader>t <Plug>(easymotion-t2)
 nnoremap <leader><leader>T <Plug>(easymotion-T2)
 nnoremap <leader>s         <Plug>(easymotion-s)
 nnoremap <leader>S         <Plug>(easymotion-s2)
-nnoremap /                 <Plug>(easymotion-sn)
-onoremap /                 <Plug>(easymotion-tn)
+nnoremap /                 <Plug>(easymotion-sn)\v
+onoremap /                 <Plug>(easymotion-tn)\v
 nnoremap n                 <Plug>(easymotion-next)
 nnoremap N                 <Plug>(easymotion-prev)
 " }}}1
@@ -435,6 +497,13 @@ let g:ale_linters      = {
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " coc {{{1
+let g:coc_snippet_next = '<Tab>'
+let g:coc_snippet_prev = '<S-Tab>'
+
+" Git Config
+" [coc-git]
+"     issuesources = github/pilgrimlyieu/School-Note,github/pilgrimlyieu/vimrc,github/pilgrimlyieu/Snippets,github/pilgrimlyieu/Snippets-Dependencies,github/pilgrimlyieu/AutoHotkey-Script,github/pilgrimlyieu/Python-Script
+
 " TextEdit might fail if hidden is not set.
 set hidden
 
@@ -443,7 +512,7 @@ set nobackup
 set nowritebackup
 
 " Give more space for displaying messages.
-" set cmdheight=1
+set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
@@ -483,17 +552,91 @@ endif
 inoremap <silent><expr> <C-c> pumvisible() ? coc#_select_confirm()
                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if CocAction('hasProvider', 'hover')
+    call CocActionAsync('doHover')
+  else
+    call feedkeys('K', 'in')
+  endif
+endfunction
+
 " Highlight the symbol and its references when holding the cursor.
 autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Symbol renaming.
 nmap <leader>rn <Plug>(coc-rename)
 
+" Formatting selected code.
+" xmap <leader>f  <Plug>(coc-format-selected)
+" nmap <leader>f  <Plug>(coc-format-selected)
+
+augroup mygroup
+  autocmd!
+  " Setup formatexpr specified filetype(s).
+  autocmd FileType typEscript,json setl formatexpr=CocAction('formatSelected')
+  " Update signature help on jump placeholder.
+  autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+augroup end
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+" xmap <leader>a  <Plug>(coc-codeaction-selected)
+" nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <leader>ac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+" nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Run the Code Lens action on the current line.
+" nmap <leader>cl  <Plug>(coc-codelens-action)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+" xmap if <Plug>(coc-funcobj-i)
+" omap if <Plug>(coc-funcobj-i)
+" xmap af <Plug>(coc-funcobj-a)
+" omap af <Plug>(coc-funcobj-a)
+" xmap ic <Plug>(coc-classobj-i)
+" omap ic <Plug>(coc-classobj-i)
+" xmap ac <Plug>(coc-classobj-a)
+" omap ac <Plug>(coc-classobj-a)
+
 " Remap <C-f> and <C-b> for scroll float windows/popups.
+" nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+" nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
 inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
 vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
 vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of language server.
+" nmap <silent> <C-s> <Plug>(coc-range-select)
+" xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" Add `:Format` command to format current buffer.
+command! -nargs=0 Format :call CocActionAsync('format')
+
+" Add `:Fold` command to fold current buffer.
+command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+" Add `:OR` command for organize imports of the current buffer.
+command! -nargs=0 OR   :call     CocActionAsync('runCommand', 'editor.action.organizeImport')
 
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
@@ -502,21 +645,22 @@ vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(
 
 " Mappings for CoCList
 " Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+" nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
+" nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
 " Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
+" nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document.
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
+" nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols.
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
+" nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
+" nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 " Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
+" nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+" nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+" nnoremap <silent><nowait> <space>l  :<C-u>CocList<CR>
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -533,37 +677,41 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " Python {{{1
 nnoremap <silent><F5> :call RunProgram()<CR>
-inoremap <silent><F5> <C-O>:call RunProgram()<CR>
+inoremap <silent><F5> <C-r>=Execute('call RunProgram()')<Cr>
 
 autocmd FileType python,javascript nnoremap <silent><leader>Q :call CloseTerminal()<CR>
 
 let g:python3_host_skip_check = 1
 let g:python3_host_prog       = '/usr/local/bin/python3'
-let g:support_f5_filetypes    = ['python', 'javascript', 'autohotkey', 'markdown']
 let g:terminal_settings       = {'vertical': 1}
 
 highlight default link Terminal Normal
 
 function! RunProgram()
-    if index(g:support_f5_filetypes, &filetype) >= 0
-        execute 'silent execute "w"'
-        let l:filename = expand('%')
-        let l:opts     = g:terminal_settings
+    if &filetype == ''
+        return
+    endif
 
-        if &filetype == 'python'
-            call OpenTerminal()
-            let l:opts.term_name = 'python_terminal'
-            call term_start('python ' . l:filename, l:opts)
-        elseif &filetype == 'javascript'
-            call OpenTerminal()
-            let l:opts.term_name = 'javascript_terminal'
-            call term_start('node '. l:filename, l:opts)
-        elseif &filetype == 'autohotkey'
-            execute 'silent execute "!start \"D:/Program Files/AutoHotkey/autohotkey.exe\" /restart /CP65001 %:p"'
-        elseif &filetype == 'markdown'
-            execute 'silent execute "CocCommand markdown-preview-enhanced.openPreview"'
-        endif
+    execute 'silent execute "w"'
+    let l:filename = expand('%')
+    let l:opts     = g:terminal_settings
 
+    if &filetype == 'python'
+        call OpenTerminal()
+        let l:opts.term_name = 'python_terminal'
+        call term_start('python ' . l:filename, l:opts)
+    elseif &filetype == 'javascript'
+        call OpenTerminal()
+        let l:opts.term_name = 'javascript_terminal'
+        call term_start('node '. l:filename, l:opts)
+    elseif &filetype == 'autohotkey'
+        execute 'silent execute "!start \"D:/Program Files/AutoHotkey/autohotkey.exe\" /restart /CP65001 %:p"'
+    elseif &filetype == 'markdown'
+        execute 'silent execute "CocCommand markdown-preview-enhanced.openPreview"'
+    else
+        call OpenTerminal()
+        let l:opts.term_name = 'Terminal'
+        call term_start('cmd', l:opts)
     endif
 endfunction
 
@@ -602,12 +750,17 @@ let g:lightline = {
 \ 'colorscheme': 'gruvbox',
 \ 'active': {
 \   'left': [ [ 'mode', 'paste' ],
-\             [ 'readonly' ] ],
+\             [ 'readonly', 'filename' ] ],
 \   'right': [ [ 'lineinfo' ],
 \              [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
 \              [ 'fileformat', 'fileencoding', 'filetype'] ]
 \ },
+\ 'tabline': {
+\   'left'  : [ ['buffers'] ],
+\   'right' : [ ['close'] ]
+\ },
 \ 'component_expand': {
+\   'buffers'         : 'lightline#bufferline#buffers',
 \   'linter_checking' : 'lightline#ale#checking',
 \   'linter_infos'    : 'lightline#ale#infos',
 \   'linter_warnings' : 'lightline#ale#warnings',
@@ -615,29 +768,35 @@ let g:lightline = {
 \   'linter_ok'       : 'lightline#ale#ok',
 \ },
 \ 'component_type': {
+\   'buffers'         : 'tabsel',
 \   'linter_warnings' : 'warning',
 \   'linter_errors'   : 'error',
 \   'linter_ok'       : 'ale',
 \ },
 \ 'component_function': {
+\   'gitbranch' : 'LightLineGitBranch',
 \   'lineinfo'  : 'LightLineLineInfo',
 \ },
 \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
 \ 'subseparator': { 'left': "\ue0b1", 'right': "\ue0b3" }
 \}
 
+let g:viewplugins = 'NERD_tree\|\[Plugins\]\|\[coc-explorer\]'
+
 function! LightLineLineInfo()
-  return printf(' %d/%d | %d/%d', line('.'), line('$'), col('.'), col('$'))
+  return expand('%:t') =~# g:viewplugins ? '' : printf(' %d/%d | %d/%d', line('.'), line('$'), col('.'), col('$'))
 endfunction
 
 let s:palette = g:lightline#colorscheme#gruvbox#palette
-let s:palette.tabline.ale = [['#282C34', '#26A69A', 0, 21]]
+let s:palette.tabline.ale = [['#282C34', '#92A4A4', 0, 21]]
 
 let g:lightline#ale#indicator_checking     = '⏳'
 let g:lightline#ale#indicator_infos        = '📜'
 let g:lightline#ale#indicator_errors       = '💥'
 let g:lightline#ale#indicator_warnings     = '⚡'
 let g:lightline#ale#indicator_ok           = '✨'
+let g:lightline#bufferline#show_number     = 2
+let g:lightline#bufferline#unicode_symbols = 1
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

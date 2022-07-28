@@ -53,7 +53,6 @@ set background=dark
 set listchars=tab:!!,trail:·,lead:·
 set list
 set gdefault
-let $LANG = 'en_US'
 set noruler
 set noshowmode
 set noshowcmd
@@ -61,6 +60,8 @@ set laststatus=0
 set showtabline=0
 set background=dark
 set filetype=markdown
+
+let $LANG = 'en_US'
 " }}}1
 
 start
@@ -75,18 +76,31 @@ augroup auto_view
 " }}}1
 augroup end
 
+augroup spell_check
+" spell_check {{{1
+    autocmd!
+    setlocal spell spelllang=en_us,cjk
+    inoremap <silent><C-n> <C-g>u<Esc>[s1z=`'a<C-g>u
+" }}}1
+augroup end
+
 call plug#begin("~/vimfiles/plugged")
-" Plugins {{{1
+" Plug {{{1
 Plug 'morhetz/gruvbox'
 Plug 'yianwillis/vimcdoc'
-Plug 'neoclide/coc.nvim'
+Plug 'junegunn/vim-easy-align'
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'SirVer/ultisnips'
+Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
 Plug 'pilgrimlyieu/vim-surround'
 Plug 'easymotion/vim-easymotion'
+Plug 'ZSaberLv0/vim-easymotion-chs'
 Plug 'mg979/vim-visual-multi'
-Plug 'lervag/vimtex'
-Plug 'ferrine/md-img-paste.vim'
+Plug 'luochen1990/rainbow'
+Plug 'Yggdroot/indentLine'
+Plug 'pilgrimlyieu/md-img-paste.vim'
+Plug 'mzlogin/vim-markdown-toc'
 " }}}1
 call plug#end()
 
@@ -99,42 +113,69 @@ colorscheme gruvbox
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Key Mappings {{{1
-let g:mapleader = ","
+let g:mapleader = " "
 
-noremap  <Up>              <Nop>
-noremap  <Down>            <Nop>
-noremap  <Left>            <Nop>
-noremap  <Right>           <Nop>
-inoremap <Up>              <Nop>
-inoremap <Down>            <Nop>
-inoremap <Left>            <Nop>
-inoremap <Right>           <Nop>
-nnoremap <Esc>             <Nop>
-inoremap <Esc>             <Nop>
-inoremap jk                <Esc>
-inoremap kj                <Esc>
-nmap     H                 0
-nnoremap L                 $
-nnoremap U                 <C-r>
-nnoremap ;                 :
-nnoremap :                 ;
-nnoremap k                 gk
-nnoremap gk                k
-nnoremap j                 gj
-nnoremap gj                j
-inoremap <silent><C-q>     <C-o>:x<Cr>
-inoremap <silent><C-S-q>   <C-o>:q!<Cr>
-nnoremap <silent><C-q>     :x<Cr>
-nnoremap <silent><C-S-q>   :q!<Cr>
-nnoremap <expr>0           col('.') == 1 ? '^': '0'
-noremap  <silent><leader>/ :noh<Cr>
+function! Execute(cmd)
+    execute a:cmd
+    return ''
+endfunction
+
+noremap  <Up>    <Nop>
+noremap  <Down>  <Nop>
+noremap  <Left>  <Nop>
+noremap  <Right> <Nop>
+inoremap <Up>    <Nop>
+inoremap <Down>  <Nop>
+inoremap <Left>  <Nop>
+inoremap <Right> <Nop>
+nnoremap <Space> <Nop>
+
+inoremap jk      <Esc>
+inoremap kj      <Esc>
+inoremap jj      <Esc>
+inoremap kk      <Esc>
+nnoremap U       <C-r>
+nnoremap ;       :
+nnoremap :       ,
+nnoremap ,       ;
+nnoremap <expr>0 col('.') == 1 ? '^' : '0'
+nmap     H       0
+nmap     L       $
+omap     H       0
+omap     L       $
+
+nnoremap <silent><leader>/ :noh<Cr>
+vnoremap /                 /\v
+nnoremap ?                 ?\v
+vnoremap ?                 ?\v
+
+nnoremap k  gk
+nnoremap gk k
+nnoremap j  gj
+nnoremap gj j
+
+nnoremap <C-q>             ZZ
+nnoremap <C-S-q>           ZQ
+nnoremap <leader>q         ZZ
+nnoremap <leader>Q         ZQ
+inoremap <silent><C-s>     <C-r>=Execute('w')<Cr>
+inoremap <silent><C-q>     <C-r>=Execute('x')<Cr>
+inoremap <silent><C-S-q>   <C-r>=Execute('q!')<Cr>
+inoremap <silent><C-S-c>   <C-r>=Execute('bw')<Cr>
+nnoremap <silent><C-s>     :w<Cr>
+nnoremap <silent><C-S-c>   :bw<Cr>
+nnoremap <silent><leader>w :w<Cr>
+nnoremap <silent><leader>C :bw<Cr>
+nnoremap <silent><S-Esc>   :qa!<Cr>
+
+nnoremap Q  <Nop>
+nnoremap gq Q
+
+set mouse=
 noremap  <ScrollWheelUp>   <nop>
 noremap  <ScrollWheelDown> <nop>
 inoremap <ScrollWheelUp>   <nop>
 inoremap <ScrollWheelDown> <nop>
-nnoremap *                 :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
-nnoremap /                 :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
-nnoremap ?                 :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -175,23 +216,27 @@ let g:surround_{char2nr('”')}  = "『\r』"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Markdown {{{1
-setlocal spell spelllang=en_us,cjk
+autocmd FileType markdown inoremap <silent><C-x>      <Cr><Cr><hr class='section'><Cr><Cr>
+autocmd FileType markdown inoremap <silent><C-t>      <C-r>=Execute('UpdateToc')<Cr>
+autocmd FileType markdown inoremap <silent><C-p>      <C-r>=Execute('call mdip#MarkdownClipboardImage()')<Cr>
+autocmd FileType markdown nnoremap <silent><leader>mt :UpdateToc<Cr>
+autocmd FileType markdown vnoremap <silent><leader>vl :EasyAlign */\\\@<!<Bar>/<Cr>
+autocmd FileType markdown vnoremap <silent><leader>vr :EasyAlign */\\\@<!<Bar>/ar<Cr>
+autocmd FileType markdown vnoremap <silent><leader>vv :EasyAlign */\\\@<!<Bar>/ac<Cr>
+autocmd FileType markdown nmap     <silent><leader>vl <Plug>(EasyAlign)ip*<C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nmap     <silent><leader>vr <Plug>(EasyAlign)ip*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nmap     <silent><leader>vv <Plug>(EasyAlign)ip*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
 
-inoremap <silent><C-n>             <C-g>u<Esc>[s1z=`'a<C-g>u
-inoremap <silent><C-x>             <Cr><Cr><hr class='section'><Cr><Cr>
-inoremap <buffer><silent><leader>p <C-o>:call mdip#MarkdownClipboardImage()<Cr>
-vnoremap <silent><leader>vl        :EasyAlign */\\\@<!<Bar>/<Cr>
-vnoremap <silent><leader>vr        :EasyAlign */\\\@<!<Bar>/ar<Cr>
-vnoremap <silent><leader>vv        :EasyAlign */\\\@<!<Bar>/ac<Cr>
-nmap     <silent><leader>vl        gaip*<C-x>\\\@<!<Bar><Cr>
-nmap     <silent><leader>vr        gaip*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
-nmap     <silent><leader>vv        gaip*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown let b:coc_pairs_disabled = ["'"]
 
-let b:coc_pairs_disabled            = ["'"]
-let g:mdip_imgdir                   = 'images'
-let g:mdip_imgname                  = ''
-let g:tex_conceal                   = ''
-let g:vimtex_syntax_conceal_disable = 1
+autocmd FileType markdown inoreabbrev <silent>toc <C-r>=Execute('GenTocGFM')<Cr>
+
+let g:vmt_auto_update_on_save = 0
+let g:vmt_fence_text          = 'TOC Start'
+let g:vmt_fence_closing_text  = 'TOC End'
+let g:vmt_list_item_char      = '-'
+let g:mdip_imgdir             = 'images'
+let g:mdip_imgname            = ''
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -245,8 +290,8 @@ nnoremap <leader><leader>t <Plug>(easymotion-t2)
 nnoremap <leader><leader>T <Plug>(easymotion-T2)
 nnoremap <leader>s         <Plug>(easymotion-s)
 nnoremap <leader>S         <Plug>(easymotion-s2)
-nnoremap /                 <Plug>(easymotion-sn)
-onoremap /                 <Plug>(easymotion-tn)
+nnoremap /                 <Plug>(easymotion-sn)\v
+onoremap /                 <Plug>(easymotion-tn)\v
 nnoremap n                 <Plug>(easymotion-next)
 nnoremap N                 <Plug>(easymotion-prev)
 " }}}1
@@ -287,6 +332,13 @@ let g:VM_maps["Move Right"]      = '<A-S-d>'
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " coc {{{1
+let g:coc_snippet_next = '<Tab>'
+let g:coc_snippet_prev = '<S-Tab>'
+
+" Git Config
+" [coc-git]
+"     issuesources = github/pilgrimlyieu/School-Note,github/pilgrimlyieu/vimrc,github/pilgrimlyieu/Snippets,github/pilgrimlyieu/Snippets-Dependencies,github/pilgrimlyieu/AutoHotkey-Script,github/pilgrimlyieu/Python-Script
+
 " TextEdit might fail if hidden is not set.
 set hidden
 
@@ -295,7 +347,7 @@ set nobackup
 set nowritebackup
 
 " Give more space for displaying messages.
-" set cmdheight=1
+set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
@@ -323,52 +375,10 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <C-c> pumvisible() ? coc#_select_confirm()
                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-" Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
-
-" Symbol renaming.
-nmap <leader>rn <Plug>(coc-rename)
-
-" Remap <C-f> and <C-b> for scroll float windows/popups.
-inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-
-" Add (Neo)Vim's native statusline support.
-" NOTE: Please see `:h coc-status` for integrations with external plugins that
-" provide custom statusline: lightline.vim, vim-airline.
-" set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
-
-" Mappings for CoCList
-" Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent><nowait> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document.
-nnoremap <silent><nowait> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent><nowait> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
-" Resume latest coc list.
-nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -376,7 +386,57 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
-"
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                           Rainbow                                            "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Rainbow {{{1
+let g:rainbow_active = 1
+
+let g:rainbow_conf = {
+\    'guifgs': ['#858580', '#8FBCBB', '#D08770', '#A3BE8C', '#EBCB8B', '#B48EAD', '#80a880', '#887070'],
+\    'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+\    'operators': '_,_',
+\    'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+\    'separately': {
+\      	 'markdown': {
+\      	   	 'parentheses_options': 'containedin=markdownCode contained',
+\      	 },
+\    }
+\}
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                         Indent Line                                          "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Indent Line {{{1
+let g:indentLine_fileTypeExclude = ['json', 'markdown']
+let g:indentLine_conceallevel    = 2
+let g:indentLine_concealcursor   = ''
+let g:indent_guides_guide_size   = 1
+let g:indent_guides_start_level  = 1
+let g:indentLine_setConceal      = 0
+let g:indentLine_enabled         = 1
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                                                                              "
 "                                            Tabout                                            "
