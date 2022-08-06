@@ -20,9 +20,10 @@
 SetTitleMatchMode 3
 
 Get() {
-    Clipboard := ""
+    Clip := ClipboardAll
     SendInput {Ctrl Down}c{Ctrl Up}
     ClipWait 0
+    Clipboard := Clip
     return Clipboard
 }
 

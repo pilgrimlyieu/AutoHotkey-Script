@@ -14,7 +14,6 @@ Scripts := ["Basic\Shutdown\Shutdown"
           , "Specific\Vim\Vim"
           , "Specific\Vim\JK"
           , "Specific\Vim\KeyMap"
-          , "Specific\Anki\Must"
 
           , "Tool\Vark\main"]
 

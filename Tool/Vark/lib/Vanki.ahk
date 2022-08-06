@@ -46,19 +46,26 @@ class Vanki extends Vark {
         if this.Save(option)
             return
 
-        if (option = 0) {
+        if (option = 0 or option = 1) {
             FileRead file, % this.TempPath
-            this.Content(file)
-            this.Mix(file)
-            this.ExtraSuf(file)
-            this.order ++
-        }
-        else if (option = 1) {
-            FileRead file, % this.TempPath
-            this.suffix ++
-            this.Content(file)
-            this.Suf(this.TempPath, file, this.suffix)
-            this.Mix(file, this.suffix)
+            if (!WinExist("ahk_id " this.win_id) and this.SavetoClip)
+                Clipboard := file
+            else {
+                WinActivate % "ahk_id " this.win_id
+                WinWaitActive % "ahk_id " this.win_id
+                this.Content(file)
+            }
+
+            if (option = 0) {
+                this.Mix(file)
+                this.ExtraSuf(file)
+                this.order ++
+            }
+            else if (option = 1) {
+                this.suffix ++
+                this.Suf(this.TempPath, file, this.suffix)
+                this.Mix(file, this.suffix)
+            }
         }
         else
             this.ExtraSuf(file)

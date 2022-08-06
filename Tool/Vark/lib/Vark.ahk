@@ -52,10 +52,17 @@
         if this.Save(option)
             return
 
-        if (!option or option = 1)
+        if (option = 0 or option = 1) {
             FileRead content, % this.TempPath
-            this.Content(content)
-        if (!option or (option = -1 and !this.remaining))
+            if (!WinExist("ahk_id " this.win_id) and this.SavetoClip)
+                Clipboard := content
+            else {
+                WinActivate % "ahk_id " this.win_id
+                WinWaitActive % "ahk_id " this.win_id
+                this.Content(content)
+            }
+        }
+        if (option = 0 or (option = -1 and !this.remaining))
             FileDelete % this.TempPath
 
         this.remaining := option > 0
@@ -67,6 +74,8 @@
     }
 
     Popout(path) {
+        this.win_id := WinExist("A")
+
         xcursor := A_CaretX
         ycursor := A_CaretY
         if !(xcursor and ycursor)
@@ -88,15 +97,11 @@
             win_ypos := 0
         WinMove     ahk_pid %process_id%, , %win_xpos%, %win_ypos%, % this.PopSizes[1], % this.PopSizes[2]
         WinActivate ahk_pid %process_id%
-
-        WinWaitNotActive ahk_pid %process_id%
     }
 
     Content(content) {
         content := RegExReplace(content, "(\n|\r)*$", "")
         SendInput % "{Text}" content
-        if this.SaveToClip
-            Clipboard := content
     }
 
     Clear() {

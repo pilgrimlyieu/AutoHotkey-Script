@@ -45,12 +45,12 @@ set softtabstop=4
 set shiftwidth=4
 set viewoptions-=options
 set undofile
-set undodir=D:\.vim\.undo\
-set directory=D:\.vim\.swap\
-set viewdir=D:\.vim\.view\
+set undodir=G:\Temp\.vim\.undo\
+set directory=G:\Temp\.vim\.swap\
+set viewdir=G:\Temp\.vim\.view\
 set shortmess+=FWA
 set background=dark
-set listchars=tab:!!,trail:·,lead:·
+set listchars=tab:!>,trail:·,lead:·
 set list
 set gdefault
 set noruler
@@ -60,6 +60,7 @@ set laststatus=0
 set showtabline=0
 set background=dark
 set filetype=markdown
+set titlestring=GVim\ Mode:\ %{mode()}\ \&\ Sever\ Name:\ %{v:servername}
 
 let $LANG = 'en_US'
 " }}}1
@@ -99,6 +100,7 @@ Plug 'ZSaberLv0/vim-easymotion-chs'
 Plug 'mg979/vim-visual-multi'
 Plug 'luochen1990/rainbow'
 Plug 'Yggdroot/indentLine'
+Plug 'lervag/vimtex'
 Plug 'pilgrimlyieu/md-img-paste.vim'
 Plug 'mzlogin/vim-markdown-toc'
 " }}}1
@@ -120,14 +122,6 @@ function! Execute(cmd)
     return ''
 endfunction
 
-noremap  <Up>    <Nop>
-noremap  <Down>  <Nop>
-noremap  <Left>  <Nop>
-noremap  <Right> <Nop>
-inoremap <Up>    <Nop>
-inoremap <Down>  <Nop>
-inoremap <Left>  <Nop>
-inoremap <Right> <Nop>
 nnoremap <Space> <Nop>
 
 inoremap jk      <Esc>
@@ -138,11 +132,13 @@ nnoremap U       <C-r>
 nnoremap ;       :
 nnoremap :       ,
 nnoremap ,       ;
+nnoremap `       '
+nnoremap '       `
+nnoremap H       0
+onoremap H       0
+nnoremap L       $
+onoremap L       $
 nnoremap <expr>0 col('.') == 1 ? '^' : '0'
-nmap     H       0
-nmap     L       $
-omap     H       0
-omap     L       $
 
 nnoremap <silent><leader>/ :noh<Cr>
 vnoremap /                 /\v
@@ -154,19 +150,14 @@ nnoremap gk k
 nnoremap j  gj
 nnoremap gj j
 
-nnoremap <C-q>             ZZ
-nnoremap <C-S-q>           ZQ
-nnoremap <leader>q         ZZ
-nnoremap <leader>Q         ZQ
-inoremap <silent><C-s>     <C-r>=Execute('w')<Cr>
+nnoremap gA ga
+
 inoremap <silent><C-q>     <C-r>=Execute('x')<Cr>
 inoremap <silent><C-S-q>   <C-r>=Execute('q!')<Cr>
-inoremap <silent><C-S-c>   <C-r>=Execute('bw')<Cr>
-nnoremap <silent><C-s>     :w<Cr>
-nnoremap <silent><C-S-c>   :bw<Cr>
-nnoremap <silent><leader>w :w<Cr>
-nnoremap <silent><leader>C :bw<Cr>
-nnoremap <silent><S-Esc>   :qa!<Cr>
+vnoremap <C-q>             <Esc>ZZ
+vnoremap <C-S-q>           <Esc>ZQ
+nnoremap <C-q>             ZZ
+nnoremap <C-S-q>           ZQ
 
 nnoremap Q  <Nop>
 nnoremap gq Q
@@ -217,19 +208,19 @@ let g:surround_{char2nr('”')}  = "『\r』"
 
 " Markdown {{{1
 autocmd FileType markdown inoremap <silent><C-x>      <Cr><Cr><hr class='section'><Cr><Cr>
-autocmd FileType markdown inoremap <silent><C-t>      <C-r>=Execute('UpdateToc')<Cr>
 autocmd FileType markdown inoremap <silent><C-p>      <C-r>=Execute('call mdip#MarkdownClipboardImage()')<Cr>
+autocmd FileType markdown inoremap <silent><C-t>      <C-r>=Execute('UpdateToc')<Cr>
 autocmd FileType markdown nnoremap <silent><leader>mt :UpdateToc<Cr>
-autocmd FileType markdown vnoremap <silent><leader>vl :EasyAlign */\\\@<!<Bar>/<Cr>
-autocmd FileType markdown vnoremap <silent><leader>vr :EasyAlign */\\\@<!<Bar>/ar<Cr>
-autocmd FileType markdown vnoremap <silent><leader>vv :EasyAlign */\\\@<!<Bar>/ac<Cr>
-autocmd FileType markdown nmap     <silent><leader>vl <Plug>(EasyAlign)ip*<C-x>\\\@<!<Bar><Cr>
-autocmd FileType markdown nmap     <silent><leader>vr <Plug>(EasyAlign)ip*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
-autocmd FileType markdown nmap     <silent><leader>vv <Plug>(EasyAlign)ip*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown vnoremap <silent><leader>vl <Plug>(EasyAlign)*<C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown vnoremap <silent><leader>vr <Plug>(EasyAlign)*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown vnoremap <silent><leader>vv <Plug>(EasyAlign)*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nnoremap <silent><leader>vl <Plug>(EasyAlign)ip*<C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nnoremap <silent><leader>vr <Plug>(EasyAlign)ip*<C-a><Bs>r<Cr><C-x>\\\@<!<Bar><Cr>
+autocmd FileType markdown nnoremap <silent><leader>vv <Plug>(EasyAlign)ip*<C-a><Bs>c<Cr><C-x>\\\@<!<Bar><Cr>
+
+autocmd FileType markdown inoreabbr <silent>toc <C-r>=Execute('GenTocGFM')<Cr>
 
 autocmd FileType markdown let b:coc_pairs_disabled = ["'"]
-
-autocmd FileType markdown inoreabbrev <silent>toc <C-r>=Execute('GenTocGFM')<Cr>
 
 let g:vmt_auto_update_on_save = 0
 let g:vmt_fence_text          = 'TOC Start'
@@ -237,6 +228,21 @@ let g:vmt_fence_closing_text  = 'TOC End'
 let g:vmt_list_item_char      = '-'
 let g:mdip_imgdir             = 'images'
 let g:mdip_imgname            = ''
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                            VimTeX                                            "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" TeX {{{1
+let g:tex_conceal                   = ''
+let g:vimtex_syntax_conceal_disable = 1
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -317,6 +323,28 @@ let g:VM_maps["Select l"]        = '<A-d>'
 let g:VM_maps["Select h"]        = '<A-a>'
 let g:VM_maps["Move Left"]       = '<A-S-a>'
 let g:VM_maps["Move Right"]      = '<A-S-d>'
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                        vim-easy-align                                        "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" vim-easy-align {{{1
+nnoremap ga <Plug>(EasyAlign)
+vnoremap ga <Plug>(EasyAlign)
+
+nnoremap <silent>g:             <Plug>(EasyAlign)ip*<C-l>0<Cr><C-x>\\\@<!:\(=\)\@!<Cr>
+vnoremap <silent>g:             <Plug>(EasyAlign)*<C-l>0<Cr><C-x>\\\@<!:\(=\)\@!<Cr>
+nnoremap <silent><expr>g<Space> '<C-u><Plug>(EasyAlign)ip' . v:count1 . ' \<Cr>'
+vnoremap <silent><expr>g<Space> '<Plug>(EasyAlign)' . v:count1 . ' \<Cr>'
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
