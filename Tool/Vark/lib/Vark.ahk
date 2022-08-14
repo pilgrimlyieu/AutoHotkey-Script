@@ -12,23 +12,17 @@
     }
 
     Open() {
-        temp_path := this.TempPath
-        this.Temp(temp_path)
-        this.Popout(temp_path)
+        this.Temp(this.TempPath)
+        this.Popout(this.TempPath)
     }
 
     Save(option) {
-        if !WinExist("ahk_pid " this.process_id)
-            return 1
-
         WinActivate   % "ahk_pid " this.process_id
         WinWaitActive % "ahk_pid " this.process_id
-
         if (option = -1)
             SendInput {Ctrl Down}{Shift Down}q{Shift Up}{Ctrl Up}
         else
             SendInput {Ctrl Down}q{Ctrl Up}
-
         WinWaitNotActive % "ahk_pid " this.process_id
         this.process_id := ""
     }
@@ -49,8 +43,9 @@
      *    |-------+-------+-------|
      */
     Close(option) {
-        if this.Save(option)
+        if !WinExist("ahk_pid " this.process_id)
             return
+        this.Save(option)
 
         if (option = 0 or option = 1) {
             FileRead content, % this.TempPath
@@ -80,28 +75,26 @@
         ycursor := A_CaretY
         if !(xcursor and ycursor)
             MouseGetPos xcursor, ycursor
-
-        Run % "gvim.exe " path " -u " this.Vimrc, % this.VimDir, , process_id
-        this.process_id := process_id
-
-        Process Priority, %process_id%, Realtime
-        WinWait ahk_pid %process_id%, , 5
-        WinSet  Style, -0xC40000, ahk_pid %process_id%
-        WinSet  AlwaysOnTop, On, ahk_pid %process_id%
-
         win_xpos := xcursor
         win_ypos := ycursor - this.PopSizes[2] - 20
         if (win_xpos > A_ScreenWidth - this.PopSizes[1])
             win_xpos := A_ScreenWidth -this.PopSizes[1]
         if (win_ypos < 0)
             win_ypos := 0
+
+        Run % "gvim.exe " path " -u " this.Vimrc, % this.VimDir, , process_id
+        this.process_id := process_id
+
+        Process     Priority, %process_id%, Realtime
+        WinWait     ahk_pid %process_id%, , 5
+        WinSet      Style, -0xC40000, ahk_pid %process_id%
+        WinSet      AlwaysOnTop, On, ahk_pid %process_id%
         WinMove     ahk_pid %process_id%, , %win_xpos%, %win_ypos%, % this.PopSizes[1], % this.PopSizes[2]
         WinActivate ahk_pid %process_id%
     }
 
     Content(content) {
-        content := RegExReplace(content, "(\n|\r)*$", "")
-        SendInput % "{Text}" content
+        SendInput % "{Text}" RegExReplace(content, "(\n|\r)+$", "")
     }
 
     Clear() {

@@ -1,6 +1,6 @@
 Dir := A_WorkingDir "\"
 
-Scripts := ["Basic\Shutdown\Shutdown"
+Scripts := [ ; "Basic\Shutdown\Shutdown"
           , "Basic\Window\WinDrag\main"
           , "Basic\Remap\Fn"
           , "Basic\Remap\NumLock"

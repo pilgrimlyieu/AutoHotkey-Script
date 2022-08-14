@@ -27,8 +27,11 @@ VimAnki := new Vanki(Settings)
 #r::VimAnki.Close(2)
 #t::VimAnki.Empty()
 
-#If !WinActive("ahk_pid " VimAnki.process_id)
+#If WinActive("ahk_exe anki.exe")
 
 #1::VimAnki.Open()
 #y::VimAnki.Combine()
+
+#If !WinActive("ahk_pid " VimAnki.process_id)
+
 #+1::VimAnki.Clear()

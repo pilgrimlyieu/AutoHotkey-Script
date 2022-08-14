@@ -13,18 +13,18 @@ Global Settings := {"tempdir"     : "G:\Temp\.vark\"
                   , "vimrc"       : "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vark.vimrc"
                   , "tempfilename": "Temp"
                   , "savetoclip"  : 1
-                  , "popsizes"    : [960, 320]}
+                  , "popsizes"    : [960, 360]}
 
-VimHere := new Vark(Settings)
+Vim := new Vark(Settings)
 
-#If WinActive("ahk_pid " VimHere.process_id)
+#If WinActive("ahk_pid " Vim.process_id)
 
-#q::VimHere.Close(0)
-#w::VimHere.Close(1)
-#e::VimHere.Close(-1)
-#r::VimHere.Close(2)
+#q::Vim.Close(0)
+#w::Vim.Close(1)
+#e::Vim.Close(-1)
+#r::Vim.Close(2)
 
-#If !WinActive("ahk_pid " VimHere.process_id)
+#If !WinActive("ahk_pid " Vim.process_id)
 
-#c::VimHere.Open()
-#+c::VimHere.Clear()
+#c::Vim.Open()
+#+c::Vim.Clear()

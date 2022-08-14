@@ -43,8 +43,9 @@ class Vanki extends Vark {
      *    |-------+-------+-------+-------+-------|
      */
     Close(option) {
-        if this.Save(option)
+        if !WinExist("ahk_pid " this.process_id)
             return
+        this.Save(option)
 
         if (option = 0 or option = 1) {
             FileRead file, % this.TempPath
@@ -61,7 +62,7 @@ class Vanki extends Vark {
                 this.ExtraSuf(file)
                 this.order ++
             }
-            else if (option = 1) {
+            else {
                 this.suffix ++
                 this.Suf(this.TempPath, file, this.suffix)
                 this.Mix(file, this.suffix)
@@ -72,7 +73,7 @@ class Vanki extends Vark {
     }
 
     Empty() {
-        SendInput jkgg{Shift Down}v{Shift Up}Gd
+        SendInput jkggdG
         this.Close(this.suffix ? 0 : 2)
     }
 
@@ -96,7 +97,7 @@ class Vanki extends Vark {
     Mix(file, suffix = 0) {
         if file
             FileAppend % file this.Delimiter, % this.MixPath
-        FileCopy   % this.MixPath, % this.HistoryDir this.TempFileName this.order (suffix ? "_" suffix : "") ".md"
+        FileCopy % this.MixPath, % this.HistoryDir this.TempFileName this.order (suffix ? "_" suffix : "") ".md"
     }
 
     Combine() {
