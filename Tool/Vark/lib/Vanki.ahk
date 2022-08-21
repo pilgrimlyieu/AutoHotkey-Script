@@ -1,4 +1,5 @@
 ﻿#Include <Vark>
+#Include <md2html>
 
 class Vanki extends Vark {
     __New(settings) {
@@ -10,6 +11,7 @@ class Vanki extends Vark {
          this.MixFileName     := settings.mixfilename
          this.CombineFileName := settings.combinefilename
          this.SaveToClip      := settings.savetoclip
+         this.SendbyClip      := settings.sendbyclip
          this.PopSizes        := settings.popsizes
          this.Delimiter       := settings.delimiter
          this.MixPath         := this.TempDir this.MixFileName
@@ -72,6 +74,16 @@ class Vanki extends Vark {
             this.ExtraSuf(file)
     }
 
+    Content(content) {
+        content := ImageandUrl(RegExReplace(content, "(\n|\r)+$", ""))
+        if this.SendbyClip {
+            Clipboard := content
+            SendInput {Ctrl Down}v{Ctrl Up}
+        }
+        else
+            SendInput % "{Text}" content
+    }
+
     Empty() {
         SendInput jkggdG
         this.Close(this.suffix ? 0 : 2)
@@ -96,13 +108,13 @@ class Vanki extends Vark {
 
     Mix(file, suffix = 0) {
         if file
-            FileAppend % file this.Delimiter, % this.MixPath
+            FileAppend % simpleHTMLtoMD(file) this.Delimiter, % this.MixPath
         FileCopy % this.MixPath, % this.HistoryDir this.TempFileName this.order (suffix ? "_" suffix : "") ".md"
     }
 
     Combine() {
         file := ""
-        Loop Files, % this.TempDir this.TempFileName "*"
+        loop Files, % this.TempDir this.TempFileName "*"
         {
             FileRead content, %A_LoopFilePath%
             if content

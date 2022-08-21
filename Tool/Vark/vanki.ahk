@@ -14,6 +14,7 @@ Global Settings := {"tempdir"        : "G:\Temp\.vanki\"
                   , "mixfilename"    : "Mix.md"
                   , "combinefilename": "Combine.md"
                   , "savetoclip"     : 1
+                  , "sendbyclip"     : 1
                   , "popsizes"       : [960, 300]
                   , "delimiter"      : "`r`n<hr class='section'>`r`n`r`n"}
 

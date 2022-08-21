@@ -13,6 +13,7 @@ Global Settings := {"tempdir"     : "G:\Temp\.vark\"
                   , "vimrc"       : "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vark.vimrc"
                   , "tempfilename": "Temp"
                   , "savetoclip"  : 1
+                  , "sendbyclip"  : 1
                   , "popsizes"    : [960, 360]}
 
 Vim := new Vark(Settings)

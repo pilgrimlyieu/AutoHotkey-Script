@@ -5,6 +5,7 @@
          this.Vimrc        := settings.vimrc
          this.TempFileName := settings.tempfilename
          this.SaveToClip   := settings.savetoclip
+         this.SendbyClip   := settings.sendbyclip
          this.PopSizes     := settings.popsizes
          this.TempPath     := this.TempDir this.TempFileName
 
@@ -94,7 +95,13 @@
     }
 
     Content(content) {
-        SendInput % "{Text}" RegExReplace(content, "(\n|\r)+$", "")
+        content := RegExReplace(content, "(\n|\r)+$", "")
+        if this.SendbyClip {
+            Clipboard := content
+            SendInput {Ctrl Down}v{Ctrl Up}
+        }
+        else
+            SendInput % "{Text}" content
     }
 
     Clear() {
