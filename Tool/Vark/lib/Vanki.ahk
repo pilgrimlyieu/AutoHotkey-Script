@@ -12,6 +12,7 @@ class Vanki extends Vark {
          this.CombineFileName := settings.combinefilename
          this.SaveToClip      := settings.savetoclip
          this.SendbyClip      := settings.sendbyclip
+         this.HTML            := settings.html
          this.PopSizes        := settings.popsizes
          this.Delimiter       := settings.delimiter
          this.MixPath         := this.TempDir this.MixFileName
@@ -75,7 +76,7 @@ class Vanki extends Vark {
     }
 
     Content(content) {
-        content := ImageandUrl(RegExReplace(content, "(\n|\r)+$", ""))
+        content := ImageandUrl(RegExReplace(content, "(\n|\r)+$", ""), this.HTML)
         if this.SendbyClip {
             Clipboard := content
             SendInput {Ctrl Down}v{Ctrl Up}

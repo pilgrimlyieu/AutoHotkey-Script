@@ -15,10 +15,29 @@ Global Settings := {"tempdir"        : "G:\Temp\.vanki\"
                   , "combinefilename": "Combine.md"
                   , "savetoclip"     : 1
                   , "sendbyclip"     : 1
+                  , "html"           : 0
                   , "popsizes"       : [960, 300]
                   , "delimiter"      : "`r`n<hr class='section'>`r`n`r`n"}
 
 VimAnki := new Vanki(Settings)
+
+#s::Gosub SwitchToolTip
+#+s::Gosub CreateToolTip
+
+SwitchToolTip:
+VimAnki.HTML := !VimAnki.HTML
+ToolTip % VimAnki.HTML ? "HTML is turned on." : "HTML is turned off."
+SetTimer RemoveToolTip, -1000
+return
+
+CreateToolTip:
+ToolTip % VimAnki.HTML ? "HTML is on." : "HTML is off."
+SetTimer RemoveToolTip, -1000
+return
+
+RemoveToolTip:
+ToolTip
+return
 
 #If WinActive("ahk_pid " VimAnki.process_id)
 

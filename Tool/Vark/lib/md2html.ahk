@@ -13,10 +13,12 @@ simpleHTMLtoMD(content) {
     return content
 }
 
-ImageandUrl(content) {
-    content := RegExReplace(content, "!\[([^\[\]]+)\]\(([^\(\)]+)\)", "<img src='$2' alt='$1'>")
-    content := RegExReplace(content, "\[([^\[\]]+)\]\(([^\(\)]+)\)", "<a href='$2'>$1</a>")
-    content := RegExReplace(content, "[\n\r]+", "<br>`n")
+ImageandUrl(content, on := 0) {
+    if on {
+        content := RegExReplace(content, "!\[([^\[\]]+)\]\(([^\(\)]+)\)", "<img src='$2' alt='$1'>")
+        content := RegExReplace(content, "\[([^\[\]]+)\]\(([^\(\)]+)\)", "<a href='$2'>$1</a>")
+        content := RegExReplace(content, "[\n\r]+", "<br>`n")
+    }
     return content
 }
 
