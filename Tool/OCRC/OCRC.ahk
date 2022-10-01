@@ -1,4 +1,4 @@
-﻿;@Ahk2Exe-SetMainIcon Icon\OCRC.ico
+﻿;@Ahk2Exe-SetMainIcon icon\OCRC.ico
 
 ; Optical Character Recognition Commander
 ; by PilgrimLyieu

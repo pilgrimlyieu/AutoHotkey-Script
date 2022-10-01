@@ -7,9 +7,6 @@ class Vanki extends Vark {
          this.HistoryDir      := settings.historydir
          this.VimDir          := settings.vimdir
          this.Vimrc           := settings.vimrc
-         this.TempFileName    := settings.tempfilename
-         this.MixFileName     := settings.mixfilename
-         this.CombineFileName := settings.combinefilename
          this.SaveToClip      := settings.savetoclip
          this.SendbyClip      := settings.sendbyclip
          this.HTML            := settings.html
@@ -17,6 +14,9 @@ class Vanki extends Vark {
          this.Delimiter       := settings.delimiter
          this.MixPath         := this.TempDir this.MixFileName
          this.CombinePath     := this.TempDir this.CombineFileName
+         this.TempFileName    := "Temp_"
+         this.MixFileName     := "Mix.md"
+         this.CombineFileName := "Combine.md"
          this.order           := 1
          this.suffix          := 0
 
@@ -79,6 +79,7 @@ class Vanki extends Vark {
         content := ImageandUrl(RegExReplace(content, "(\n|\r)+$", ""), this.HTML)
         if this.SendbyClip {
             Clipboard := content
+            ClipWait 0
             SendInput {Ctrl Down}v{Ctrl Up}
         }
         else

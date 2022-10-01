@@ -74,6 +74,8 @@ augroup auto_view
     autocmd!
     autocmd BufWinLeave Temp_* silent mkview
     autocmd BufWinEnter Temp_* silent loadview
+    autocmd BufWinLeave Temp silent mkview
+    autocmd BufWinEnter Temp silent loadview
 " }}}1
 augroup end
 

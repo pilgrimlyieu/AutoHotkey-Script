@@ -3,10 +3,10 @@
          this.TempDir      := settings.tempdir
          this.VimDir       := settings.vimdir
          this.Vimrc        := settings.vimrc
-         this.TempFileName := settings.tempfilename
          this.SaveToClip   := settings.savetoclip
          this.SendbyClip   := settings.sendbyclip
          this.PopSizes     := settings.popsizes
+         this.TempFileName := "Temp"
          this.TempPath     := this.TempDir this.TempFileName
 
          FileCreateDir % this.TempDir

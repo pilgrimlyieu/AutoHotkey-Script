@@ -11,7 +11,6 @@ SetWinDelay  -1
 Global Settings := {"tempdir"     : "G:\Temp\.vark\"
                   , "vimdir"      : "D:\Program Files\Vim\vim90"
                   , "vimrc"       : "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vark.vimrc"
-                  , "tempfilename": "Temp"
                   , "savetoclip"  : 1
                   , "sendbyclip"  : 1
                   , "popsizes"    : [960, 360]}

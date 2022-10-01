@@ -6,32 +6,45 @@ SetWinDelay  -1
 
 #Include <Vanki>
 
-Global Settings := {"tempdir"        : "G:\Temp\.vanki\"
-                  , "historydir"     : "G:\Temp\.vanki\.history\"
-                  , "vimdir"         : "D:\Program Files\Vim\vim90"
-                  , "vimrc"          : "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vanki.vimrc"
-                  , "tempfilename"   : "Temp_"
-                  , "mixfilename"    : "Mix.md"
-                  , "combinefilename": "Combine.md"
-                  , "savetoclip"     : 1
-                  , "sendbyclip"     : 1
-                  , "html"           : 0
-                  , "popsizes"       : [960, 300]
-                  , "delimiter"      : "`r`n<hr class='section'>`r`n`r`n"}
+Global Settings := {"type"      : 1
+                  , "tempdir"   : "G:\Temp\.vanki\"
+                  , "historydir": "G:\Temp\.vanki\.history\"
+                  , "vimdir"    : "D:\Program Files\Vim\vim90"
+                  , "vimrc"     : "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vanki.vimrc"
+                  , "savetoclip": 1
+                  , "sendbyclip": 1
+                  , "html"      : 0
+                  , "popsizes"  : [960, 300]
+                  , "delimiter" : "`r`n<hr class='section'>`r`n`r`n"}
 
-VimAnki := new Vanki(Settings)
+VimAnki1 := new Vark(Settings)
+VimAnki2 := new Vanki(Settings)
+VimAnkis := [VimAnki1, VimAnki2]
 
-#s::Gosub SwitchToolTip
-#+s::Gosub CreateToolTip
+#p::Gosub SwitchType
+#+p::Gosub StatusType
+#s::Gosub SwitchHTML
+#+s::Gosub StatusHTML
 
-SwitchToolTip:
-VimAnki.HTML := !VimAnki.HTML
-ToolTip % VimAnki.HTML ? "HTML is turned on." : "HTML is turned off."
+SwitchType:
+Settings.type := !(Settings.type - 1) + 1
+ToolTip % "Vanki type is turned to " Settings.type "."
 SetTimer RemoveToolTip, -1000
 return
 
-CreateToolTip:
-ToolTip % VimAnki.HTML ? "HTML is on." : "HTML is off."
+StatusType:
+ToolTip % "Vanki type is " Settings.type "."
+SetTimer RemoveToolTip, -1000
+return
+
+SwitchHTML:
+VimAnkis[Settings.type].HTML := !VimAnkis[Settings.type].HTML
+ToolTip % VimAnkis[Settings.type].HTML ? "HTML is turned on." : "HTML is turned off."
+SetTimer RemoveToolTip, -1000
+return
+
+StatusHTML:
+ToolTip % VimAnkis[Settings.type].HTML ? "HTML is on." : "HTML is off."
 SetTimer RemoveToolTip, -1000
 return
 
@@ -39,19 +52,19 @@ RemoveToolTip:
 ToolTip
 return
 
-#If WinActive("ahk_pid " VimAnki.process_id)
+#If WinActive("ahk_pid " VimAnkis[Settings.type].process_id)
 
-#q::VimAnki.Close(0)
-#w::VimAnki.Close(1)
-#e::VimAnki.Close(-1)
-#r::VimAnki.Close(2)
-#t::VimAnki.Empty()
+#q::VimAnkis[Settings.type].Close(0)
+#w::VimAnkis[Settings.type].Close(1)
+#e::VimAnkis[Settings.type].Close(-1)
+#r::VimAnkis[Settings.type].Close(2)
+#t::VimAnkis[Settings.type].Empty()
 
 #If WinActive("ahk_exe anki.exe")
 
-#1::VimAnki.Open()
-#y::VimAnki.Combine()
+#1::VimAnkis[Settings.type].Open()
+#y::VimAnkis[Settings.type].Combine()
 
-#If !WinActive("ahk_pid " VimAnki.process_id)
+#If !WinActive("ahk_pid " VimAnkis[Settings.type].process_id)
 
-#+1::VimAnki.Clear()
+#+1::VimAnkis[Settings.type].Clear()
