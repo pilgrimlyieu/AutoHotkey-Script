@@ -1,3 +1,4 @@
+#Requires AutoHotkey v1.1.36.02+
 #NoTrayIcon
 
 Fn_Status := 0

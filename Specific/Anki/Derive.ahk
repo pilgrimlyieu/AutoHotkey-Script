@@ -23,12 +23,13 @@ Get() {
     Clip := ClipboardAll
     SendInput {Ctrl Down}c{Ctrl Up}
     ClipWait 0
+    content := Clipboard
     Clipboard := Clip
-    return Clipboard
+    return content
 }
 
 Clip(Text) {
-    Text := RegExReplace(RegExReplace(Trim(Text, " `t`r`n"), "(n|v|adj|adv|prep|conj|vt|vi)\.\s?", "$1. "), "(*UCP)\s+", " ")
+    Text := RegExReplace(RegExReplace(Trim(Text, " `t`r`n"), "([a-z]+)\.\s?", "$1. "), "(*UCP)\s+", " ")
     for e, c in {",": "，", ".": "。", "?": "？", "!": "！", ":": "：", ";": "；", "(": "（", ")": "）", "[": "【", "]": "】"}
         Text := RegExReplace(Text, (e ~= "[([]") ? ((e ~= "[.?()[\]]" ? "\" e : e) "(?=\s?[\x{4e00}-\x{9fa5}])") : ("(?:[\x{4e00}-\x{9fa5}]\s?)\K" (e ~= "[.?()[\]]" ? "\" e : e)), c)
     return "{Text}" Text

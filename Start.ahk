@@ -1,6 +1,8 @@
+#Requires AutoHotkey v1.1.37+
+
 Dir := A_WorkingDir "\"
 
-Scripts := ["Basic\Shutdown\Shutdown"
+Scripts := [ ;"Basic\Shutdown\Shutdown"
           , "Basic\Window\WinDrag\main"
           , "Basic\Remap\Fn"
           , "Basic\Remap\NumLock"
@@ -12,10 +14,9 @@ Scripts := ["Basic\Shutdown\Shutdown"
           , "General\AHKMapCheatSheet\Mappings"
 
           , "Specific\Vim\Vim"
-          , "Specific\Vim\JK"
-          , "Specific\Vim\KeyMap"
+          ; , "Specific\Anki\Must"
 
           , "Tool\Vark\main"]
 
 for index, script in Scripts
-    Run % "AutoHotkey.exe /restart /CP65001 " Dir script ".ahk"
+    Run % "autohotkey.exe /restart /CP65001 " Dir script ".ahk"

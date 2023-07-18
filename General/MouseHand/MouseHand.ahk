@@ -1,5 +1,8 @@
+#Requires AutoHotkey v1.1.36.02+
 #NoTrayIcon
+
 Global LBNum := 300, CheckMins := 30, BreakTime := 60, ForceTime := 30
+
 ~LButton::
 If (LButtonKeyNum > 0) {
     LButtonKeyNum ++

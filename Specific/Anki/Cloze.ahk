@@ -1,8 +1,8 @@
 ﻿; Anki Cloze
 ;;; 特性   Features
-;;;;; 1. 自动清除首尾空白字符                         Automatically clean left and right empty character
+;;;;; 1. 自动清除首尾空白字符                         Automatically clean left and right empty characters
 ;;;;; 2. 自动添加尾部空格                             Automatically add right space
-;;;;; 3. 末尾字符是 '}'' 时自动添加空格               Automatically add space if right character is '}'
+;;;;; 3. 末尾字符是 '}' 时自动添加空格                Automatically add space if the right character is '}'
 ;;;;; 4. 自动将 '}}' 改为 '} }'                       Automatically change '}}' to '} }'
 ;;;;; 5. 未选中内容输入空白 Cloze 并移动光标至其中    Create empty Cloze and put cursor into it while selecting nothing
 ;;; 有待支持特性 Unsupported Features
@@ -39,7 +39,7 @@ Global turn := 0
 #IfWinActive ahk_exe anki.exe
 
 +f1::turn := 0
-f5::Cloze(1)
+f1::Cloze(1)
 f6::Cloze()
 `::SendInput {Text}<br>`n
 
