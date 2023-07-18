@@ -26,14 +26,16 @@ return
 #+s::WinMaximize A
 
 ^Space::
-RegRead ProxyOn, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Internet Settings, ProxyEnable
-ProxyOn := !ProxyOn
-RegWrite REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Internet Settings, ProxyEnable, %ProxyOn%
-ToolTip % "Proxy has been switched " (ProxyOn ? "On" : "Off") "."
+RegRead ProxyStatus, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Internet Settings, ProxyEnable
+RegWrite REG_DWORD, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\Internet Settings, ProxyEnable, % ProxyStatus := !ProxyStatus
+ToolTip % "Proxy has been switched " (ProxyStatus ? "On" : "Off") "."
 SetTimer RemoveToolTip, -1000
 return
 
-#!Space::Run % "SystemSettingsAdminFlows.exe EnableTouchPad " (touchpadEnabled := !touchpadEnabled)
+#!Space::
+RegRead TouchpadStatus, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\PrecisionTouchPad\Status, Enabled
+Run % "SystemSettingsAdminFlows.exe EnableTouchPad " (TouchpadStatus := !TouchpadStatus)
+return
 
 RemoveToolTip:
 ToolTip
