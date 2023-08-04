@@ -4,7 +4,7 @@
 SetWinDelay -1
 
 VIMPATH := "D:\Program Files\Vim\vim90"
-SysGet Screen, MonitorWorkArea
+SysGet WorkAreaInfo, MonitorWorkArea
 
 IsNotEnglish() {
     DetectHiddenWindows On
@@ -29,7 +29,7 @@ else if (Clipboard = "")
 Process Priority, %process_id%, High
 WinWait ahk_pid %process_id%, , 10
 WinSet Style, -0xC40000, ahk_pid %process_id%
-WinMove ahk_pid %process_id%, , 0, 0, %ScreenRight%, %ScreenBottom%
+WinMove ahk_pid %process_id%, , 0, 0, %WorkAreaInfoRight%, %WorkAreaInfoBottom%
 WinActivate ahk_pid %process_id%
 Clipboard := Clip
 return
