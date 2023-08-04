@@ -33,7 +33,7 @@ SetTimer RemoveToolTip, -1000
 return
 
 #!Space::
-RegRead TouchpadStatus, HKEY_CURRENT_USER, SOFTWARE\Microsoft\Windows\CurrentVersion\PrecisionTouchPad\Status, Enabled
+RegRead TouchpadStatus, HKEY_CURRENT_USER, Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad\Status, Enabled
 Run % "SystemSettingsAdminFlows.exe EnableTouchPad " (TouchpadStatus := !TouchpadStatus)
 return
 
