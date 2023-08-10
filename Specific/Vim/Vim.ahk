@@ -1,6 +1,7 @@
 #Requires AutoHotkey v1.1+
 #NoTrayIcon
 
+SetTitleMatchMode RegEx
 SetWinDelay -1
 
 VIMPATH := "D:\Program Files\Vim\vim90"
@@ -34,7 +35,7 @@ WinActivate ahk_pid %process_id%
 Clipboard := Clip
 return
 
-#IfWinActive ahk_class Vim
+#If WinActive("GVim Mode: (i|s|v|V)")
 
 CapsLock::SendInput {Alt Down}t{Alt Up}
 
@@ -42,7 +43,5 @@ CapsLock::SendInput {Alt Down}t{Alt Up}
 
 #Hotstring * C0 ? X
 
-; ::jj::SendInput {Text}jj
-; ::kk::SendInput {Text}kk
-::jk::SendInput {Text}jk
-::kj::SendInput {Text}kj
+::jkk::SendInput {Esc}
+::kjj::SendInput {Esc}
