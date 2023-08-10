@@ -24,15 +24,20 @@ ListJoin(list, string) {
 #IfWinNotActive ahk_class Vim
 
 !q::
+condition_1 := 0, condition_2 := 0
 Clip := ClipboardAll
 Clipboard := ""
 SendInput {Ctrl Down}c{Ctrl Up}
 ClipWait 0
-if !(ErrorLevel or InStr(Clipboard, "`r`n"))
-    Run gvim "%Clipboard%", , , process_id
-else if InStr(Clipboard, "`r`n")
+if InStr(Clipboard, "`r`n") {
+    condition_1 := 1
     Run % "gvim -d """ ListJoin(StrSplit(Clipboard, "`r`n"), """ """) """", , , process_id
-else if (Clipboard = "")
+}
+if !(ErrorLevel or condition_1) {
+    condition_2 := 1
+    Run gvim "%Clipboard%", , , process_id
+}
+if !(condition_1 or condition_2)
     Run gvim, , , process_id
 Process Priority, %process_id%, High
 WinWait ahk_pid %process_id%, , 10
@@ -42,11 +47,11 @@ WinActivate ahk_pid %process_id%
 Clipboard := Clip
 return
 
-#If WinActive("GVim Mode: (i|s|v|V)")
+#If WinActive("^(i|s|v|V)")
 
 CapsLock::SendInput {Alt Down}t{Alt Up}
 
-#If WinActive("GVim Mode: i") and IsNotEnglish()
+#If WinActive("^i") and IsNotEnglish()
 
 #Hotstring * C0 ? X
 
