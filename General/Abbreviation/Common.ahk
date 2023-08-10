@@ -1,3 +1,4 @@
+#Requires AutoHotkey v1.1+
 #NoTrayIcon
 
 #Hotstring c r t *

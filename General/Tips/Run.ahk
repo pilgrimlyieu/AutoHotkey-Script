@@ -1,6 +1,8 @@
 #Requires AutoHotkey v1.1.36.02+
 #NoTrayIcon
 
+; 请将 Everything 目录放 PATH
+
 if not A_IsAdmin
     Run *RunAs "%A_ScriptFullPath%" /restart
 

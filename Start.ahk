@@ -1,6 +1,7 @@
 #Requires AutoHotkey v1.1.37+
 
 Dir := A_WorkingDir "\"
+AHK_Dir := "C:\Program Files\AutoHotkey\UX\"
 
 Scripts := [ ;"Basic\Shutdown\Shutdown"
           , "Basic\Window\WinDrag\main"
@@ -19,4 +20,4 @@ Scripts := [ ;"Basic\Shutdown\Shutdown"
           , "Tool\Vark\main"]
 
 for index, script in Scripts
-    Run % "autohotkey.exe /restart /CP65001 " Dir script ".ahk"
+    Run % """" AHK_Dir "AutoHotkeyUX.exe"" """ AHK_Dir "launcher.ahk"" /restart """ Dir script ".ahk"""

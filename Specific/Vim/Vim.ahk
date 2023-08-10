@@ -6,6 +6,8 @@ SetWinDelay -1
 
 SysGet WorkAreaInfo, MonitorWorkArea
 
+; 请将 Vim 目录放 PATH
+
 IsNotEnglish() {
     DetectHiddenWindows On
     WinGet winid, ID, A
