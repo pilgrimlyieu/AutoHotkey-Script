@@ -4,7 +4,6 @@
 SetTitleMatchMode RegEx
 SetWinDelay -1
 
-VIMPATH := "D:\Program Files\Vim\vim90"
 SysGet WorkAreaInfo, MonitorWorkArea
 
 IsNotEnglish() {
@@ -16,6 +15,12 @@ IsNotEnglish() {
     return ErrorLevel
 }
 
+ListJoin(list, string) {
+    for index, content in list
+        str .= string . content
+    return SubStr(str, StrLen(string) + 1)
+}
+
 #IfWinNotActive ahk_class Vim
 
 !q::
@@ -23,10 +28,12 @@ Clip := ClipboardAll
 Clipboard := ""
 SendInput {Ctrl Down}c{Ctrl Up}
 ClipWait 0
-if !(ErrorLevel or InStr(Clipboard, "`r"))
-    Run gvim.exe "%Clipboard%", %VIMPATH%, , process_id
+if !(ErrorLevel or InStr(Clipboard, "`r`n"))
+    Run gvim "%Clipboard%", , , process_id
+else if InStr(Clipboard, "`r`n")
+    Run % "gvim -d """ ListJoin(StrSplit(Clipboard, "`r`n"), """ """) """", , , process_id
 else if (Clipboard = "")
-    Run gvim.exe, %VIMPATH%, , process_id
+    Run gvim, , , process_id
 Process Priority, %process_id%, High
 WinWait ahk_pid %process_id%, , 10
 WinSet Style, -0xC40000, ahk_pid %process_id%
