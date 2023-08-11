@@ -26,20 +26,15 @@ ListJoin(list, string) {
 #IfWinNotActive ahk_class Vim
 
 !q::
-condition_1 := 0, condition_2 := 0
 Clip := ClipboardAll
 Clipboard := ""
 SendInput {Ctrl Down}c{Ctrl Up}
 ClipWait 0
-if InStr(Clipboard, "`r`n") {
-    condition_1 := 1
+if InStr(Clipboard, "`r`n")
     Run % "gvim -d """ ListJoin(StrSplit(Clipboard, "`r`n"), """ """) """", , , process_id
-}
-if !(ErrorLevel or condition_1) {
-    condition_2 := 1
+else if !ErrorLevel
     Run gvim "%Clipboard%", , , process_id
-}
-if !(condition_1 or condition_2)
+else
     Run gvim, , , process_id
 Process Priority, %process_id%, High
 WinWait ahk_pid %process_id%, , 10
