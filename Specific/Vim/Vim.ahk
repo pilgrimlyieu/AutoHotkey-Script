@@ -46,7 +46,8 @@ return
 
 #If WinActive("^(i|s|v|V)")
 
-CapsLock::SendInput {Alt Down}t{Alt Up}
+CapsLock::SendInput ô
++CapsLock:: SendInput {Shift Down}ô{Shift Up}
 
 #If WinActive("^i") and IsNotEnglish()
 
