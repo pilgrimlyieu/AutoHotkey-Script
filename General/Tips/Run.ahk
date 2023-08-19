@@ -12,7 +12,7 @@ Clipboard := ""
 SendInput {Ctrl Down}c{Ctrl Up}
 ClipWait 0
 selected := Trim(Clipboard)
-if (!(selected ~= "[*?""<>|]") and selected ~= "^[C-Z]:(?:[\\\/].+)*[\\\/][^.]*$")
+if InStr(FileExist(selected), "D")
     ; Run everything -path "%selected%" ; 为路径则打开路径（包括子文件夹）
     Run everything -parent "%selected%" ; 为路径则打开路径（不包括子文件夹）
 else if selected != ""
