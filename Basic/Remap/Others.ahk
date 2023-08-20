@@ -1,4 +1,4 @@
-#Requires AutoHotkey v1.1.36.02+
+#Requires AutoHotkey v2.0+
 #NoTrayIcon
 
 Pause::Volume_Mute
