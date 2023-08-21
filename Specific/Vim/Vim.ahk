@@ -1,20 +1,23 @@
-#Requires AutoHotkey v1.1+
 #NoTrayIcon
 
-SetTitleMatchMode RegEx
-SetWinDelay -1
-
-SysGet WorkAreaInfo, MonitorWorkArea
+SetTitleMatchMode "RegEx"
+SetWinDelay 0
 
 ; 请将 Vim 目录放 PATH
 
-IsNotEnglish() {
-    DetectHiddenWindows On
-    WinGet winid, ID, A
-    wintitle := "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", winid, "Uint")
-    SendMessage 0x283, 0x001, 0, , %wintitle%
-    DetectHiddenWindows Off
-    return ErrorLevel
+IsNotEnglishMode() {
+    DetectHiddenWindows True
+    hWnd := winGetID("A")
+    result := SendMessage(
+        0x283, ; Message: WM_IME_CONTROL
+        0x001, ; wParam : IMC_GETCONVERSIONMODE
+        0    , ; lParam : (NoArgs)
+             , ; Control : (Window)
+        ; Retrieves the default window handle to the IME class.
+        "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", hWnd, "Uint")
+    )
+    DetectHiddenWindows False
+    return result
 }
 
 ListJoin(list, string) {
@@ -23,35 +26,38 @@ ListJoin(list, string) {
     return SubStr(str, StrLen(string) + 1)
 }
 
-#IfWinNotActive ahk_class Vim
+MonitorGetWorkArea , , , &WorkAreaInfoRight, &WorkAreaInfoBottom
 
-!q::
-Clip := ClipboardAll
-Clipboard := ""
-SendInput {Ctrl Down}c{Ctrl Up}
-ClipWait 0
-if InStr(Clipboard, "`r`n")
-    Run % "gvim -d """ ListJoin(StrSplit(Clipboard, "`r`n"), """ """) """", , , process_id
-else if !ErrorLevel
-    Run gvim "%Clipboard%", , , process_id
-else
-    Run gvim, , , process_id
-Process Priority, %process_id%, High
-WinWait ahk_pid %process_id%, , 10
-WinSet Style, -0xC40000, ahk_pid %process_id%
-WinMove ahk_pid %process_id%, , 0, 0, %WorkAreaInfoRight%, %WorkAreaInfoBottom%
-WinActivate ahk_pid %process_id%
-Clipboard := Clip
-return
+#HotIf !WinActive("ahk_class Vim")
 
-#If WinActive("^(i|s|v|V)")
+!q::{
+    ClipSaved := ClipboardAll()
+    A_Clipboard := ""
+    SendInput "{Ctrl Down}c{Ctrl Up}"
+    clip_result := ClipWait(0.5, 0)
+    if InStr(A_Clipboard, "`r`n")
+        Run "gvim -d `"" ListJoin(StrSplit(A_Clipboard, "`r`n"), "`" `"") "`"", , , &process_id
+    else if clip_result
+        Run "gvim `"" A_Clipboard "`"", , , &process_id
+    else
+        Run "gvim", , , &process_id
+    ProcessSetPriority "High", process_id
+    WinWait "ahk_pid " process_id, , 10
+    WinSetStyle -0xC40000, "ahk_pid " process_id
+    WinMove 0, 0, WorkAreaInfoRight, WorkAreaInfoBottom, "ahk_pid " process_id
+    WinActivate "ahk_pid " process_id
+    A_Clipboard := ClipSaved
+    ClipSaved := ""
+}
 
-CapsLock::SendInput ô
-+CapsLock:: SendInput {Shift Down}ô{Shift Up}
+#HotIf WinActive("^(i|s|v|V)") && WinActive("ahk_class Vim")
 
-#If WinActive("^i") and IsNotEnglish()
+CapsLock::SendInput "{Alt Down}{F12}{Alt Up}"
++CapsLock::SendInput "{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}"
+
+#HotIf WinActive("^i") && WinActive("ahk_class Vim") && IsNotEnglishMode()
 
 #Hotstring * C0 ? X
 
-::jkk::SendInput {Esc}
-::kjj::SendInput {Esc}
+::jkk::SendInput "{Esc}"
+::kjj::SendInput "{Esc}"
