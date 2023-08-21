@@ -21,7 +21,7 @@ for index, key in Alias
 
 #F1::{
 number := InputBox(text, "Helps", "T5 H" String(100 + 20 * Alias.Length))
-if number.Result = "OK"
+if number.Result == "OK"
     try
         Run "D:/Program Files/Snipaste/Snipaste.exe paste --files " WorkingDir Mappings_Helps[Alias[Integer(number.Value)]] ".png"
 }
