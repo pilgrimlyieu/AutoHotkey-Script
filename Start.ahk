@@ -1,25 +1,23 @@
-#Requires AutoHotkey v2.0+
-
 Dir := A_WorkingDir "/"
 AHK_Dir := "C:/Program Files/AutoHotkey/UX/"
 
 Scripts := [
-    ; "Basic/Shutdown/Shutdown",
-    "Basic/Window/WinDrag/main",
-    "Basic/Remap/Fn",
-    "Basic/Remap/NumLock",
-    "Basic/Remap/Others",
+    ; "Basic/Shutdown/Shutdown.ahk1",
+    "Basic/Window/WinDrag/main.ahk1",
+    "Basic/Remap/Fn.ahk",
+    "Basic/Remap/NumLock.ahk",
+    "Basic/Remap/Others.ahk",
 
-    "General/Tips/Run",
-    "General/Correction/Pinyin",
-    "General/Abbreviation/Common",
-    "General/AHKMapCheatSheet/Mappings",
+    "General/Tips/Run.ahk",
+    "General/Correction/Pinyin.ahk",
+    "General/Abbreviation/Common.ahk",
+    "General/AHKMapCheatSheet/Mappings.ahk",
 
-    "Specific/Vim/Vim",
-    ; "Specific/Anki/Must",
+    "Specific/Vim/Vim.ahk",
+    ; "Specific/Anki/Must.ahk1",
 
-    "Tool/Vark/main",
+    "Tool/Vark/main.ahk",
 ]
 
 for index, script in Scripts
-    Run "`"" AHK_Dir "AutoHotkeyUX.exe`" `"" AHK_Dir "launcher.ahk`" /restart `"" Dir script ".ahk`""
+    Run "`"" AHK_Dir "AutoHotkeyUX.exe`" `"" AHK_Dir "launcher.ahk`" /restart `"" Dir script

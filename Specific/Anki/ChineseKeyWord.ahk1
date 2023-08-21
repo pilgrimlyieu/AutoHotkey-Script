@@ -1,3 +1,5 @@
+#Requires AutoHotkey v1.1+
+
 Global pinyins := "\w*[āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü]\w*", Board := {"Word": "", "Definition": "", "Sentence": "", "Prefix": ""}, Temp := ""
 
 Clean(string) {

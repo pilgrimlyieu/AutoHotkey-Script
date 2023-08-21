@@ -1,4 +1,6 @@
-﻿Run D:\Program Files\Tencent\WeMeet\wemeetapp.exe
+﻿#Requires AutoHotkey v1.1+
+
+Run D:\Program Files\Tencent\WeMeet\wemeetapp.exe
 WinWait 腾讯会议, , 10
 If !ErrorLevel {
     Sleep 3000

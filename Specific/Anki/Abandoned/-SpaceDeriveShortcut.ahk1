@@ -1,3 +1,5 @@
+#Requires AutoHotkey v1.1+
+
 ; Space 版派生捷径
 ;;; 使用 Space 作为前缀键，需搭配 Cloze 使用。效率较高，性能好；但兼容性不佳。
 ;;;;; 全局捷径

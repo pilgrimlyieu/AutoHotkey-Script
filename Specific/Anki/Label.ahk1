@@ -1,3 +1,5 @@
+#Requires AutoHotkey v1.1+
+
 Have_Label(text, start_label, end_label) {
     return SubStr(text, 1, StrLen(start_label)) = start_label and SubStr(text, - StrLen(end_label) + 1) = end_label
 }

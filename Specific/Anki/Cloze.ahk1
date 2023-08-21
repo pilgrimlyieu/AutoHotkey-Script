@@ -1,4 +1,6 @@
-﻿; Anki Cloze
+﻿#Requires AutoHotkey v1.1+
+
+; Anki Cloze
 ;;; 特性   Features
 ;;;;; 1. 自动清除首尾空白字符                         Automatically clean left and right empty characters
 ;;;;; 2. 自动添加尾部空格                             Automatically add right space

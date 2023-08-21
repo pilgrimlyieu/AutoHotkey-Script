@@ -1,4 +1,6 @@
-﻿; Board 版派生捷径
+﻿#Requires AutoHotkey v1.1+
+
+; Board 版派生捷径
 ;;; 使用 Borad 储存复制结果。效率高，性能好，兼容性较好。
 ;;;;; 全局捷径
 ;;;;;;; Ctrl + Q       跳转到 Add 窗口

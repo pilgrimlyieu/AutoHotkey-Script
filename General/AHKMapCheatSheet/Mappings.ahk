@@ -1,4 +1,3 @@
-#Requires AutoHotkey v2.0+
 #NoTrayIcon
 
 global WorkingDir     := "G:/Project/Scripts/AutoHotkey/"

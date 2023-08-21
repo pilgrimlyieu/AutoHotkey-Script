@@ -1,4 +1,3 @@
-#Requires AutoHotkey v2.0+
 #NoTrayIcon
 
 global LBKeyNum := 600, CheckMins := 30, BreakSeconds := 60, ForceSeconds := 30

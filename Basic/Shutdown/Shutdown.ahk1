@@ -1,4 +1,5 @@
-﻿;@Ahk2Exe-SetMainIcon Shutdown.ico
+﻿#Requires AutoHotkey v1.1+
+;@Ahk2Exe-SetMainIcon Shutdown.ico
 
 #NoTrayIcon
 

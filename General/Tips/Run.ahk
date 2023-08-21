@@ -1,8 +1,6 @@
-#Requires AutoHotkey v2.0+
 #NoTrayIcon
 
 ; 请将 Everything 目录放 PATH
-
 #f::{
     ClipSaved := ClipboardAll()
     A_Clipboard := ""
