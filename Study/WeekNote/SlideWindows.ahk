@@ -1,7 +1,7 @@
 Show() {
     text := "Windows IDs:"
     for index, value in windows
-        text .= "`r" index ": " value
+        text .= "`r" index ": " WinGetTitle("ahk_id " value)
     return text
 }
 
