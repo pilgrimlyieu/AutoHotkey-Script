@@ -1,4 +1,4 @@
-Global pinyins := "^\w*[āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü]\w*$"
+global pinyins := "^\w*[āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü]\w*$"
 
 Clean(string) {
     if !(string ~= pinyins)
@@ -6,13 +6,14 @@ Clean(string) {
     return string
 }
 
-#IfWinActive ahk_exe SumatraPDF.exe
+#HotIf WinActive("ahk_exe SumatraPDF.exe")
 
-$^c::
-SendInput {Ctrl Down}c{Ctrl Up}
-ClipWait 3
-Clip:= RegExReplace(Clipboard, "\s*\v+\s*")
-Clipboard := Clean(Clip)
-return
+$^c::{
+    SendInput "{Ctrl Down}c{Ctrl Up}"
+    ClipWait 0.5, 0
+    ClipSaved := RegExReplace(A_Clipboard, "\s*\v+\s*")
+    A_Clipboard := Clean(ClipSaved)
+    ClipSaved := ""
+}
 
-^+c::SendInput {Ctrl Down}c{Ctrl Up}
+^+c::SendInput "{Ctrl Down}c{Ctrl Up}"
