@@ -23,8 +23,8 @@ VimAnkis := [VimAnki1, VimAnki2]
 
 #p::Gosub SwitchType
 #+p::Gosub StatusType
-; #s::Gosub SwitchHTML
-; #+s::Gosub StatusHTML
+#s::Gosub SwitchHTML
+#+s::Gosub StatusHTML
 
 SwitchType:
 Settings.type := !(Settings.type - 1) + 1
