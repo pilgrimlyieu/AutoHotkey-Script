@@ -28,7 +28,7 @@ class Vanki extends Vark {
     Open() {
         this.TempPath := this.TempDir this.TempFileName this.order
         this.Temp(this.TempPath)
-        this.Popout(this.TempPath)
+        this.PopOut(this.TempPath)
     }
 
     /**
@@ -126,7 +126,7 @@ class Vanki extends Vark {
     }
 
     Clear() {
-        MsgBoxResult := MsgBox("是否要清除临时文件夹？（此操作不可逆！）", "清除临时文件夹", "4388 T5")
+        MsgBoxResult := MsgBox("是否要清除临时文件夹？（此操作不可逆！）", "清除临时文件夹", "Y/N/C Icon? Default2 0x1000 T5")
         if MsgBoxResult == "No"
             return
 

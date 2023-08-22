@@ -14,7 +14,7 @@
 
     Open() {
         this.Temp(this.TempPath)
-        this.Popout(this.TempPath)
+        this.PopOut(this.TempPath)
     }
 
     Save(option) {
@@ -69,7 +69,7 @@
             FileAppend("", path)
     }
 
-    Popout(path) {
+    PopOut(path) {
         this.win_id := WinExist("A")
 
         CaretGetPos(&xcursor, &ycursor)
@@ -83,7 +83,7 @@
 
         ProcessSetPriority("Realtime", process_id)
         WinWait("ahk_pid " process_id, , 5)
-        WinSetStyle(-12845056, "ahk_pid " process_id)
+        WinSetStyle("-0xC40000", "ahk_pid " process_id)
         WinSetAlwaysOnTop(1, "ahk_pid " process_id)
         WinMove(win_xpos, win_ypos, this.PopSizes[1], this.PopSizes[2], "ahk_pid " process_id)
         WinActivate("ahk_pid " process_id)
