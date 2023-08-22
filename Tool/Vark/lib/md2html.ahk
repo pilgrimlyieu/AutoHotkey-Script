@@ -38,13 +38,13 @@ Tag(content) {
             layer := layers[-1]
         catch Error
             layer := ""
-        if (A_LoopField == "=" && (mark_level == 1 || (mark_level == 0 && SubStr(content, A_Index - 1, 1) != "\")))
+        if A_LoopField == "=" && (mark_level == 1 || (mark_level == 0 && SubStr(content, A_Index - 1, 1) != "\"))
             mark_level += 1
-        else if (A_LoopField == "*" && (!layer || tag_level < layer) && (tag_level > 0 || SubStr(content, A_Index - 1, 1) != "\"))
+        else if A_LoopField == "*" && (!layer || tag_level < layer) && (tag_level > 0 || SubStr(content, A_Index - 1, 1) != "\")
             tag_level += 1
         else {
-            if (mark_level > 0) {
-                if (mark_level == 2) {
+            if mark_level > 0 {
+                if mark_level == 2 {
                     result .= mark_pair ? "</mark>" : "<mark>"
                     mark_pair := !mark_pair
                 }
@@ -53,20 +53,20 @@ Tag(content) {
                 mark_level := 0
             }
 
-            if (!layer || (0 < tag_level && tag_level < layer)) {
+            if !layer || (0 < tag_level && tag_level < layer) {
                 layers.Push(tag_level)
                 try
                     result .= Tags[tag_level][1]
                 tag_level := 0
             }
-            else if (tag_level == layer) {
+            else if tag_level == layer {
                 layers.Pop()
                 result .= Tags[tag_level][2]
                 tag_level := 0
             }
 
-            if (A_LoopField == "`n") {
-                if (line_break = 0) {
+            if A_LoopField == "`n" {
+                if line_break == 0 {
                     line_break := 1
                     result .= "<br>`n"
                 }
@@ -76,9 +76,9 @@ Tag(content) {
             else
                 line_break := 0
 
-            if (A_LoopField == "=" && (mark_level == 1 || (mark_level == 0 && SubStr(content, A_Index - 1, 1) != "\")))
+            if A_LoopField == "=" && (mark_level == 1 || (mark_level == 0 && SubStr(content, A_Index - 1, 1) != "\"))
                 mark_level += 1
-            else if (A_LoopField == "*" && (!layer || tag_level < layer) && (tag_level > 0 || SubStr(content, A_Index - 1, 1) != "\"))
+            else if A_LoopField == "*" && (!layer || tag_level < layer) && (tag_level > 0 || SubStr(content, A_Index - 1, 1) != "\")
                 tag_level += 1
             else
                 result .= (A_LoopField != "`n") ? A_LoopField : ""

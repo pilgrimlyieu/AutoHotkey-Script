@@ -20,4 +20,4 @@ Scripts := [
 ]
 
 for index, script in Scripts
-    Run "`"" AHK_Dir "AutoHotkeyUX.exe`" `"" AHK_Dir "launcher.ahk`" /restart `"" Dir script
+    Run("`"" AHK_Dir "AutoHotkeyUX.exe`" `"" AHK_Dir "launcher.ahk`" /restart `"" Dir script)

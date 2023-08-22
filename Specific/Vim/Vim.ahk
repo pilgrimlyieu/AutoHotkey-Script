@@ -2,6 +2,7 @@
 
 SetTitleMatchMode "RegEx"
 SetWinDelay 0
+MonitorGetWorkArea( , , , &WorkAreaInfoRight, &WorkAreaInfoBottom)
 
 ; 请将 Vim 目录放 PATH
 
@@ -26,38 +27,36 @@ ListJoin(list, string) {
     return SubStr(str, StrLen(string) + 1)
 }
 
-MonitorGetWorkArea , , , &WorkAreaInfoRight, &WorkAreaInfoBottom
-
 #HotIf !WinActive("ahk_class Vim")
 
 !q::{
     ClipSaved := ClipboardAll()
     A_Clipboard := ""
-    SendInput "{Ctrl Down}c{Ctrl Up}"
+    SendInput("{Ctrl Down}c{Ctrl Up}")
     clip_result := ClipWait(0.5, 0)
     if InStr(A_Clipboard, "`r`n")
-        Run "gvim -d `"" ListJoin(StrSplit(A_Clipboard, "`r`n"), "`" `"") "`"", , , &process_id
+        Run("gvim -d `"" ListJoin(StrSplit(A_Clipboard, "`r`n"), "`" `"") "`"", , , &process_id)
     else if clip_result
-        Run "gvim `"" A_Clipboard "`"", , , &process_id
+        Run("gvim `"" A_Clipboard "`"", , , &process_id)
     else
-        Run "gvim", , , &process_id
-    ProcessSetPriority "High", process_id
-    WinWait "ahk_pid " process_id, , 10
-    WinSetStyle -0xC40000, "ahk_pid " process_id
-    WinMove 0, 0, WorkAreaInfoRight, WorkAreaInfoBottom, "ahk_pid " process_id
-    WinActivate "ahk_pid " process_id
+        Run("gvim", , , &process_id)
+    ProcessSetPriority("High", process_id)
+    WinWait("ahk_pid " process_id, , 10)
+    WinSetStyle(-0xC40000, "ahk_pid " process_id)
+    WinMove(0, 0, WorkAreaInfoRight, WorkAreaInfoBottom, "ahk_pid " process_id)
+    WinActivate("ahk_pid " process_id)
     A_Clipboard := ClipSaved
     ClipSaved := ""
 }
 
 #HotIf WinActive("^(i|s|v|V)") && WinActive("ahk_class Vim")
 
-CapsLock::SendInput "{Alt Down}{F12}{Alt Up}"
-+CapsLock::SendInput "{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}"
+CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
++CapsLock::SendInput("{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}")
 
 #HotIf WinActive("^i") && WinActive("ahk_class Vim") && IsNotEnglishMode()
 
 #Hotstring * C0 ? X
 
-::jkk::SendInput "{Esc}"
-::kjj::SendInput "{Esc}"
+::jkk::SendInput("{Esc}")
+::kjj::SendInput("{Esc}")

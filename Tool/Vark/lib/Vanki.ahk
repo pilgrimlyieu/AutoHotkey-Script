@@ -51,9 +51,9 @@ class Vanki extends Vark {
             return
         this.Save(option)
 
-        if (option = 0 or option = 1) {
+        if option == 0 || option == 1 {
             file := FileRead(this.TempPath)
-            if (!WinExist("ahk_id " this.win_id) and this.SavetoClip)
+            if !WinExist("ahk_id " this.win_id) && this.SavetoClip
                 A_Clipboard := file
             else {
                 WinActivate("ahk_id " this.win_id)
@@ -61,13 +61,13 @@ class Vanki extends Vark {
                 this.Content(file)
             }
 
-            if (option = 0) {
+            if option == 0 {
                 this.Mix(file)
                 this.ExtraSuf(file)
-                this.order ++
+                this.order += 1
             }
             else {
-                this.suffix ++
+                this.suffix += 1
                 this.Suf(this.TempPath, file, this.suffix)
                 this.Mix(file, this.suffix)
             }
@@ -88,7 +88,7 @@ class Vanki extends Vark {
     }
 
     Empty() {
-        SendInput "jkggdG"
+        SendInput("jkggdG")
         this.Close(this.suffix ? 0 : 2)
     }
 
@@ -127,7 +127,7 @@ class Vanki extends Vark {
 
     Clear() {
         MsgBoxResult := MsgBox("是否要清除临时文件夹？（此操作不可逆！）", "清除临时文件夹", "4388 T5")
-        if (MsgBoxResult == "No")
+        if MsgBoxResult == "No"
             return
 
         DirDelete(this.TempDir, 1)

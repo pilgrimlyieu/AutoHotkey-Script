@@ -30,25 +30,25 @@ VimAnkis := [VimAnki1, VimAnki2]
 SwitchType() {
     global VimAnkis
     Settings.type := !(Settings.type - 1) + 1
-    ToolTip "Vanki type is turned to " Settings.type "."
-    SetTimer () => ToolTip(), -1000
+    ToolTip("Vanki type is turned to " Settings.type ".")
+    SetTimer(() => ToolTip(), -1000)
 }
 
 StatusType() {
-    ToolTip "Vanki type is " Settings.type "."
-    SetTimer () => ToolTip(), -1000
+    ToolTip("Vanki type is " Settings.type ".")
+    SetTimer(() => ToolTip(), -1000)
 }
 
 SwitchHTML() {
     global VimAnkis
     VimAnkis[Settings.type].HTML := !VimAnkis[Settings.type].HTML
-    ToolTip VimAnkis[Settings.type].HTML ? "HTML is turned on." : "HTML is turned off."
-    SetTimer () => ToolTip(), -1000
+    ToolTip(VimAnkis[Settings.type].HTML ? "HTML is turned on." : "HTML is turned off.")
+    SetTimer(() => ToolTip(), -1000)
 }
 
 StatusHTML() {
-    ToolTip VimAnkis[Settings.type].HTML ? "HTML is on." : "HTML is off."
-    SetTimer () => ToolTip(), -1000
+    ToolTip(VimAnkis[Settings.type].HTML ? "HTML is on." : "HTML is off.")
+    SetTimer(() => ToolTip(), -1000)
 }
 
 #HotIf WinActive("ahk_pid " VimAnkis[Settings.type].process_id)

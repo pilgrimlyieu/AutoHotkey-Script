@@ -20,10 +20,10 @@
     Save(option) {
         WinActivate("ahk_pid " this.process_id)
         WinWaitActive("ahk_pid " this.process_id)
-        if (option = -1)
-            SendInput "{Ctrl Down}{Shift Down}q{Shift Up}{Ctrl Up}"
+        if option == -1
+            SendInput("{Ctrl Down}{Shift Down}q{Shift Up}{Ctrl Up}")
         else
-            SendInput "{Ctrl Down}q{Ctrl Up}"
+            SendInput("{Ctrl Down}q{Ctrl Up}")
         WinWaitNotActive("ahk_pid " this.process_id)
         this.process_id := ""
     }
@@ -48,9 +48,9 @@
             return
         this.Save(option)
 
-        if (option = 0 || option = 1) {
+        if option == 0 || option == 1 {
             content := FileRead(this.TempPath)
-            if (!WinExist("ahk_id " this.win_id) && this.SavetoClip)
+            if !WinExist("ahk_id " this.win_id) && this.SavetoClip
                 A_Clipboard := content
             else {
                 WinActivate("ahk_id " this.win_id)
@@ -58,7 +58,7 @@
                 this.Content(content)
             }
         }
-        if (option = 0 || (option = -1 && !this.remaining))
+        if option == 0 || (option == -1 && !this.remaining)
             FileDelete(this.TempPath)
 
         this.remaining := option > 0
@@ -75,12 +75,8 @@
         CaretGetPos(&xcursor, &ycursor)
         if !(xcursor && ycursor)
             MouseGetPos(&xcursor, &ycursor)
-        win_xpos := xcursor
-        win_ypos := ycursor - this.PopSizes[2] - 20
-        if (win_xpos > A_ScreenWidth - this.PopSizes[1])
-            win_xpos := A_ScreenWidth -this.PopSizes[1]
-        if (win_ypos < 0)
-            win_ypos := 0
+        win_xpos := (xcursor > A_ScreenWidth - this.PopSizes[1]) ? A_ScreenWidth - this.PopSizes[1] : xcursor
+        win_ypos := (ycursor > this.PopSizes[2] + 20) ? ycursor - this.PopSizes[2] - 20 : 0
 
         Run("gvim " path " -u " this.Vimrc, , , &process_id)
         this.process_id := process_id
@@ -97,10 +93,10 @@
         content := RegExReplace(content, "(\n|\r)+$", "")
         if this.SendbyClip {
             A_Clipboard := content
-            SendInput "{Ctrl Down}v{Ctrl Up}"
+            SendInput("{Ctrl Down}v{Ctrl Up}")
         }
         else
-            SendInput "{Text}" content
+            SendInput("{Text}" content)
     }
 
     Clear() {
