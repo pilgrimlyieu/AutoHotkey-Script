@@ -35,7 +35,7 @@ Tag(content) {
     result     := ""
     loop parse content {
         try
-            layer := layers[layers.Length]
+            layer := layers[-1]
         catch Error
             layer := ""
         if (A_LoopField == "=" && (mark_level == 1 || (mark_level == 0 && SubStr(content, A_Index - 1, 1) != "\")))
