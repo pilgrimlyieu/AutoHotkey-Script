@@ -92,10 +92,10 @@ if !FileExist(OCRC_ConfigFilePath)
     Create_Config()
 
 ConfigSections := StrSplit(IniRead(OCRC_ConfigFilePath), "`n")
-loop ConfigSections.Length {
-    ConfigKeys := StrSplit(IniRead(OCRC_ConfigFilePath, ConfigSections[A_Index]), "`n")
-    loop ConfigKeys.Length {
-        ConfigValues := StrSplit(ConfigKeys[A_Index], "=")
+for section_index, section in ConfigSections {
+    ConfigKeys := StrSplit(IniRead(OCRC_ConfigFilePath, section), "`n")
+    for key_index, key in ConfigKeys {
+        ConfigValues := StrSplit(key, "=")
         OCRC_Configs[ConfigValues[1]] := ConfigValues[2]
     }
 }

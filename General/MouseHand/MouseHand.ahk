@@ -5,10 +5,8 @@ global LBKeyNum := 600, CheckMins := 30, BreakSeconds := 60, ForceSeconds := 30
 ~LButton::
 KeyLeftButton(ThisHotkey) {
     static LButton_key_num := 0
-    if LButton_key_num > 0 {
-        LButton_key_num += 1
-        return
-    }
+    if LButton_key_num > 0
+        return LButton_key_num++
     LButton_key_num := 1
     SetTimer(LockMouse, -60000 * CheckMins)
 
