@@ -3,8 +3,7 @@
 Request(url, Encoding := "", Method := "GET", postData := "", headers := "") {
     hObject := ComObject("WinHttp.WinHttpRequest.5.1")
     hObject.SetTimeouts(30000, 30000, 1200000, 1200000) 
-    try
-        hObject.Open(Method, url, (Method = "POST" ? True : False))  
+    try hObject.Open(Method, url, (Method = "POST" ? True : False))  
     
     if IsObject(headers)
         for k, v in headers
@@ -30,8 +29,7 @@ Request(url, Encoding := "", Method := "GET", postData := "", headers := "") {
         oADO.Charset  := Encoding
         return oADO.ReadText() oADO.Close()
     }
-    try 
-        return hObject.ResponseText
+    try return hObject.ResponseText
 }
 
 ; Adapted from https://www.autohotkey.com/boards/viewtopic.php?p=516828

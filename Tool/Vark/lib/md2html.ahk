@@ -34,8 +34,7 @@ Tag(content) {
     mark_pair  := 0
     result     := ""
     loop parse content {
-        try
-            layer := layers[-1]
+        try layer := layers[-1]
         catch Error
             layer := ""
         if A_LoopField == "=" && (mark_level == 1 || (mark_level == 0 && SubStr(content, A_Index - 1, 1) != "\"))
@@ -55,8 +54,7 @@ Tag(content) {
 
             if !layer || (0 < tag_level && tag_level < layer) {
                 layers.Push(tag_level)
-                try
-                    result .= Tags[tag_level][1]
+                try result .= Tags[tag_level][1]
                 tag_level := 0
             }
             else if tag_level == layer {

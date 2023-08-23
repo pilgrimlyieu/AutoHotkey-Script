@@ -16,8 +16,7 @@ global windows := []
 
 #q::{
     index := IndexOf(win := WinActive("A"), windows)
-    try
-        WinActivate("ahk_id " windows[(index == windows.Length) ? 1 : index + 1])
+    try WinActivate("ahk_id " windows[(index == windows.Length) ? 1 : index + 1])
     catch TargetError
         windows.RemoveAt((index == windows.Length) ? 1 : index + 1)
 }
@@ -32,6 +31,5 @@ global windows := []
 #r::{
     order := InputBox(Show(), "Delete Window ID", "T10")
     if order.Result == "OK"
-        try
-            windows.RemoveAt(order.Value)
+        try windows.RemoveAt(order.Value)
 }
