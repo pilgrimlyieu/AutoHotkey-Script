@@ -171,7 +171,6 @@ Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette:=0) {
 }
 
 GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := "") {
-    A_Clipboard := ""
     try {
         if !(If3pSnip && CmdOf3pSnip)
             throw
