@@ -51,8 +51,8 @@ ListJoin(list, string) {
 
 #HotIf WinActive("^(i|s|v|V)") && WinActive("ahk_class Vim")
 
-CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
-+CapsLock::SendInput("{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}")
+CapsLock::SendInput("{Ctrl Down}{F12}{Ctrl Up}")
++CapsLock::SendInput("{Ctrl Down}{Shift Down}{F12}{Shift Up}{Ctrl Up}")
 
 #HotIf WinActive("^i") && WinActive("ahk_class Vim") && IsNotEnglishMode()
 
