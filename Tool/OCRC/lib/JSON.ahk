@@ -4,7 +4,7 @@
 
 class JSON {
     static __New() {
-        Native.LoadModule(".\lib\ahk-json.dll", ["JSON"])
+        Native.LoadModule("ahk-json.dll", ["JSON"])
         this.DefineProp("true", {value: 1})
         this.DefineProp("false", {value: 0})
         this.DefineProp("null", {value: ""})

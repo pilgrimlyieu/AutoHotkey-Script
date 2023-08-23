@@ -10,11 +10,12 @@ Request(url, Encoding := "", Method := "GET", postData := "", headers := "") {
         for k, v in headers
             if v
                 hObject.SetRequestHeader(k, v)
-    if postData
+    if postData {
         try {
             hObject.Send(postData)
             hObject.WaitForResponse(-1)
         }
+    }
     else
         try hObject.Send()
 
@@ -27,8 +28,7 @@ Request(url, Encoding := "", Method := "GET", postData := "", headers := "") {
         oADO.Position := 0
         oADO.Type     := 2
         oADO.Charset  := Encoding
-        text := oADO.ReadText()
-        oADO.Close()
+        return oADO.ReadText() oADO.Close()
     }
     try 
         return hObject.ResponseText
