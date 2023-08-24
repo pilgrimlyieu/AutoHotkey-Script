@@ -1,30 +1,24 @@
-#Requires AutoHotkey v1.1.36.02+
 #NoTrayIcon
 
-Global LBNum := 300, CheckMins := 30, BreakTime := 60, ForceTime := 30
+global LBKeyNum := 600, CheckMins := 30, BreakSeconds := 60, ForceSeconds := 30
 
 ~LButton::
-If (LButtonKeyNum > 0) {
-    LButtonKeyNum ++
-    Return
-}
-LButtonKeyNum := 1
-SetTimer MouseHand, % - 60000 * CheckMins
-Return
+KeyLeftButton(ThisHotkey) {
+    static LButton_key_num := 0
+    if LButton_key_num > 0
+        return LButton_key_num++
+    LButton_key_num := 1
+    SetTimer(LockMouse, -60000 * CheckMins)
 
-MouseHand:
-If (LButtonKeyNum >= LBNum) {
-    MsgBox 4144, 休息锁定模式, 已经高强度使用鼠标 %CheckMins% 分钟了 ，活动一下手吧！可在休息至少 %ForceTime%s 后按 Esc 键退出锁定模式。, 10
-    CoordMode Mouse
-    MouseGetPos XPos, YPos
-    Loop % ForceTime {
-        Sleep 1000
-        MouseMove XPos, YPos
+    LockMouse() {
+        if LButton_key_num >= LBKeyNum {
+            BlockInput("MouseMove")
+            MsgBox("已经高强度使用鼠标 " CheckMins " 分钟了，活动一下手吧！可在休息至少 " ForceSeconds "s 后按 Esc 键退出锁定模式。", "休息锁定模式", "Icon! 0x1000 T5")
+            UnlockMouse(ThisHotkey) => BlockInput("MouseMoveOff")
+            SetTimer(() => Hotkey("~Esc", UnlockMouse, "On"), -1000 * ForceSeconds)
+            SetTimer(() => Hotkey("~Esc", UnlockMouse, "Off"), -1000 * BreakSeconds)
+            SetTimer(() => UnlockMouse, -1000 * BreakSeconds)
+        }
+        LButton_key_num := 0
     }
-    Loop % BreakTime - ForceTime {
-        KeyWait Esc, DT1
-        MouseMove XPos, YPos
-    } Until !ErrorLevel
 }
-LButtonKeyNum := 0
-Return

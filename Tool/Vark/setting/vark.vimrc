@@ -4,41 +4,39 @@ set fileformat=unix
 set fileencodings=utf-8,gbk2312,gbk,gb18030,cp936
 set encoding=utf-8
 set nobomb
-set mouse=
 set magic
 set smartcase
 set laststatus=2
-set showtabline=2
+set showtabline=0
 set history=256
 set autochdir
-set whichwrap=b,s,<,>,[,]
+set whichwrap=b,<,>,[,]
 set backspace=indent,eol,start
 set clipboard+=unnamed
 set winaltkeys=no
 set langmenu=zh_CN
 set cursorline
+set hlsearch
+set incsearch
 set number
 set relativenumber
 set splitbelow
 set splitright
 set guioptions-=e
+set guioptions-=g
 set guioptions-=m
-set guioptions-=b
-set guioptions-=l
-set guioptions-=L
 set guioptions-=r
-set guioptions-=R
+set guioptions-=L
 set guioptions-=t
 set guioptions-=T
-set nolist
 set autoindent
 set smartindent
 set foldmethod=marker
 set guifont=JetBrains_Mono:h15
-set guifontwide=Microsoft_Yahei_Mono:h15
+set guifontwide=Sarasa_Mono_SC:h15
 set conceallevel=2
 set wildmenu
-set scrolloff=9
+set scrolloff=10
 set noshowmode
 set tabstop=4
 set expandtab
@@ -46,10 +44,10 @@ set softtabstop=4
 set shiftwidth=4
 set viewoptions-=options
 set undofile
-set undodir=G:\Temp\.vim\.undo\
-set directory=G:\Temp\.vim\.swap\
-set viewdir=G:\Temp\.vim\.view\
-set shortmess+=FWA
+set undodir=D:\Temp\.vim\.undo\
+set directory=D:\Temp\.vim\.swap\
+set viewdir=D:\Temp\.vim\.view\
+set shortmess+=F
 set background=dark
 set listchars=tab:!>,trail:·,lead:·
 set list
@@ -57,11 +55,11 @@ set gdefault
 set noruler
 set noshowmode
 set noshowcmd
-set showtabline=0
 set filetype=markdown
-set titlestring=GVim\ Mode:\ %{mode()}\ \&\ Sever\ Name:\ %{v:servername}
+set titlestring=%{mode()}\&Vark
 
-let $LANG = 'en_US'
+let $LANG = 'en_US.UTF-8'
+let &pythonthreedll = 'D:\Program Files\Python\Python310\python310.dll'
 " }}}
 
 augroup auto_view
@@ -79,10 +77,6 @@ augroup spell_check
     autocmd FileType tex,markdown inoremap <silent><C-n> <C-g>u<Esc>[s1z=`'a<C-g>u
 " }}}1
 augroup end
-
-let g:python3_host_skip_check = 1
-let g:python3_host_prog       = '/usr/local/bin/python3'
-let $LANG                     = 'en_US.UTF-8'
 
 " win-clipboard {{{1
 let g:clipboard = {
@@ -107,7 +101,6 @@ let g:language_types = ['python', 'javascript', 'vim']
 call plug#begin("~/vimfiles/plugged")
 " Plug {{{1
 Plug 'morhetz/gruvbox'
-Plug 'yianwillis/vimcdoc'
 Plug 'itchyny/lightline.vim'
 Plug 'maximbaz/lightline-ale',        { 'for': g:language_types }
 Plug 'junegunn/vim-easy-align'
@@ -125,11 +118,14 @@ Plug 'Yggdroot/indentLine'
 Plug 'lervag/vimtex',                 { 'for': ['tex', 'markdown'] }
 Plug 'pilgrimlyieu/md-img-paste.vim', { 'for': 'markdown' }
 Plug 'mzlogin/vim-markdown-toc',      { 'for': 'markdown'}
-Plug 'python-mode/python-mode',       { 'for': 'python', 'branch': 'develop' }
+Plug 'rrethy/vim-hexokinase',         { 'do': 'make hexokinase' }
+Plug 'vim-autoformat/vim-autoformat'
+" Plug 'python-mode/python-mode',       { 'for': 'python', 'branch': 'develop' }
 " }}}1
 call plug#end()
 
 colorscheme gruvbox
+let g:Hexokinase_highlighters = ['backgroundfull']
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "                                                                                              "
@@ -144,8 +140,6 @@ function! Execute(cmd)
     execute a:cmd
     return ''
 endfunction
-
-nnoremap <Space> <Nop>
 
 inoremap jk      <Esc>
 inoremap kj      <Esc>
@@ -162,6 +156,8 @@ onoremap H       0
 nnoremap L       $
 onoremap L       $
 nnoremap <expr>0 col('.') == 1 ? '^' : '0'
+nnoremap <C-f> <C-d>
+nnoremap <C-b> <C-u>
 
 nnoremap <silent><leader>/ :noh<Cr>
 vnoremap /                 /\v
@@ -207,7 +203,7 @@ nnoremap <silent><leader>w :w<Cr>
 nnoremap <silent><leader>C :bw<Cr>
 nnoremap <silent><S-Esc>   :qa!<Cr>
 
-tnoremap <F1>           <C-W>N
+tnoremap <F1>           <C-\><C-N>
 tnoremap <S-F1>         <C-W><C-C>
 tnoremap <silent><S-F5> <C-W>N:bw!<Cr>
 nnoremap <silent><S-F5> :call CloseTerminal()<CR>
@@ -260,7 +256,7 @@ let g:surround_{char2nr('”')}  = "『\r』"
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Markdown {{{1
-autocmd FileType markdown inoremap <silent><C-x>      <Cr><Cr><hr class='section'><Cr><Cr>
+" autocmd FileType markdown inoremap <silent><C-x>      <Cr><Cr><hr class='section'><Cr><Cr>
 autocmd FileType markdown inoremap <silent><C-p>      <C-r>=Execute('call mdip#MarkdownClipboardImage()')<Cr>
 autocmd FileType markdown inoremap <silent><C-t>      <C-r>=Execute('UpdateToc')<Cr>
 autocmd FileType markdown nnoremap <silent><leader>mt :UpdateToc<Cr>
@@ -297,15 +293,6 @@ let g:mdip_imgname            = ''
 
 " TeX {{{1
 let g:tex_conceal = ''
-
-" This is necessary for VimTeX to load properly. The "indent" is optional.
-" Note that most plugin managers will do this automatically.
-filetype plugin indent on
-
-" This enables Vim's and neovim's syntax-related features. Without this, some
-" VimTeX features will not work (see ":help vimtex-requirements" for more
-" info).
-syntax enable
 
 " Viewer options: One may configure the viewer either by specifying a built-in
 " viewer method:
@@ -366,6 +353,11 @@ let g:vimtex_compiler_latexmk = {
 
 let g:vimtex_syntax_conceal_disable   = 1
 let g:vimtex_quickfix_open_on_warning = 0
+
+let g:vimtex_toggle_fractions = {
+        \ 'frac': 'dfrac',
+        \ 'dfrac': 'frac',
+    \}
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -381,12 +373,17 @@ let g:vimtex_quickfix_open_on_warning = 0
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " UltiSnips {{{1
-let g:UltiSnipsExpandTrigger       = 'ô'
-let g:UltiSnipsListSnippets        = '<C-Tab>'
-let g:UltiSnipsJumpForwardTrigger  = '<Tab>'
-let g:UltiSnipsJumpBackwardTrigger = '<S-Tab>'
+let g:UltiSnipsListSnippets        = '<S-Tab>'
 let g:UltiSnipsEditSplit           = "vertical"
 let g:UltiSnipsSnippetDirectories  = ['Snips']
+
+inoremap <silent><F2>      <C-R>=UltiSnips#ExpandSnippet()<Cr>
+snoremap <silent><F2>      <Esc>:call UltiSnips#ExpandSnippet()<Cr>
+inoremap <silent><M-F12>   <C-R>=UltiSnips#JumpForwards()<Cr>
+snoremap <silent><M-F12>   <Esc>:call UltiSnips#JumpForwards()<Cr>
+inoremap <silent><M-S-F12> <C-R>=UltiSnips#JumpBackwards()<Cr>
+snoremap <silent><M-S-F12> <Esc>:call UltiSnips#JumpBackwards()<Cr>
+nnoremap <silent><C-d>     <Esc>:call UltiSnips#RefreshSnippets()<Cr>
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -418,7 +415,7 @@ nnoremap <leader><leader>F <Plug>(easymotion-F2)
 nnoremap <leader><leader>t <Plug>(easymotion-t2)
 nnoremap <leader><leader>T <Plug>(easymotion-T2)
 nnoremap <leader>s         <Plug>(easymotion-s)
-nnoremap <leader>S         <Plug>(easymotion-s2)
+nnoremap s                 <Plug>(easymotion-s2)
 nnoremap /                 <Plug>(easymotion-sn)\v
 onoremap /                 <Plug>(easymotion-tn)\v
 nnoremap n                 <Plug>(easymotion-next)
@@ -438,6 +435,8 @@ nnoremap N                 <Plug>(easymotion-prev)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " vim-visual-multi {{{1
+let g:VM_theme = 'iceblue'
+
 let g:VM_maps                    = {}
 let g:VM_maps["Exit"]            = '<C-c>'
 let g:VM_maps["Add Cursor Down"] = '<A-s>'
@@ -446,6 +445,8 @@ let g:VM_maps["Select l"]        = '<A-d>'
 let g:VM_maps["Select h"]        = '<A-a>'
 let g:VM_maps["Move Left"]       = '<A-S-a>'
 let g:VM_maps["Move Right"]      = '<A-S-d>'
+let g:VM_maps["Undo"]            = 'u'
+let g:VM_maps["Redo"]            = 'U'
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -466,6 +467,8 @@ vnoremap ga <Plug>(EasyAlign)
 
 nnoremap <silent>g:             <Plug>(EasyAlign)ip*<C-l>0<Cr><C-x>\\\@<!:\(=\)\@!<Cr>
 vnoremap <silent>g:             <Plug>(EasyAlign)*<C-l>0<Cr><C-x>\\\@<!:\(=\)\@!<Cr>
+nnoremap <silent>g=             <Plug>(EasyAlign)ip=<Cr>
+vnoremap <silent>g=             <Plug>(EasyAlign)*=<Cr>
 nnoremap <silent><expr>g<Space> '<C-u><Plug>(EasyAlign)ip' . v:count1 . ' \<Cr>'
 vnoremap <silent><expr>g<Space> '<Plug>(EasyAlign)' . v:count1 . ' \<Cr>'
 " }}}1
@@ -485,9 +488,6 @@ vnoremap <silent><expr>g<Space> '<Plug>(EasyAlign)' . v:count1 . ' \<Cr>'
 " ale {{{1
 let g:ale_sign_error   = '>>'
 let g:ale_sign_warning = '--'
-let g:ale_linters      = {
-\   'python': ['pylint'],
-\}
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -503,6 +503,8 @@ let g:ale_linters      = {
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " coc {{{1
+let g:coc_data_home = $USERPROFILE . '/vimfiles/extra/coc'
+
 let g:coc_snippet_next = '<Tab>'
 let g:coc_snippet_prev = '<S-Tab>'
 
@@ -510,22 +512,13 @@ let g:coc_snippet_prev = '<S-Tab>'
 " [coc-git]
 "     issuesources = github/pilgrimlyieu/School-Note,github/pilgrimlyieu/vimrc,github/pilgrimlyieu/Snippets,github/pilgrimlyieu/Snippets-Dependencies,github/pilgrimlyieu/AutoHotkey-Script,github/pilgrimlyieu/Python-Script
 
-" TextEdit might fail if hidden is not set.
-set hidden
-
 " Some servers have issues with backup files, see #649.
 set nobackup
 set nowritebackup
 
-" Give more space for displaying messages.
-set cmdheight=2
-
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
 set updatetime=300
-
-" Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
 
 " Always show the signcolumn, otherwise it would shift the text each time
 " diagnostics appear/become resolved.
@@ -536,27 +529,23 @@ set signcolumn=number
 " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 " other plugin before putting this into your config.
 inoremap <silent><expr> <C-z>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<C-z>" :
+      \ coc#pum#visible() ? coc#pum#next(1):
+      \ CheckBackspace() ? "\<C-z>" :
       \ coc#refresh()
-inoremap <expr><C-S-z> pumvisible() ? "\<C-p>" : "\<C-h>"
+inoremap <silent><expr><C-S-z> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
 
-function! s:check_back_space() abort
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <C-c> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 " Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <cr> could be remapped by other vim plugin
-inoremap <silent><expr> <C-c> pumvisible() ? coc#_select_confirm()
-                             \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <c-@> coc#refresh()
 
 " Use `[g` and `]g` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -570,9 +559,9 @@ nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
+nnoremap <silent> K :call ShowDocumentation()<CR>
 
-function! s:show_documentation()
+function! ShowDocumentation()
   if CocAction('hasProvider', 'hover')
     call CocActionAsync('doHover')
   else
@@ -593,40 +582,47 @@ nmap <leader>rn <Plug>(coc-rename)
 augroup mygroup
   autocmd!
   " Setup formatexpr specified filetype(s).
-  autocmd FileType typEscript,json setl formatexpr=CocAction('formatSelected')
+  autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
   " Update signature help on jump placeholder.
   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
 augroup end
 
-" Applying codeAction to the selected region.
+" Applying code actions to the selected code block
 " Example: `<leader>aap` for current paragraph
 " xmap <leader>a  <Plug>(coc-codeaction-selected)
 " nmap <leader>a  <Plug>(coc-codeaction-selected)
 
-" Remap keys for applying codeAction to the current buffer.
-nmap <leader>ac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
+" Remap keys for applying code actions at the cursor position
+nmap <leader>ac  <Plug>(coc-codeaction-cursor)
+" Remap keys for apply code actions affect whole buffer
+nmap <leader>as  <Plug>(coc-codeaction-source)
+" Apply the most preferred quickfix action to fix diagnostic on the current line
 " nmap <leader>qf  <Plug>(coc-fix-current)
+
+" Remap keys for applying refactor code actions
+nmap <silent> <leader>re <Plug>(coc-codeaction-refactor)
+xmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
+nmap <silent> <leader>r  <Plug>(coc-codeaction-refactor-selected)
 
 " Run the Code Lens action on the current line.
 " nmap <leader>cl  <Plug>(coc-codelens-action)
 
 " Map function and class text objects
 " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-" xmap if <Plug>(coc-funcobj-i)
-" omap if <Plug>(coc-funcobj-i)
-" xmap af <Plug>(coc-funcobj-a)
-" omap af <Plug>(coc-funcobj-a)
-" xmap ic <Plug>(coc-classobj-i)
-" omap ic <Plug>(coc-classobj-i)
-" xmap ac <Plug>(coc-classobj-a)
-" omap ac <Plug>(coc-classobj-a)
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
 " nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
 " nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<C-r>=coc#float#scroll(1)\<Cr>" : "\<Right>"
+inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<C-r>=coc#float#scroll(0)\<Cr>" : "\<Left>"
 vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
 vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
 
@@ -698,25 +694,37 @@ function! RunProgram()
         return
     endif
 
-    execute 'silent execute "w"'
+    silent execute 'w'
     let l:filename = expand('%')
     let l:opts     = g:terminal_settings
 
     if &filetype == 'python'
-        call OpenTerminal()
+        let l:term_col = OpenTerminal()
         let l:opts.term_name = 'python_terminal'
-        call term_start('python ' . l:filename, l:opts)
+        if l:term_col
+            let l:opts.term_cols = l:term_col
+        endif
+        call term_start('python "' . l:filename . '"', l:opts)
     elseif &filetype == 'javascript'
-        call OpenTerminal()
+        let l:term_col = OpenTerminal()
         let l:opts.term_name = 'javascript_terminal'
-        call term_start('node '. l:filename, l:opts)
+        if l:term_col
+            let l:opts.term_cols = l:term_col
+        endif
+        call term_start('node "'. l:filename . '"', l:opts)
     elseif &filetype == 'autohotkey'
-        execute 'silent execute "!start \"D:/Program Files/AutoHotkey/autohotkey.exe\" /restart /CP65001 %:p"'
+        let l:autohotkey_ux_path = $ProgramFiles . '/AutoHotkey/UX/'
+        silent execute '!start "' . l:autohotkey_ux_path . 'AutoHotkeyUX.exe" "' . l:autohotkey_ux_path . 'launcher.ahk" /restart "%:p"'
     elseif &filetype == 'markdown'
-        execute 'silent execute "CocCommand markdown-preview-enhanced.openPreview"'
+        silent execute 'CocCommand markdown-preview-enhanced.openPreview'
+    elseif &filetype == 'dosbatch'
+        silent !%
     else
-        call OpenTerminal()
+        let l:term_col = OpenTerminal()
         let l:opts.term_name = 'Terminal'
+        if l:term_col
+            let l:opts.term_cols = l:term_col
+        endif
         call term_start('cmd', l:opts)
     endif
 endfunction
@@ -724,17 +732,19 @@ endfunction
 function! OpenTerminal()
     let l:windowsWithTerminal = filter(range(1, winnr('$')), 'getwinvar(v:val, "&buftype") ==# "terminal" || term_getstatus(winbufnr(v:val))')
     if !empty(l:windowsWithTerminal)
-        execute 'silent execute "' . l:windowsWithTerminal[0] . 'wincmd w"'
+        silent execute l:windowsWithTerminal[0] . 'wincmd w'
+        let l:current_col = winwidth(l:windowsWithTerminal[0])
         call CloseTerminal()
+        return l:current_col
     endif
 endfunction
 
 function! CloseTerminal()
     let l:winnumber = winnr()
     if getwinvar(l:winnumber, "&buftype") ==# "terminal" || term_getstatus(winbufnr(l:winnumber))
-        execute 'silent execute "' . winbufnr(l:winnumber) . 'bw!"'
+        silent execute winbufnr(l:winnumber) . 'bw!'
     else
-        execute 'silent execute "q!"'
+        silent execute 'q!'
     endif
 endfunction
 " }}}1
@@ -780,7 +790,6 @@ let g:lightline = {
 \   'linter_ok'       : 'ale',
 \ },
 \ 'component_function': {
-\   'gitbranch' : 'LightLineGitBranch',
 \   'lineinfo'  : 'LightLineLineInfo',
 \ },
 \ 'separator': { 'left': "\ue0b0", 'right': "\ue0b2" },
@@ -863,10 +872,27 @@ let g:rainbow_conf = {
 let g:indentLine_fileTypeExclude = ['json', 'markdown']
 let g:indentLine_conceallevel    = 2
 let g:indentLine_concealcursor   = ''
-let g:indent_guides_guide_size   = 1
-let g:indent_guides_start_level  = 1
 let g:indentLine_setConceal      = 0
 let g:indentLine_enabled         = 1
+let g:indent_guides_guide_size   = 1
+let g:indent_guides_start_level  = 1
+" }}}1
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"                                                                                              "
+"                                          autoformat                                          "
+"                                                                                              "
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" autoformat {{{1
+noremap <silent><F3> :Autoformat<Cr>
+" npm install -g js-beautify
 " }}}1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -883,8 +909,8 @@ let g:indentLine_enabled         = 1
 " https://stackoverflow.com/questions/20038550/step-over-bracket-parenthesis-etc-with-tab-in-vim
 
 " Tabout {{{1
-inoremap <silent> <End>   <C-r>=IncreaseColNumber()<CR>
-inoremap <silent> <S-End> <C-r>=DecreaseColNumber()<CR>
+inoremap <silent><M-F12>   <C-r>=IncreaseColNumber()<CR>
+inoremap <silent><M-S-F12> <C-r>=DecreaseColNumber()<CR>
 
 let s:delimiters_exp = '[\[\]{}()$&"' . "'" . '<>]'
 
@@ -893,6 +919,7 @@ function! IncreaseColNumber()
     if l:line[col('.') - 1] =~# s:delimiters_exp
         return "\<Right>"
     endif
+    return ""
 endfunction
 
 function! DecreaseColNumber()
@@ -900,6 +927,7 @@ function! DecreaseColNumber()
     if l:line[col('.') - 2] =~# s:delimiters_exp
         return "\<Left>"
     endif
+    return ""
 endfunction
 " }}}1
 

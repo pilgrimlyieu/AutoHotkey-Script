@@ -1,3 +1,5 @@
+#Requires AutoHotkey v1.1+
+
 Global TargetTime := A_YYYY A_MM A_DD 220000
 Global CheckInterval := 30
 

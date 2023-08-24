@@ -1,38 +1,35 @@
 Show() {
     text := "Windows IDs:"
     for index, value in windows
-        text .= "`r" index ": " value
+        text .= "`r" index ": " WinGetTitle("ahk_id " value)
     return text
 }
 
 IndexOf(item, list) {
     for index, value in list
-        if (value = item)
+        if value == item
             return index
+    return 0
 }
 
-Global windows := []
+global windows := []
 
-#q::
-win := WinActive("A")
-index := IndexOf(win, windows)
-if (index = windows.Length())
-    actwin := windows[1]
-else
-    actwin := windows[index + 1]
-WinActivate ahk_id %actwin%
-return
+#q::{
+    index := IndexOf(win := WinActive("A"), windows)
+    try WinActivate("ahk_id " windows[(index == windows.Length) ? 1 : index + 1])
+    catch TargetError
+        windows.RemoveAt((index == windows.Length) ? 1 : index + 1)
+}
 
-#w::
-win := WinActive("A")
-if !IndexOf(win, windows)
-    windows.Push(win)
-return
+#w::{
+    if !IndexOf(win := WinActive("A"), windows)
+        windows.Push(win)
+}
 
-#e::MsgBox % Show()
+#e::MsgBox(Show())
 
-#r::
-InputBox order, Delete Window ID, % Show(), , , , , , , 10, 1
-if !ErrorLevel
-    windows.RemoveAt(order)
-return
+#r::{
+    order := InputBox(Show(), "Delete Window ID", "T10")
+    if order.Result == "OK"
+        try windows.RemoveAt(order.Value)
+}

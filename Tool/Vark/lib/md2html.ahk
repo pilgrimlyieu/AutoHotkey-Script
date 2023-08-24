@@ -1,6 +1,10 @@
 ; Only support bold, italic, mark, image, url syntax
 
-Global Tags := {1: ["<i>", "</i>"], 2: ["<b>", "</b>"], 3: ["<b><i>", "</i></b>"]}
+global Tags := [
+    ["<i>", "</i>"],
+    ["<b>", "</b>"],
+    ["<b><i>", "</i></b>"],
+]
 
 simpleMDtoHTML(content) {
     return ImageandUrl(Tag(content))
@@ -13,10 +17,10 @@ simpleHTMLtoMD(content) {
     return content
 }
 
-ImageandUrl(content, on := 0) {
+ImageandUrl(content, on := 1) {
     if on {
-        content := RegExReplace(content, "!\[([^\[\]]+)\]\(([^\(\)]+)\)", "<img src='$2' alt='$1'>")
-        content := RegExReplace(content, "\[([^\[\]]+)\]\(([^\(\)]+)\)", "<a href='$2'>$1</a>")
+        content := RegExReplace(content, "!\[(.+?)\]\((.+?)\)", "<img src='$2' alt='$1'>")
+        content := RegExReplace(content, "\[(.+?)\]\((.+?)\)", "<a href='$2'>$1</a>")
         content := RegExReplace(content, "[\n\r]+", "<br>`n")
     }
     return content
@@ -29,16 +33,17 @@ Tag(content) {
     line_break := 0
     mark_pair  := 0
     result     := ""
-    loop parse, content
-    {
-        layer := layers[layers.Length()]
-        if (A_LoopField = "=" and (mark_level = 1 or (mark_level = 0 and SubStr(content, A_Index - 1, 1) != "\")))
-            mark_level ++
-        else if (A_LoopField = "*" and (!layer or tag_level < layer) and (tag_level > 0 or SubStr(content, A_Index - 1, 1) != "\"))
-            tag_level ++
+    loop parse content {
+        try layer := layers[-1]
+        catch Error
+            layer := ""
+        if A_LoopField == "=" && (mark_level == 1 || (mark_level == 0 && SubStr(content, A_Index - 1, 1) != "\"))
+            mark_level += 1
+        else if A_LoopField == "*" && (!layer || tag_level < layer) && (tag_level > 0 || SubStr(content, A_Index - 1, 1) != "\")
+            tag_level += 1
         else {
-            if (mark_level > 0) {
-                if (mark_level = 2) {
+            if mark_level > 0 {
+                if mark_level == 2 {
                     result .= mark_pair ? "</mark>" : "<mark>"
                     mark_pair := !mark_pair
                 }
@@ -47,19 +52,19 @@ Tag(content) {
                 mark_level := 0
             }
 
-            if (!layer or (0 < tag_level and tag_level < layer)) {
+            if !layer || (0 < tag_level && tag_level < layer) {
                 layers.Push(tag_level)
-                result .= Tags[tag_level][1]
+                try result .= Tags[tag_level][1]
                 tag_level := 0
             }
-            else if (tag_level = layer){
+            else if tag_level == layer {
                 layers.Pop()
                 result .= Tags[tag_level][2]
                 tag_level := 0
             }
 
-            if (A_LoopField = "`n") {
-                if (line_break = 0) {
+            if A_LoopField == "`n" {
+                if line_break == 0 {
                     line_break := 1
                     result .= "<br>`n"
                 }
@@ -69,12 +74,12 @@ Tag(content) {
             else
                 line_break := 0
 
-            if (A_LoopField = "=" and (mark_level = 1 or (mark_level = 0 and SubStr(content, A_Index - 1, 1) != "\")))
-                mark_level ++
-            else if (A_LoopField = "*" and (!layer or tag_level < layer) and (tag_level > 0 or SubStr(content, A_Index - 1, 1) != "\"))
-                tag_level ++
+            if A_LoopField == "=" && (mark_level == 1 || (mark_level == 0 && SubStr(content, A_Index - 1, 1) != "\"))
+                mark_level += 1
+            else if A_LoopField == "*" && (!layer || tag_level < layer) && (tag_level > 0 || SubStr(content, A_Index - 1, 1) != "\")
+                tag_level += 1
             else
-                result .= (A_LoopField != "`n") ? A_LoopField :
+                result .= (A_LoopField != "`n") ? A_LoopField : ""
         }
     }
     return result
@@ -115,5 +120,5 @@ md2html_test := "
 [内容](lianjie.com)
 )"
 
-; msgbox % ImageandUrl(md2html_test)
+; MsgBox simpleMDtoHTML(md2html_test)
 ; }}}1

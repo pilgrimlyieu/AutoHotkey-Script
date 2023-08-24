@@ -1,16 +1,21 @@
-#Requires AutoHotkey v1.1.36.02+
 #NoTrayIcon
 
 IsChineseMode() {
-    DetectHiddenWindows On
-    WinGet winid, ID, A
-    wintitle := "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", winid, "Uint")
-    SendMessage 0x283, 0x001, 0, , %wintitle%
-    DetectHiddenWindows Off
-    return ErrorLevel = 1025
+    DetectHiddenWindows True
+    hWnd := winGetID("A")
+    result := SendMessage(
+        0x283, ; Message: WM_IME_CONTROL
+        0x001, ; wParam : IMC_GETCONVERSIONMODE
+        0    , ; lParam : (NoArgs)
+             , ; Control : (Window)
+        ; Retrieves the default window handle to the IME class.
+        "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", hWnd, "Uint")
+    )
+    DetectHiddenWindows False
+    return result == 1025
 }
 
-#If IsChineseMode()
+#HotIf IsChineseMode()
 #Hotstring c r * ?
 ; ui <-> iu
 ::mui::miu

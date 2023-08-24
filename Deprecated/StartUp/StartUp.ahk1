@@ -1,4 +1,5 @@
-﻿;@Ahk2Exe-SetMainIcon StartUp.ico
+﻿#Requires AutoHotkey v1.1+
+;@Ahk2Exe-SetMainIcon StartUp.ico
 #NoTrayIcon
 
 ; Sleep 10000
