@@ -11,11 +11,9 @@
 if !FileExist("ahk-json.dll")
     FileInstall("lib\ahk-json.dll", "ahk-json.dll", 1)
 
-#DllLoad "ahk-json.dll"
 #Include <Common>
 #Include <Baidu>
 #Include <Mathpix>
-#Include OCRC.ahk
 
 global OCRC_ConfigFilePath        := "OCRC.ini"
 global OCRC_Configs               := Map()
