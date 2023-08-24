@@ -10,10 +10,8 @@
     if InStr(FileExist(selected), "D")
         ; "Run(everything -path `"" selected "`"") ; 为路径则打开路径（包括子文件夹）
         Run("everything -parent `"" selected "`"") ; 为路径则打开路径（不包括子文件夹）
-    else if selected
-        Run("everything -search `"" selected "`"") ; 不为路径则搜索指定内容
     else
-        Run("everything -home") ; 未选中内容时打开主界面
+        Run("everything -search `"" selected "`"") ; 不为路径则搜索指定内容
     A_Clipboard := ClipSaved
     ClipSaved := ""
 }
