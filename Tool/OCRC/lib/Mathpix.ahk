@@ -1,5 +1,5 @@
 ﻿class Mathpix {
-    __New(post := "", config := "") {
+    __New(post, config) {
         headers := Map(
             "app_id"      , config["app_id"],
             "app_key"     , config["app_key"],
@@ -19,6 +19,7 @@
     }
 
     __Show() {
+        ; static latex_result, inline_result, display_result, text_result
         if this.json.error
             return MsgBox(this.json.error_info.message, "MathpixOCR ERROR: " this.json.error_info.id, "Iconx 0x1000")
 

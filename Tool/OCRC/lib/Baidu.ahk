@@ -1,27 +1,25 @@
 ﻿class Baidu {
-    __New(post := "", config := "") {
-        Clipboard   := ""
+    __New(post, config) {
         this.config := config
-        this.__Token()
-        postdata := "image=" UrlEncode(this.config.imgbase64)
+        if this.__Token() != "success"
+            return
+        post_data := "image=" UrlEncode(this.config.imgbase64)
         for key, value in post
-            postdata .= "&" key "=" value
-        this.json := JSON.Load(Request("https://aip.baidubce.com/rest/2.0/ocr/v1/" this.config.recogtype "?access_token=" this.token, "UTF-8", "POST", postdata, {"Content-Type":"application/x-www-form-urlencoded"}))
+            post_data .= "&" key "=" value
+        this.json := JSON.parse(Request("https://aip.baidubce.com/rest/2.0/ocr/v1/" this.config.recogtype "?access_token=" this.token, "UTF-8", "POST", post_data, Map("Content-Type", "application/x-www-form-urlencoded")))
         this.__Show()
     }
 
     __Show() {
-        if this.json.error_msg {
-            MsgBox 4112, BaiduOCR ERROR, % this.json.error_msg
-            return
-        }
+        if this.json.error_msg
+            return MsgBox(this.json.error_msg, "BaiduOCR ERROR", "Iconx 0x1000")
 
-        id           := "baidu" this.json.log_id
-        formatstyle  := this.config.formatstyle
-        puncstyle    := this.config.puncstyle
-        spacestyle   := this.config.spacestyle
-        trantype     := this.config.trantype
-        searchengine := this.config.searchengine
+        id                := "BaiduOCR" this.json.log_id
+        format_style      := this.config.formatstyle
+        punctuation_style := this.config.puncstyle
+        space_style       := this.config.spacestyle
+        translation_type  := this.config.trantype
+        search_engine     := this.config.searchengine
 
         this.__Format()
         if this.config.probtype
@@ -29,92 +27,60 @@
         this.__Punc()
         this.__Space()
 
-        Gui %id%:New,   % "+Label" this.__Class ".Gui"
-        Gui %id%:+MinimizeBox
-        Gui %id%:Color, EBEDF4
-        Gui %id%:Font,  s16, Microsoft YaHei
+        %id% := Gui(, id).OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
+        %id%.Title := "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[this.config.recogtype] "」识别结果"
+        %id%.BackColor := "EBEDF4"
+        %id%.SetFont(, "Microsoft YaHei")
 
-        Gui %id%:Add,  Text, x20, 排版
-        Gui %id%:Font, s12
-        Gui %id%:Add,  DropDownList, x+5 w90 hwndformathwnd AltSubmit Choose%formatstyle%, 智能段落|合并多行|拆分多行
-        this.formathwnd := formathwnd
-        this.__Update(formathwnd, "__Format")
+        ; TODO Add `OnEvent` instead of the function of `__Update`.
+        %id%.AddText("x20", "排版").SetFont("s16")
+        %id%.AddDropDownList("x+5 w90 vFormatStyle AltSubmit Choose" format_style, ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
+        %id%.AddText("x+15", "标点").SetFont("s16")
+        %id%.AddDropDownList("x+5 w90 vPunctuationStyle AltSubmit Choose" punctuation_style, ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
+        %id%.AddText("x+15", "空格").SetFont("s16")
+        %id%.AddDropDownList("x+5 w90 vSpaceStyle AltSubmit Choose" space_style, ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
+        %id%.AddText("x+15", "翻译").SetFont("s16")
+        %id%.AddDropDownList("x+5 w90 vTranslationStyle AltSubmit Choose" translation_type, ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
+        ; TODO Add Everything judgement(in main program), import arrays from class params.
+        %id%.AddText("x+15", "搜索").SetFont("s16")
+        %id%.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" search_engine, ["百度搜索", "必应搜索", "谷歌搜索", "百度百科", "Everything"]).SetFont("s12")
 
-        Gui %id%:Font, s16
-        Gui %id%:Add,  Text, x+15, 标点
-        Gui %id%:Font, s12
-        Gui %id%:Add,  DropDownList, x+5 w90 hwndpunchwnd AltSubmit Choose%puncstyle%, 智能标点|原始结果|中文标点|英文标点
-        this.punchwnd := punchwnd
-        this.__Update(punchwnd, "__Punc")
-
-        Gui %id%:Font, s16
-        Gui %id%:Add,  Text, x+15, 空格
-        Gui %id%:Font, s12
-        Gui %id%:Add,  DropDownList, x+5 w90 hwndspacehwnd AltSubmit Choose%spacestyle%, 智能空格|原始结果|去除空格
-        this.spacehwnd := spacehwnd
-        this.__Update(spacehwnd, "__Space")
-
-        Gui %id%:Font, s16
-        Gui %id%:Add,  Text, x+15, 翻译
-        Gui %id%:Font, s12
-        Gui %id%:Add,  DropDownList, x+5 w90 hwndtranhwnd AltSubmit Choose%trantype%, 自动检测|英->中|中->英|繁->简|日->中
-        this.tranhwnd := tranhwnd
-        this.__Update(tranhwnd, "__Tran")
-
-        Gui %id%:Font, s16
-        Gui %id%:Add,  Text, x+15, 搜索
-        Gui %id%:Font, s12
-        if (this.config.everything and this.config.everythingpath)
-            Gui %id%:Add, DropDownList, x+5 w105 hwndsearchhwnd AltSubmit Choose%searchengine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像|Everything
-        else {
-            searchengine := (searchengine = 7) ? 1 : searchengine
-            Gui %id%:Add, DropDownList, x+5 w105 hwndsearchhwnd AltSubmit Choose%searchengine%, 百度搜索|必应搜索|谷歌搜索|谷歌镜像|百度百科|维基镜像
-        }
-        this.searchhwnd := searchhwnd
-        this.__Update(searchhwnd, "__Search")
-
-        Gui %id%:Font, s18
-        Gui %id%:Add,  Edit, x20 y50 w760 h400 hwndmainhwnd, % this.result
-        this.mainhwnd := mainhwnd
-        this.__Update(mainhwnd, "__Clip")
+        %id%.AddEdit("x20 y50 w760 h400 vResult", "this.result").SetFont("s18")
 
         if this.config.probtype {
-            if (this.probability <= 60)
-                progresscolor := "EC4D3D"
-            else if (this.probability <= 80)
-                progresscolor := "F8CD46"
+            if this.probability <= 60
+                probability_color := "EC4D3D"
+            else if this.probability <= 80
+                probability_color := "F8CD46"
             else
-                progresscolor := "63C956"
-            Gui %id%:Add, Progress, x20 y+10 w760 h30 c%progresscolor%,   % this.probability
-            Gui %id%:Add, Text,     yp w800 +Center BackgroundTrans +0x1, % this.probability "%"
+                probability_color := "63C956"
+            %id%.AddProgress("x20 y+10 w760 h30 c" probability_color, this.probability)
+            %id%.AddText("yp w800 Center BackgroundTrans", this.probability "%")
         }
-        guiheight := this.config.probtype ? 500 : 470
-        Gui %id%:Show, w800 h%guiheight%, % "OCRC (BaiduOCR) 「" Baidu_RecogTypesP[this.config.recogtype] "」识别结果"
-    }
 
-    __Update(hwnd, func) {
-        bindfunc := ObjBindMethod(this, func)
-        GuiControl +g, %hwnd%, %bindfunc%
+        %id%.Show("w800 h" this.config.probtype ? 500 : 470)
     }
 
     __Token() {
-        this.token            := ReadIni(ConfigFile, "Baidu_Token", "BaiduOCR")
-        this.token_expiration := ReadIni(ConfigFile, "Baidu_TokenExpiration", "BaiduOCR")
-        if !(this.token and A_Now < this.token_expiration) {
-            returnjson := JSON.Load(Request("https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" this.config.api_key "&client_secret=" this.config.secret_key))
-            if returnjson.error
-                MsgBox 4112, % "BaiduOCR " returnjson.error, % returnjson.error_description
+        this.token := IniRead(OCRC_ConfigFilePath, "Baidu_Token", "BaiduOCR")
+        this.token_expiration := IniRead(OCRC_ConfigFilePath, "Baidu_TokenExpiration", "BaiduOCR")
+        if !(this.token && A_Now < this.token_expiration) {
+            return_json := JSON.parse(Request("https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=" this.config.api_key "&client_secret=" this.config.secret_key))
+            if return_json.error
+                return MsgBox(return_json.error_description, "BaiduOCR ERROR: " return_json.error, "Iconx 0x1000")
             else {
-                expiration += returnjson.expires_in, seconds
-                IniWrite %expiration%, %ConfigFile%, BaiduOCR, Baidu_TokenExpiration
+                IniWrite(DateAdd(A_Now, return_json.expires_in, "Seconds"), OCRC_ConfigFilePath, "BaiduOCR", "Baidu_TokenExpiration")
+                this.token := return_json.access_token
+                IniWrite(this.token, OCRC_ConfigFilePath, "BaiduOCR", "Baidu_Token")
+                return "success"
             }
-            this.token := returnjson.access_token
-            IniWrite % this.token, %ConfigFile%, BaiduOCR, Baidu_Token
         }
+        return "success"
     }
 
     __Prob() {
-        if (this.config.probtype = 1) {
+        probadd := 0
+        if this.config.probtype == 1 {
             for index, value in this.json.words_result
                 probadd += value.probability.average * StrLen(value.words)
             this.probability := Format("{:.2f}", 100 * probadd / StrLen(this.result))
@@ -126,7 +92,7 @@
         }
     }
 
-    __Format(hwnd := "") {
+    __Format(hwnd) {
         if hwnd
             GuiControlGet formatstyle, , %hwnd%
         else
@@ -157,7 +123,7 @@
         this.__Clip()
     }
 
-    __Punc(hwnd := "") {
+    __Punc(hwnd) {
         if hwnd
             GuiControlGet puncstyle, , %hwnd%
         else
@@ -199,7 +165,7 @@
         this.__Clip()
     }
 
-    __Space(hwnd := "") {
+    __Space(hwnd) {
         if hwnd
             GuiControlGet spacestyle, , %hwnd%
         else
@@ -247,43 +213,34 @@
         this.__Clip()
     }
 
-    __Tran(hwnd := "") {
+    __Tran(hwnd) {
         ; TODO
         return
     }
 
-    __Search(hwnd := "") {
+    __Search(hwnd) {
         if hwnd
-            GuiControlGet searchengine, , %hwnd%
+            GuiControlGet search_engine, , %hwnd%
         else
-            searchengine := this.config.searchengine
+            search_engine := this.config.searchengine
         result := this.result
 
-        if (searchengine = 7) {
-            if (!(result ~= "[*?""<>|]") and result ~= "[C-G]:(?:[\\/].+)+")
-                Run % this.config.everythingpath " -path """ result """"
-            else if result
-                Run % this.config.everythingpath " -search """ result """"
+        if search_engine == 7 {
+            if InStr(FileExist(result), "D")
+                Run(this.config.everythingpath " -parent `"" result "`"")
             else
-                Run % this.config.everythingpath " -home """
+                Run(this.config.everythingpath " -search `"" result "`"")
         }
-        else {
-            Run % Baidu_SearchEngines[searchengine] result
-            if (searchengine = 4)
-                MsgBox 4144, 警告, 请勿在镜像站输入隐私信息！
-        }
+        else
+            try Run Baidu_SearchEngines[search_engine] result
     }
 
-    __Clip(hwnd := "") {
+    __Clip(hwnd) {
         Clipboard := ""
         if hwnd {
             GuiControlGet result, , %hwnd%
             this.result := result
         }
         Clipboard := this.result
-    }
-
-    GuiEscape() {
-        Gui Destroy
     }
 }

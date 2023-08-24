@@ -8,8 +8,8 @@ if !FileExist("ahk-json.dll")
 ; #Include <Baidu>
 #Include <Mathpix>
 
-global OCRC_ConfigFilePath := "OCRC.ini"
-global OCRC_Configs := Map()
+global OCRC_ConfigFilePath   := "OCRC.ini"
+global OCRC_Configs          := Map()
 global Baidu_RecogTypes      := [
     "general_basic",
     "accurate_basic",
@@ -66,11 +66,8 @@ global Baidu_SearchEngines   := [
     "https://www.baidu.com/s?wd=",
     "https://cn.bing.com/search?q=",
     "https://www.google.com/search?q=",
-    "https://search.aust.cf/search?q=",
     "https://baike.baidu.com/item/",
-    "https://zh.wikipedia.iwiki.eu.org/wiki/",
 ]
-
 global Mathpix_InlineStyles  := [
     ["$", "$"],
     ["\(", "\)"],
@@ -266,7 +263,7 @@ SettingGUI() {
     Setting.AddText("x15 y+15 w90 h25 Right", "默认翻译")
     Setting.AddDropDownList("x+15 w200 vBaidu_TranType AltSubmit Choose" OCRC_Configs["Baidu_TranType"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"])
     Setting.AddText("x15 y+15 w90 h25 Right", "默认搜索")
-    Setting.AddDropDownList("x+15 w200 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], ["百度搜索", "必应搜索", "谷歌搜索", "谷歌镜像", "百度百科", "维基镜像", "Everything"])
+    Setting.AddDropDownList("x+15 w200 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], ["百度搜索", "必应搜索", "谷歌搜索", "百度百科", "Everything"])
 
     Tabs.UseTab("MathpixOCR")
     Setting.AddGroupBox("x20 y50 w310 h150", "基础设置")
