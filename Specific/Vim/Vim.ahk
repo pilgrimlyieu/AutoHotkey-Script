@@ -53,6 +53,7 @@ ListJoin(list, string) {
 
 CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 +CapsLock::SendInput("{Alt Down}{Shift Down}{F12}{Shift Up}{Alt Up}")
+^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 
 #HotIf WinActive("^i") && WinActive("ahk_class Vim") && IsNotEnglishMode()
 
