@@ -127,9 +127,12 @@ GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := 
     }
     catch
         SendInput("{LWin Down}{LShift Down}s{LShift Up}{LWin Up}")
-    SnipEXE := IsSet(Snip) && HasProp(Snip, "EXE") ? Snip["EXE"] : "ScreenClippingHost.exe"
+        Run("SnippingTool /clip")
+    SnipEXE := IsSet(Snip) && HasProp(Snip, "EXE") ? Snip["EXE"] : "SnippingTool.exe"
     Sleep(BufferTime)
-    if WinWaitNotActive("ahk_exe " SnipEXE, , SnipTime - BufferTime / 1000) && ClipWait(0.5, 1)
+    screenshot := WinWaitNotActive("ahk_exe " SnipEXE, , SnipTime - BufferTime / 1000)
+    clip := ClipWait(0.5, 1)
+    if screenshot && clip
         return 1
     return 0
 }

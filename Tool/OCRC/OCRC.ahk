@@ -3,7 +3,7 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.0.0-beta.1
+ * @version 2.0.0-beta.2
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
@@ -111,11 +111,9 @@ if OCRC_Configs["Basic_MathpixOCROnOff"]
     Hotkey(OCRC_Configs["Mathpix_Hotkey"], OCRC_MathpixOCR, "On")
 
 OCRC_BaiduOCR(ThisHotkey) {
-    if !OCRC_Configs["Basic_BaiduOCROnOff"]
-        return
     ClipSaved := ClipboardAll(), A_Clipboard := ""
     if !GetScreenshot(OCRC_Configs["Basic_SnipTime"], OCRC_Configs["Basic_WaitSnipTime"], OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], OCRC_Configs["Advance_ThirdPartyScreenshotPath"])
-        return (A_Clipboard := ClipSaved, ClipSaved := "")
+        return (MsgBox("未检测到截图", "Clipping ERROR", "Iconx 0x1000"), A_Clipboard := ClipSaved, ClipSaved := "")
     base64string := Img2Base(False, OCRC_Configs["Advance_EBto64SQuality"])
     A_Clipboard := ClipSaved, ClipSaved := ""
 
@@ -142,11 +140,9 @@ OCRC_BaiduOCR(ThisHotkey) {
 }
 
 OCRC_MathpixOCR(ThisHotkey) {
-    if !OCRC_Configs["Basic_MathpixOCROnOff"]
-        return
     ClipSaved := ClipboardAll(), A_Clipboard := ""
     if !GetScreenshot(OCRC_Configs["Basic_SnipTime"], OCRC_Configs["Basic_WaitSnipTime"], OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], OCRC_Configs["Advance_ThirdPartyScreenshotPath"])
-        return (A_Clipboard := ClipSaved, ClipSaved := "")
+        return (MsgBox("未检测到截图", "Clipping ERROR", "Iconx 0x1000"), A_Clipboard := ClipSaved, ClipSaved := "")
     base64string := Img2Base(True, OCRC_Configs["Advance_EBto64SQuality"])
     A_Clipboard := ClipSaved, ClipSaved := ""
 
