@@ -127,7 +127,7 @@ GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := 
     }
     catch
         Run("explorer ms-screenclip:")
-    SnipEXE := IsSet(Snip) && HasProp(Snip, "EXE") ? Snip["EXE"] : "SnippingTool.exe"
+    SnipEXE := IsSet(Snip) && HasProp(Snip, "EXE") ? Snip["EXE"] : "ScreenClippingHost.exe"
     Sleep(BufferTime)
     screenshot := WinWaitNotActive("ahk_exe " SnipEXE, , SnipTime - BufferTime / 1000)
     clip := ClipWait(0.5, 1)
