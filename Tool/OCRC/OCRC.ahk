@@ -3,7 +3,7 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.0.0-beta.2
+ * @version 2.0.0-beta.3
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
@@ -219,7 +219,7 @@ SettingGUI() {
     Setting.AddText("x200 y190 w20 h25 Left", "秒")
     Setting.AddText("x15 y+15 w80 h25 Right", "缓冲时间")
     Setting.AddEdit("x+15 w80 vBasic_WaitSnipTime Number", OCRC_Configs["Basic_WaitSnipTime"]).OnEvent("Change", UpdateVar)
-    Setting.AddUpDown("vBasic_WaitSnipTime_extra Range100-5000", OCRC_Configs["Basic_WaitSnipTime"])
+    Setting.AddUpDown("vBasic_WaitSnipTime_extra Range100-5000 0x80", OCRC_Configs["Basic_WaitSnipTime"])
     Setting.AddText("x200 y230 w40 h25 Left", "毫秒")
 
     Setting.AddGroupBox("x20 y290 w310 h80", "设置")
