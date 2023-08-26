@@ -126,7 +126,6 @@ GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := 
         RegExMatch(CmdOf3pSnip, "(?P<EXE>[^\/\\:*?`"<>|]+\.(?:exe|EXE)).*", &Snip)
     }
     catch
-        SendInput("{LWin Down}{LShift Down}s{LShift Up}{LWin Up}")
         Run("explorer ms-screenclip:")
     SnipEXE := IsSet(Snip) && HasProp(Snip, "EXE") ? Snip["EXE"] : "SnippingTool.exe"
     Sleep(BufferTime)
