@@ -1,0 +1,5 @@
+gvim_script_path='/g/project/scripts/autohotkey/specific/vim/gvim.ahk'
+alias vi='vim -u NONE'
+alias vim='vim -u NONE'
+alias gv='autohotkeyux '${gvim_script_path}' $PWD'
+alias gvim='autohotkeyux '${gvim_script_path}' $PWD'

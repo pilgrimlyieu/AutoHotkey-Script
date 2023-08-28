@@ -8,10 +8,10 @@ MonitorGetWorkArea( , , , &WorkAreaInfoRight, &WorkAreaInfoBottom)
 SetWorkingDir(A_Args[1])
 A_Args.RemoveAt(1)
 
-if A_Args.Length > 1
-    Run("gvim -d `"" ListJoin(A_Args, "`" `"") "`"", , , &process_id)
-else if A_Args.Length == 1
+if A_Args.Length == 1
     Run("gvim `"" A_Args[1] "`"", , , &process_id)
+else if A_Args.Length > 1
+    Run("gvim -d `"" ListJoin(A_Args, "`" `"") "`"", , , &process_id)
 else
     Run("gvim", , , &process_id)
 ProcessSetPriority("High", process_id)
