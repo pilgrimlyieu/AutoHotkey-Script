@@ -54,7 +54,7 @@ Gdip_EncodeBitmapTo64string(pBitmap, extension := "png", quality := 75) {
     pCodec := ci.ptr + idx
     if quality ~= "^-?\d+$" && "image/jpeg" = StrGet(NumGet(ci, idx+32+4*A_PtrSize, "ptr"), "UTF-16") {
         v := Buffer(4)
-		NumPut("uint", quality, v)
+        NumPut("uint", quality, v)
         ep := Buffer(24+2*A_PtrSize)                 
         NumPut(  "uptr",     1, ep,            0) 
         DllCall("ole32\CLSIDFromString", "wstr", "{1D5BE4B5-FA4A-452D-9CDD-5DB35105E7EB}", "ptr", ep.ptr+A_PtrSize, "HRESULT")
@@ -77,45 +77,45 @@ Gdip_EncodeBitmapTo64string(pBitmap, extension := "png", quality := 75) {
 }
 
 Gdip_Startup() {
-	if !DllCall("LoadLibrary", "str", "gdiplus", "UPtr")
-		throw Error("Could not load GDI+ library")
-	si := Buffer(A_PtrSize = 8 ? 24 : 16, 0)
-	NumPut("UInt", 1, si)
-	DllCall("gdiplus\GdiplusStartup", "UPtr*", &pToken:=0, "UPtr", si.Ptr, "UPtr", 0)
-	if !pToken
-		throw Error("Gdiplus failed to start. Please ensure you have gdiplus on your system")
-	return pToken
+    if !DllCall("LoadLibrary", "str", "gdiplus", "UPtr")
+        throw Error("Could not load GDI+ library")
+    si := Buffer(A_PtrSize = 8 ? 24 : 16, 0)
+    NumPut("UInt", 1, si)
+    DllCall("gdiplus\GdiplusStartup", "UPtr*", &pToken:=0, "UPtr", si.Ptr, "UPtr", 0)
+    if !pToken
+        throw Error("Gdiplus failed to start. Please ensure you have gdiplus on your system")
+    return pToken
 }
 
 Gdip_Shutdown(pToken) {
-	DllCall("gdiplus\GdiplusShutdown", "UPtr", pToken)
-	hModule := DllCall("GetModuleHandle", "str", "gdiplus", "UPtr")
-	if !hModule
-		throw Error("GDI+ library was unloaded before shutdown")
-	if !DllCall("FreeLibrary", "UPtr", hModule)
-		throw Error("Could not free GDI+ library")
-	return 0
+    DllCall("gdiplus\GdiplusShutdown", "UPtr", pToken)
+    hModule := DllCall("GetModuleHandle", "str", "gdiplus", "UPtr")
+    if !hModule
+        throw Error("GDI+ library was unloaded before shutdown")
+    if !DllCall("FreeLibrary", "UPtr", hModule)
+        throw Error("Could not free GDI+ library")
+    return 0
 }
 
 Gdip_CreateBitmapFromClipboard() {
-	if !DllCall("IsClipboardFormatAvailable", "UInt", 8)
-		return -2
-	if !DllCall("OpenClipboard", "UPtr", 0)
-		return -1
-	hBitmap := DllCall("GetClipboardData", "UInt", 2, "UPtr")
-	if !DllCall("CloseClipboard")
-		return -5
-	if !hBitmap
-		return -3
-	if !(pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap))
-		return -4
+    if !DllCall("IsClipboardFormatAvailable", "UInt", 8)
+        return -2
+    if !DllCall("OpenClipboard", "UPtr", 0)
+        return -1
+    hBitmap := DllCall("GetClipboardData", "UInt", 2, "UPtr")
+    if !DllCall("CloseClipboard")
+        return -5
+    if !hBitmap
+        return -3
+    if !(pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap))
+        return -4
     DllCall("DeleteObject", "UPtr", hBitmap) ; DeleteObject(hBitmap)
-	return pBitmap
+    return pBitmap
 }
 
 Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette:=0) {
-	DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", "UPtr", hBitmap, "UPtr", Palette, "UPtr*", &pBitmap:=0)
-	return pBitmap
+    DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", "UPtr", hBitmap, "UPtr", Palette, "UPtr*", &pBitmap:=0)
+    return pBitmap
 }
 
 GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := "") {
@@ -128,7 +128,7 @@ GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := 
     catch
         Run("explorer ms-screenclip:")
     SnipEXE := Snip ? Snip["EXE"] : "ScreenClippingHost.exe"
-    if WinWaitActive("ahk_exe " SnipEXE, , BufferTime / 1000) && WinWaitNotActive("ahk_exe " SnipEXE, , SnipTime - BufferTime / 1000) && ClipWait(1, 1)
+    if WinWaitActive("ahk_exe " SnipEXE, , BufferTime / 1000) && WinWaitNotActive("ahk_exe " SnipEXE, , SnipTime - BufferTime / 1000) && ClipWait(0.5, 1)
         return 1
     return 0
 }
