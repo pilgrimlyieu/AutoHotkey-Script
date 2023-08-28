@@ -72,8 +72,7 @@
     PopOut(path) {
         this.win_id := WinExist("A")
 
-        CaretGetPos(&xcursor, &ycursor)
-        if !(xcursor && ycursor)
+        if !CaretGetPos(&xcursor, &ycursor)
             MouseGetPos(&xcursor, &ycursor)
         win_xpos := (xcursor > A_ScreenWidth - this.PopSizes[1]) ? A_ScreenWidth - this.PopSizes[1] : xcursor
         win_ypos := (ycursor > this.PopSizes[2] + 20) ? ycursor - this.PopSizes[2] - 20 : 0

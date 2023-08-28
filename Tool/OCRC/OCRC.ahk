@@ -288,9 +288,9 @@ UpdateVar(CtrlObj, *) => IniWrite(OCRC_Configs[CtrlObj.Name] := CtrlObj.Value, O
 
 UpdateHotkey(CtrlObj, *) {
     UpdateVar(CtrlObj)
-    global Baidu_HotkeyTemp, Mathpix_HotkeyTemp
     if !CtrlObj.Value
         return
+    global Baidu_HotkeyTemp, Mathpix_HotkeyTemp
     if CtrlObj.Name == "Baidu_Hotkey" {
         Hotkey(Baidu_HotkeyTemp, OCRC_BaiduOCR, "Off")
         Hotkey(CtrlObj.Value, OCRC_BaiduOCR, "On")
