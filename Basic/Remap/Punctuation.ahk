@@ -1,0 +1,4 @@
+﻿![::SendInput("「")
+!]::SendInput("」")
+!+[::SendInput("『")
+!+]::SendInput("』")

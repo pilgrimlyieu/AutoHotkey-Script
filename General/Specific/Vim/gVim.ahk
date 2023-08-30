@@ -5,8 +5,7 @@ ListJoin(list, string) {
 }
 
 MonitorGetWorkArea( , , , &WorkAreaInfoRight, &WorkAreaInfoBottom)
-SetWorkingDir(A_Args[1])
-A_Args.RemoveAt(1)
+SetWorkingDir(A_Args.RemoveAt(1))
 
 if A_Args.Length == 1
     Run("gvim `"" A_Args[1] "`"", , , &process_id)

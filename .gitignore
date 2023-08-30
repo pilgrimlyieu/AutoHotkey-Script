@@ -1,8 +1,8 @@
 # 文件夹
-/.vscode
-/_Compile
-/Fork
-**/Test
+.vscode/
+_Compile/
+Fork/
+_Test/
 
 # 文件名
 Test.*
@@ -39,4 +39,5 @@ Test.*
 *.ini
 
 # 非原创
-*/Window/WinDrag
+*/WinDrag
+*/WordsCorrect
