@@ -8,9 +8,9 @@ SetWinDelay -1
 
 global Settings := Map(
     "type"      , 1,
-    "tempdir"   , "G:\Temp\.vanki\",
-    "historydir", "G:\Temp\.vanki\.history\",
-    "vimrc"     , "G:\Assets\Tool\AutoHotkey\Tool\Vark\setting\vanki.vimrc",
+    "tempdir"   , "D:\Temp\vanki\",
+    "historydir", "D:\Temp\vanki\.history\",
+    "vimrc"     , "setting\vanki.vimrc",
     "savetoclip", 1,
     "sendbyclip", 1,
     "html"      , 0,

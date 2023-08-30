@@ -1,4 +1,6 @@
-﻿![::SendInput("「")
+﻿#NoTrayIcon
+
+![::SendInput("「")
 !]::SendInput("」")
 !+[::SendInput("『")
 !+]::SendInput("』")

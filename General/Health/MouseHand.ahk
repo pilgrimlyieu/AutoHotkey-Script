@@ -14,10 +14,10 @@ KeyLeftButton(ThisHotkey) {
         if LButton_key_num >= LBKeyNum {
             BlockInput("MouseMove")
             MsgBox("已经高强度使用鼠标 " CheckMins " 分钟了，活动一下手吧！可在休息至少 " ForceSeconds "s 后按 Esc 键退出锁定模式。", "休息锁定模式", "Icon! 0x1000 T5")
-            UnlockMouse(ThisHotkey) => BlockInput("MouseMoveOff")
+            UnlockMouse(*) => BlockInput("MouseMoveOff")
             SetTimer(() => Hotkey("~Esc", UnlockMouse, "On"), -1000 * ForceSeconds)
             SetTimer(() => Hotkey("~Esc", UnlockMouse, "Off"), -1000 * BreakSeconds)
-            SetTimer(() => UnlockMouse, -1000 * BreakSeconds)
+            SetTimer(UnlockMouse, -1000 * BreakSeconds)
         }
         LButton_key_num := 0
     }

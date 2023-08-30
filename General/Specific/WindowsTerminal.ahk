@@ -1,3 +1,5 @@
+#NoTrayIcon
+
 RunWT(max) {
     ClipSaved := ClipboardAll(), A_Clipboard := ""
     SendInput("{Ctrl Down}c{Ctrl Up}")

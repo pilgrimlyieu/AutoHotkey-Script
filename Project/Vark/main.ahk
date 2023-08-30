@@ -9,8 +9,8 @@ SetWinDelay -1
 #Include <Vark>
 
 global Settings := Map(
-    "tempdir"   , "G:/Temp/.vark/",
-    "vimrc"     , "G:/Project/Scripts/AutoHotkey/Tool/Vark/setting/vark.vimrc",
+    "tempdir"   , "D:/Temp/vark/",
+    "vimrc"     , "setting/vark.vimrc",
     "savetoclip", 1,
     "sendbyclip", 1,
     "popsizes"  , [960, 360],
