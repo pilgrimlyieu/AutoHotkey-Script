@@ -1,7 +1,0 @@
-#Requires AutoHotkey v1.1+
-#NoTrayIcon
-
-#Include <WinDrag>
-
-^!LButton::WindowMouseDragMove()
-^!RButton::WindowMouseDragResize()

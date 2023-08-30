@@ -39,5 +39,5 @@ Test.*
 *.ini
 
 # 非原创
-*/WinDrag
+**/WinDrag
 AutoCorrect.ahk1
