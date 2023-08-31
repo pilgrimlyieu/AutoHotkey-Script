@@ -2,9 +2,9 @@ AHK_Dir := "C:/Program Files/AutoHotkey/UX/"
 
 Scripts := [
     "Basic/Abbreviation/Email.ahk",
-    "Basic/Correction/AutoCorrect.ahk1",
+    ; "Basic/Correction/AutoCorrect.ahk1",
     "Basic/Correction/Pinyin.ahk",
-    "Basic/Remap/Fn.ahk",
+    ; "Basic/Remap/Fn.ahk",
     "Basic/Remap/NumLock.ahk",
     "Basic/Remap/Others.ahk",
     "Basic/Remap/Punctuation.ahk",

@@ -30,8 +30,7 @@ ListJoin(list, string) {
 #HotIf !WinActive("ahk_class Vim")
 
 !q::{
-    ClipSaved := ClipboardAll()
-    A_Clipboard := ""
+    ClipSaved := ClipboardAll(), A_Clipboard := ""
     SendInput("{Ctrl Down}c{Ctrl Up}")
     clip_result := ClipWait(0.5, 0)
     if InStr(A_Clipboard, "`r`n")
@@ -40,13 +39,13 @@ ListJoin(list, string) {
         Run("gvim `"" A_Clipboard "`"", , , &process_id)
     else
         Run("gvim", , , &process_id)
-    ProcessSetPriority("High", process_id)
-    WinWait("ahk_pid " process_id, , 10)
-    WinSetStyle(-0xC40000, "ahk_pid " process_id)
-    WinMove(0, 0, WorkAreaInfoRight, WorkAreaInfoBottom, "ahk_pid " process_id)
-    WinActivate("ahk_pid " process_id)
-    A_Clipboard := ClipSaved
-    ClipSaved := ""
+    if WinWait("ahk_pid " process_id, , 5) {
+        ProcessSetPriority("High", process_id)
+        WinSetStyle(-0xC40000, "ahk_pid " process_id)
+        WinMove(0, 0, WorkAreaInfoRight, WorkAreaInfoBottom, "ahk_pid " process_id)
+        WinActivate("ahk_pid " process_id)
+    }
+    A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
 #HotIf WinActive("^(i|s|v|V)") && WinActive("ahk_class Vim")
