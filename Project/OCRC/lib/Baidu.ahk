@@ -31,11 +31,10 @@
         this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
         this.ResultGUI.AddText("x+15 w42 h30", "翻译").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w90 vTranslationType AltSubmit Choose" this.config["translation_type"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
-        ; TODO Add Everything judgement(in main program), import arrays from class params.
-        ; TODO Add Right Click event.
         this.ResultGUI.AddText("x+15 w42 h30", "搜索").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.config["search_engine"], ["百度搜索", "必应搜索", "谷歌搜索", "百度百科", "Everything"]).SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.config["search_engine"], Baidu_SearchEngines_key).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
+        this.ResultGUI["SearchEngine"].OnEvent("ContextMenu", ObjBindMethod(this, "__Search"))
 
         this.ResultGUI.AddEdit("x20 y50 w760 h400 vResult").SetFont("s18")
         this.ResultGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
@@ -183,15 +182,15 @@
     ; __Translate(CtrlObj, *) => () ; TODO
 
     __Search(CtrlObj, *) {
-        search_engine := CtrlObj.Value, result := this.result
-        if search_engine == 5 {
+        search_engine := CtrlObj.Text, result := this.result
+        if search_engine == "Everything" {
             if InStr(FileExist(result), "D")
-                Run(this.config["everything_path"] " -parent `"" result "`"")
+                Run(this.config["search_engines"]["Everything"] " -parent `"" result "`"")
             else
-                Run(this.config["everything_path"] " -search `"" result "`"")
+                Run(this.config["search_engines"]["Everything"] " -search `"" result "`"")
         }
         else
-            try Run Baidu_SearchEngines[search_engine] result
+            try Run StrReplace(Baidu_SearchEngines[search_engine], "@W", result, 1)
         if this.config["close_and_search"]
             this.ResultGUI.Destroy()
     }

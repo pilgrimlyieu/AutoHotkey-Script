@@ -3,7 +3,7 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.0.0-beta.4
+ * @version 2.0.0-beta.5
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
@@ -69,12 +69,6 @@ global Baidu_e2cPunctuations      := Map(
     "[", "【",
     "]", "】",
 )
-global Baidu_SearchEngines        := [
-    "https://www.baidu.com/s?wd=",
-    "https://cn.bing.com/search?q=",
-    "https://www.google.com/search?q=",
-    "https://baike.baidu.com/item/",
-]
 global Mathpix_InlineStyles       := [
     ["$", "$"],
     ["\(", "\)"],
@@ -99,10 +93,20 @@ ConfigSections := StrSplit(IniRead(OCRC_ConfigFilePath), "`n")
 for section_index, section in ConfigSections {
     ConfigKeys := StrSplit(IniRead(OCRC_ConfigFilePath, section), "`n")
     for key_index, key in ConfigKeys {
-        ConfigValues := StrSplit(key, "=")
+        ConfigValues := StrSplit(key, "=", , 2)
         OCRC_Configs[ConfigValues[1]] := ConfigValues[2]
     }
 }
+
+global Baidu_SearchEngines := Map()
+SearchEnginesKeys := StrSplit(IniRead(OCRC_ConfigFilePath, "BaiduSearchEngine"), "`n")
+for key_index, key in SearchEnginesKeys {
+    ConfigValues := StrSplit(key, "=", , 2)
+    Baidu_SearchEngines[ConfigValues[1]] := ConfigValues[2]
+}
+global Baidu_SearchEngines_key := []
+for key, value in Baidu_SearchEngines
+    Baidu_SearchEngines_key.Push(key)
 
 global Baidu_HotkeyTemp := OCRC_Configs["Baidu_Hotkey"], Mathpix_HotkeyTemp := OCRC_Configs["Mathpix_Hotkey"]
 if OCRC_Configs["Basic_BaiduOCROnOff"]
@@ -134,8 +138,7 @@ OCRC_BaiduOCR(ThisHotkey) {
             "translation_type",  OCRC_Configs["Baidu_TranType"],
             "search_engine",     OCRC_Configs["Baidu_SearchEngine"],
             "close_and_search",  OCRC_Configs["Baidu_CloseAndSearch"],
-            "everything",        OCRC_Configs["Advance_EverythingOnOff"],
-            "everything_path",   OCRC_Configs["Advance_EverythingPath"],
+            "search_engines",    Baidu_SearchEngines,
         )
     )
 }
@@ -170,8 +173,6 @@ CreateConfig() {
     IniWrite(75, OCRC_ConfigFilePath, "Advance", "Advance_EBto64SQuality")
     IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotOnOff")
     IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotPath")
-    IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_EverythingOnOff")
-    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_EverythingPath")
 
     IniWrite("F7",  OCRC_ConfigFilePath, "Baidu", "Baidu_Hotkey")
     IniWrite("",    OCRC_ConfigFilePath, "Baidu", "Baidu_APIKey")
@@ -186,6 +187,12 @@ CreateConfig() {
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_TranType")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SearchEngine")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_CloseAndSearch")
+
+    IniWrite("https://www.baidu.com/s?wd=@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "百度")
+    IniWrite("https://www.google.com/search?q=@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "谷歌")
+    IniWrite("https://cn.bing.com/search?q=@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "必应")
+    IniWrite("https://baike.baidu.com/item/@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "百度百科")
+    IniWrite("https://zh.wikipedia.org/wiki/@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "维基百科")
 
     IniWrite("F4", OCRC_ConfigFilePath, "Mathpix", "Mathpix_Hotkey")
     IniWrite("",   OCRC_ConfigFilePath, "Mathpix", "Mathpix_AppID")
@@ -234,11 +241,6 @@ SettingGUI() {
     Setting.AddText("x15 y+15 w90 h25 Right", "路径")
     Setting.AddEdit("x+15 w200 h25 vAdvance_ThirdPartyScreenshotPath", OCRC_Configs["Advance_ThirdPartyScreenshotPath"]).OnEvent("Change", UpdateVar)
 
-    Setting.AddGroupBox("x20 y260 w310 h70", "Everything")
-    Setting.AddCheckBox("x32 y290 w90 vAdvance_EverythingOnOff Right Checked" OCRC_Configs["Advance_EverythingOnOff"], "启用").OnEvent("Click", UpdateVar)
-    Setting.AddText("x15 y+15 w90 h25 Right", "路径")
-    Setting.AddEdit("x+15 w200 h25 vAdvance_EverythingPath", OCRC_Configs["Advance_EverythingPath"]).OnEvent("Change", UpdateVar)
-
     Tabs.UseTab("Baidu")
     Setting.AddGroupBox("x20 y50 w310 h230", "基础设置")
     Setting.AddText("x15 y80 w90 h25 Right", "热键")
@@ -261,7 +263,7 @@ SettingGUI() {
     Setting.AddText("x15 y+15 w90 h25 Right", "默认翻译")
     Setting.AddDropDownList("x+15 w200 vBaidu_TranType AltSubmit Choose" OCRC_Configs["Baidu_TranType"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).OnEvent("Change", UpdateVar)
     Setting.AddText("x15 y+15 w90 h25 Right", "默认搜索")
-    Setting.AddDropDownList("x+15 w200 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], ["百度搜索", "必应搜索", "谷歌搜索", "百度百科", "Everything"]).OnEvent("Change", UpdateVar)
+    Setting.AddDropDownList("x+15 w200 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], Baidu_SearchEngines_key).OnEvent("Change", UpdateVar)
     Setting.AddCheckBox("x20 y+15 w180 vBaidu_CloseAndSearch Right Checked" OCRC_Configs["Baidu_CloseAndSearch"], "搜索时关闭结果窗口").OnEvent("Click", UpdateVar)
 
     Tabs.UseTab("Mathpix")
