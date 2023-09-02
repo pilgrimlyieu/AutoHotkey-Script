@@ -31,8 +31,6 @@
         this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
         this.ResultGUI.AddText("x+15 w42 h30", "翻译").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w90 vTranslationType AltSubmit Choose" this.config["translation_type"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
-        ; TODO Add Everything judgement(in main program), import arrays from class params.
-        ; TODO Add Right Click event.
         this.ResultGUI.AddText("x+15 w42 h30", "搜索").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.config["search_engine"], Baidu_SearchEngines_key).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
