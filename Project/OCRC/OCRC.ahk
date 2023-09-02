@@ -3,7 +3,7 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.0.0-beta.3
+ * @version 2.0.0-beta.4
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
@@ -133,6 +133,7 @@ OCRC_BaiduOCR(ThisHotkey) {
             "space_style",       OCRC_Configs["Baidu_SpaceStyle"],
             "translation_type",  OCRC_Configs["Baidu_TranType"],
             "search_engine",     OCRC_Configs["Baidu_SearchEngine"],
+            "close_and_search",  OCRC_Configs["Baidu_CloseAndSearch"],
             "everything",        OCRC_Configs["Advance_EverythingOnOff"],
             "everything_path",   OCRC_Configs["Advance_EverythingPath"],
         )
@@ -163,7 +164,6 @@ OCRC_MathpixOCR(ThisHotkey) {
 CreateConfig() {
     IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_BaiduOCROnOff")
     IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_MathpixOCROnOff")
-    IniWrite(0,   OCRC_ConfigFilePath, "Basic", "Basic_AutoReloadOnOff")
     IniWrite(10,  OCRC_ConfigFilePath, "Basic", "Basic_SnipTime")
     IniWrite(500, OCRC_ConfigFilePath, "Basic", "Basic_WaitSnipTime")
 
@@ -185,6 +185,7 @@ CreateConfig() {
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SpaceStyle")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_TranType")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SearchEngine")
+    IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_CloseAndSearch")
 
     IniWrite("F4", OCRC_ConfigFilePath, "Mathpix", "Mathpix_Hotkey")
     IniWrite("",   OCRC_ConfigFilePath, "Mathpix", "Mathpix_AppID")
@@ -221,9 +222,6 @@ SettingGUI() {
     Setting.AddEdit("x+15 w80 vBasic_WaitSnipTime Number", OCRC_Configs["Basic_WaitSnipTime"]).OnEvent("Change", UpdateVar)
     Setting.AddUpDown("vBasic_WaitSnipTime_extra Range100-5000 0x80", OCRC_Configs["Basic_WaitSnipTime"])
     Setting.AddText("x200 y230 w40 h25 Left", "毫秒")
-
-    Setting.AddGroupBox("x20 y290 w310 h80", "设置")
-    Setting.AddCheckBox("x32 y320 w90 vBasic_AutoReloadOnOff Right Checked" OCRC_Configs["Basic_AutoReloadOnOff"], "自动重启").OnEvent("Click", UpdateVar)
 
     Tabs.UseTab("Advance")
     Setting.AddGroupBox("x20 y50 w310 h80", "高级设置")
@@ -264,6 +262,7 @@ SettingGUI() {
     Setting.AddDropDownList("x+15 w200 vBaidu_TranType AltSubmit Choose" OCRC_Configs["Baidu_TranType"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).OnEvent("Change", UpdateVar)
     Setting.AddText("x15 y+15 w90 h25 Right", "默认搜索")
     Setting.AddDropDownList("x+15 w200 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], ["百度搜索", "必应搜索", "谷歌搜索", "百度百科", "Everything"]).OnEvent("Change", UpdateVar)
+    Setting.AddCheckBox("x20 y+15 w180 vBaidu_CloseAndSearch Right Checked" OCRC_Configs["Baidu_CloseAndSearch"], "搜索时关闭结果窗口").OnEvent("Click", UpdateVar)
 
     Tabs.UseTab("Mathpix")
     Setting.AddGroupBox("x20 y50 w310 h150", "基础设置")
@@ -304,3 +303,6 @@ UpdateHotkey(CtrlObj, *) {
 }
 
 SwitchHotkey(CtrlObj, *) => (UpdateVar(CtrlObj), Hotkey(OCRC_Configs["Baidu_Hotkey"], OCRC_BaiduOCR, CtrlObj.Value ? "On" : "Off"))
+
+; Debug
+!a::SettingGUI()

@@ -14,38 +14,36 @@
         if this.json.Has("error_msg")
             return MsgBox(this.json["error_msg"], "BaiduOCR ERROR", "Iconx 0x1000")
 
-        this.id := this.json["log_id"]
-        this.__Results := Map()
-        this.__Results[this.id] := Gui(, this.id)
-        this.__Results[this.id].OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
-        this.__Results[this.id].Title := "OCRC (BaiduOCR) 「" Baidu_RecognitionTypes[this.config["recognition_type"]] "」识别结果"
-        this.__Results[this.id].BackColor := "EBEDF4"
-        this.__Results[this.id].SetFont(, "Microsoft YaHei")
+        this.ResultGUI := Gui()
+        this.ResultGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
+        this.ResultGUI.Title := "OCRC (BaiduOCR) 「" Baidu_RecognitionTypes[this.config["recognition_type"]] "」识别结果"
+        this.ResultGUI.BackColor := "EBEDF4"
+        this.ResultGUI.SetFont(, "Microsoft YaHei")
 
-        this.__Results[this.id].AddText("x20 w42 h30", "排版").SetFont("s16")
-        this.__Results[this.id].AddDropDownList("x+5 w90 vFormatStyle AltSubmit Choose" this.config["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
-        this.__Results[this.id]["FormatStyle"].OnEvent("Change", ObjBindMethod(this, "__Format"))
-        this.__Results[this.id].AddText("x+15 w42 h30", "标点").SetFont("s16")
-        this.__Results[this.id].AddDropDownList("x+5 w90 vPunctuationStyle AltSubmit Choose" this.config["punctuation_style"], ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
-        this.__Results[this.id]["PunctuationStyle"].OnEvent("Change", ObjBindMethod(this, "__Punctuation"))
-        this.__Results[this.id].AddText("x+15 w42 h30", "空格").SetFont("s16")
-        this.__Results[this.id].AddDropDownList("x+5 w90 vSpaceStyle AltSubmit Choose" this.config["space_style"], ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
-        this.__Results[this.id]["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
-        this.__Results[this.id].AddText("x+15 w42 h30", "翻译").SetFont("s16")
-        this.__Results[this.id].AddDropDownList("x+5 w90 vTranslationType AltSubmit Choose" this.config["translation_type"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
+        this.ResultGUI.AddText("x20 w42 h30", "排版").SetFont("s16")
+        this.ResultGUI.AddDropDownList("x+5 w90 vFormatStyle AltSubmit Choose" this.config["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
+        this.ResultGUI["FormatStyle"].OnEvent("Change", ObjBindMethod(this, "__Format"))
+        this.ResultGUI.AddText("x+15 w42 h30", "标点").SetFont("s16")
+        this.ResultGUI.AddDropDownList("x+5 w90 vPunctuationStyle AltSubmit Choose" this.config["punctuation_style"], ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
+        this.ResultGUI["PunctuationStyle"].OnEvent("Change", ObjBindMethod(this, "__Punctuation"))
+        this.ResultGUI.AddText("x+15 w42 h30", "空格").SetFont("s16")
+        this.ResultGUI.AddDropDownList("x+5 w90 vSpaceStyle AltSubmit Choose" this.config["space_style"], ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
+        this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
+        this.ResultGUI.AddText("x+15 w42 h30", "翻译").SetFont("s16")
+        this.ResultGUI.AddDropDownList("x+5 w90 vTranslationType AltSubmit Choose" this.config["translation_type"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
         ; TODO Add Everything judgement(in main program), import arrays from class params.
         ; TODO Add Right Click event.
-        this.__Results[this.id].AddText("x+15 w42 h30", "搜索").SetFont("s16")
-        this.__Results[this.id].AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.config["search_engine"], ["百度搜索", "必应搜索", "谷歌搜索", "百度百科", "Everything"]).SetFont("s12")
-        this.__Results[this.id]["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
+        this.ResultGUI.AddText("x+15 w42 h30", "搜索").SetFont("s16")
+        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.config["search_engine"], ["百度搜索", "必应搜索", "谷歌搜索", "百度百科", "Everything"]).SetFont("s12")
+        this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
 
-        this.__Results[this.id].AddEdit("x20 y50 w760 h400 vResult").SetFont("s18")
-        this.__Results[this.id]["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
-        this.__Format(this.__Results[this.id]["FormatStyle"])
+        this.ResultGUI.AddEdit("x20 y50 w760 h400 vResult").SetFont("s18")
+        this.ResultGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
+        this.__Format(this.ResultGUI["FormatStyle"])
         if this.config["probability_type"]
             this.__Probability()
-        this.__Punctuation(this.__Results[this.id]["PunctuationStyle"])
-        this.__Space(this.__Results[this.id]["SpaceStyle"])
+        this.__Punctuation(this.ResultGUI["PunctuationStyle"])
+        this.__Space(this.ResultGUI["SpaceStyle"])
 
         if this.config["probability_type"] {
             if this.probability <= 60
@@ -54,11 +52,11 @@
                 probability_color := "F8CD46"
             else
                 probability_color := "63C956"
-            this.__Results[this.id].AddProgress("x20 y+10 w760 h30 c" probability_color, this.probability)
-            this.__Results[this.id].AddText("x20 yp w800 h30 Center BackgroundTrans", this.probability "%").SetFont("s18")
+            this.ResultGUI.AddProgress("x20 y+10 w760 h30 c" probability_color, this.probability)
+            this.ResultGUI.AddText("x20 yp w800 h30 Center BackgroundTrans", this.probability "%").SetFont("s18")
         }
 
-        this.__Results[this.id].Show("w800 h" (this.config["probability_type"] ? 500 : 470))
+        this.ResultGUI.Show("w800 h" (this.config["probability_type"] ? 500 : 470))
     }
 
     __Token() {
@@ -112,8 +110,8 @@
         }
 
         this.result := result, this.result_temp := result
-        this.__Results[this.id]["Result"].Value := this.result
-        this.__Clip(this.__Results[this.id]["Result"])
+        this.ResultGUI["Result"].Value := this.result
+        this.__Clip(this.ResultGUI["Result"])
     }
 
     __Punctuation(CtrlObj, *) {
@@ -146,8 +144,8 @@
         }
 
         this.result := result, this.result_punctuation_temp := result
-        this.__Results[this.id]["Result"].Value := this.result
-        this.__Clip(this.__Results[this.id]["Result"])
+        this.ResultGUI["Result"].Value := this.result
+        this.__Clip(this.ResultGUI["Result"])
     }
 
     __Space(CtrlObj, *) {
@@ -178,8 +176,8 @@
             result := StrReplace(result, A_Space)
 
         this.result := result, this.result_space_temp := result
-        this.__Results[this.id]["Result"].Value := this.result
-        this.__Clip(this.__Results[this.id]["Result"])
+        this.ResultGUI["Result"].Value := this.result
+        this.__Clip(this.ResultGUI["Result"])
     }
 
     ; __Translate(CtrlObj, *) => () ; TODO
@@ -194,6 +192,8 @@
         }
         else
             try Run Baidu_SearchEngines[search_engine] result
+        if this.config["close_and_search"]
+            this.ResultGUI.Destroy()
     }
 
     __Clip(CtrlObj, *) => (this.result := CtrlObj.Value, A_Clipboard := this.result)

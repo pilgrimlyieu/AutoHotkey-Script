@@ -39,7 +39,7 @@ ListJoin(list, string) {
         Run("gvim `"" A_Clipboard "`"", , , &process_id)
     else
         Run("gvim", , , &process_id)
-    if WinWait("ahk_pid " process_id, , 5) {
+    if WinWait("ahk_pid " process_id, , 10) {
         ProcessSetPriority("High", process_id)
         WinSetStyle(-0xC40000, "ahk_pid " process_id)
         WinMove(0, 0, WorkAreaInfoRight, WorkAreaInfoBottom, "ahk_pid " process_id)
