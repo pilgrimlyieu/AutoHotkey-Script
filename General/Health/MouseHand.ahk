@@ -11,7 +11,7 @@ KeyLeftButton(ThisHotkey) {
     SetTimer(LockMouse, -60000 * CheckMins)
 
     LockMouse() {
-        if LButton_key_num >= LBKeyNum {
+        if LButton_key_num >= LBKeyNum && !(2 <= A_WDay && A_WDay <= 6 && 8 <= A_Hour && A_Hour <= 12 && 14 <= A_Hour && A_Hour <= 21) {
             BlockInput("MouseMove")
             MsgBox("已经高强度使用鼠标 " CheckMins " 分钟了，活动一下手吧！可在休息至少 " ForceSeconds "s 后按 Esc 键退出锁定模式。", "休息锁定模式", "Icon! 0x1000 T5")
             UnlockMouse(*) => BlockInput("MouseMoveOff")

@@ -196,11 +196,11 @@ CreateConfig() {
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SearchEngine")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_CloseAndSearch")
 
-    IniWrite("https://www.baidu.com/s?wd=@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "百度")
+    IniWrite("https://www.baidu.com/s?wd=@W",      OCRC_ConfigFilePath, "Baidu_SearchEngines", "百度")
     IniWrite("https://www.google.com/search?q=@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "谷歌")
-    IniWrite("https://cn.bing.com/search?q=@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "必应")
-    IniWrite("https://baike.baidu.com/item/@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "百度百科")
-    IniWrite("https://zh.wikipedia.org/wiki/@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "维基百科")
+    IniWrite("https://cn.bing.com/search?q=@W",    OCRC_ConfigFilePath, "Baidu_SearchEngines", "必应")
+    IniWrite("https://baike.baidu.com/item/@W",    OCRC_ConfigFilePath, "Baidu_SearchEngines", "百度百科")
+    IniWrite("https://zh.wikipedia.org/wiki/@W",   OCRC_ConfigFilePath, "Baidu_SearchEngines", "维基百科")
 
     IniWrite("F4", OCRC_ConfigFilePath, "Mathpix", "Mathpix_Hotkey")
     IniWrite("",   OCRC_ConfigFilePath, "Mathpix", "Mathpix_AppID")
