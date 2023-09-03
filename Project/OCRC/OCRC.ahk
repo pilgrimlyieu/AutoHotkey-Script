@@ -138,7 +138,6 @@ OCRC_BaiduOCR(ThisHotkey) {
             "translation_type",  OCRC_Configs["Baidu_TranType"],
             "search_engine",     OCRC_Configs["Baidu_SearchEngine"],
             "close_and_search",  OCRC_Configs["Baidu_CloseAndSearch"],
-            "search_engines",    Baidu_SearchEngines,
         )
     )
 }
@@ -305,6 +304,3 @@ UpdateHotkey(CtrlObj, *) {
 }
 
 SwitchHotkey(CtrlObj, *) => (UpdateVar(CtrlObj), Hotkey(OCRC_Configs["Baidu_Hotkey"], OCRC_BaiduOCR, CtrlObj.Value ? "On" : "Off"))
-
-; Debug
-!a::SettingGUI()
