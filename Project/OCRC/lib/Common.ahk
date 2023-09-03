@@ -1,7 +1,9 @@
 ﻿#Include <JSON>
 
-Request(url, Encoding := "", Method := "GET", postData := "", headers := "") {
+Request(url, Encoding := "", Method := "GET", postData := "", headers := "", proxy := "") {
     hObject := ComObject("WinHttp.WinHttpRequest.5.1")
+    if proxy
+        hObject.SetProxy(2, proxy)
     hObject.SetTimeouts(30000, 30000, 1200000, 1200000) 
     try hObject.Open(Method, url, (Method = "POST" ? True : False))  
     if IsObject(headers)
@@ -109,7 +111,7 @@ Gdip_CreateBitmapFromClipboard() {
         return -3
     if !(pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap))
         return -4
-    DllCall("DeleteObject", "UPtr", hBitmap) ; DeleteObject(hBitmap)
+    DllCall("DeleteObject", "UPtr", hBitmap)
     return pBitmap
 }
 
@@ -141,3 +143,12 @@ Img2Base(Front := False, Quality := 75) {
     Gdip_Shutdown(pToken)
     return Front ? "data:image/jpg;base64," base64string : base64string
 }
+
+GoogleTranslate(text, from := "auto", to := "zh-CN", proxy := "") {
+    try result := JSON.Parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , proxy))["sentences"][1]["trans"]
+    if IsSet(result)
+        try result := JSON.Parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , proxy))[1][1][1]
+    return IsSet(result) ? result : ""
+}
+
+; TencentTranslate(text, from := "auto", to := "zh", proxy := "")

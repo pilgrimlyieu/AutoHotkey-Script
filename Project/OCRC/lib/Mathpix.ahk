@@ -18,7 +18,6 @@
     }
 
     __Show() {
-        ; static latex_result, inline_result, display_result, text_result
         if this.json.Has("error")
             return MsgBox(this.json["error_info"]["message"], "MathpixOCR ERROR: " this.json["error_info"]["id"], "Iconx 0x1000")
 
