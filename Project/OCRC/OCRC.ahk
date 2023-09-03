@@ -304,6 +304,3 @@ UpdateHotkey(CtrlObj, *) {
 }
 
 SwitchHotkey(CtrlObj, *) => (UpdateVar(CtrlObj), Hotkey(OCRC_Configs["Baidu_Hotkey"], OCRC_BaiduOCR, CtrlObj.Value ? "On" : "Off"))
-
-; Debug
-!a::SettingGUI()
