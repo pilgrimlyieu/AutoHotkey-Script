@@ -184,13 +184,15 @@
     __Search(CtrlObj, *) {
         search_engine := CtrlObj.Text, result := this.result
         if search_engine == "Everything" {
-            if InStr(FileExist(result), "D")
-                Run(Baidu_SearchEngines["Everything"] " -parent `"" result "`"")
-            else
-                Run(Baidu_SearchEngines["Everything"] " -search `"" result "`"")
+            try Run(Baidu_SearchEngines["Everything"] (DirExist(result) ? " -parent `"" : " -search `"") result "`"")
+            catch
+                MsgBox("Everything 路径错误", "Everything ERROR", "Iconx 0x1000")
         }
-        else
-            try Run StrReplace(Baidu_SearchEngines[search_engine], "@W", result, 1)
+        else {
+            try Run(StrReplace(Baidu_SearchEngines[search_engine], "@W", result, 1))
+            catch
+                MsgBox("搜索引擎「" search_engine "」无效或错误", "SearchEngine ERROR", "Iconx 0x1000")
+        }
         if this.config["close_and_search"]
             this.ResultGUI.Destroy()
     }
