@@ -3,7 +3,7 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.0.0-beta.5
+ * @version 2.0.0-beta.6
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
@@ -99,7 +99,7 @@ for section_index, section in ConfigSections {
 }
 
 global Baidu_SearchEngines := Map()
-SearchEnginesKeys := StrSplit(IniRead(OCRC_ConfigFilePath, "BaiduSearchEngine"), "`n")
+SearchEnginesKeys := StrSplit(IniRead(OCRC_ConfigFilePath, "Baidu_SearchEngines"), "`n")
 for key_index, key in SearchEnginesKeys {
     ConfigValues := StrSplit(key, "=", , 2)
     Baidu_SearchEngines[ConfigValues[1]] := ConfigValues[2]
@@ -116,8 +116,12 @@ if OCRC_Configs["Basic_MathpixOCROnOff"]
 
 OCRC_BaiduOCR(ThisHotkey) {
     ClipSaved := ClipboardAll(), A_Clipboard := ""
-    if !GetScreenshot(OCRC_Configs["Basic_SnipTime"], OCRC_Configs["Basic_WaitSnipTime"], OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], OCRC_Configs["Advance_ThirdPartyScreenshotPath"])
-        return (MsgBox("未检测到截图", "Clipping ERROR", "Iconx 0x1000"), A_Clipboard := ClipSaved, ClipSaved := "")
+    if !GetScreenshot(OCRC_Configs["Basic_SnipTime"], OCRC_Configs["Basic_WaitSnipTime"], OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], OCRC_Configs["Advance_ThirdPartyScreenshotPath"]) {
+        A_Clipboard := ClipSaved, ClipSaved := ""
+        if OCRC_Configs["Basic_SnipWarning"]
+            MsgBox("未检测到截图", "Clipping ERROR", "Iconx 0x1000")
+        return
+    }
     base64string := Img2Base(False, OCRC_Configs["Advance_EBto64SQuality"])
     A_Clipboard := ClipSaved, ClipSaved := ""
 
@@ -144,8 +148,12 @@ OCRC_BaiduOCR(ThisHotkey) {
 
 OCRC_MathpixOCR(ThisHotkey) {
     ClipSaved := ClipboardAll(), A_Clipboard := ""
-    if !GetScreenshot(OCRC_Configs["Basic_SnipTime"], OCRC_Configs["Basic_WaitSnipTime"], OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], OCRC_Configs["Advance_ThirdPartyScreenshotPath"])
-        return (MsgBox("未检测到截图", "Clipping ERROR", "Iconx 0x1000"), A_Clipboard := ClipSaved, ClipSaved := "")
+    if !GetScreenshot(OCRC_Configs["Basic_SnipTime"], OCRC_Configs["Basic_WaitSnipTime"], OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], OCRC_Configs["Advance_ThirdPartyScreenshotPath"]) {
+        A_Clipboard := ClipSaved, ClipSaved := ""
+        if OCRC_Configs["Basic_SnipWarning"]
+            MsgBox("未检测到截图", "Clipping ERROR", "Iconx 0x1000")
+        return
+    }
     base64string := Img2Base(True, OCRC_Configs["Advance_EBto64SQuality"])
     A_Clipboard := ClipSaved, ClipSaved := ""
 
@@ -168,6 +176,7 @@ CreateConfig() {
     IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_MathpixOCROnOff")
     IniWrite(10,  OCRC_ConfigFilePath, "Basic", "Basic_SnipTime")
     IniWrite(500, OCRC_ConfigFilePath, "Basic", "Basic_WaitSnipTime")
+    IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_SnipWarning")
 
     IniWrite(75, OCRC_ConfigFilePath, "Advance", "Advance_EBto64SQuality")
     IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotOnOff")
@@ -187,11 +196,11 @@ CreateConfig() {
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SearchEngine")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_CloseAndSearch")
 
-    IniWrite("https://www.baidu.com/s?wd=@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "百度")
-    IniWrite("https://www.google.com/search?q=@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "谷歌")
-    IniWrite("https://cn.bing.com/search?q=@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "必应")
-    IniWrite("https://baike.baidu.com/item/@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "百度百科")
-    IniWrite("https://zh.wikipedia.org/wiki/@W", OCRC_ConfigFilePath, "BaiduSearchEngine", "维基百科")
+    IniWrite("https://www.baidu.com/s?wd=@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "百度")
+    IniWrite("https://www.google.com/search?q=@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "谷歌")
+    IniWrite("https://cn.bing.com/search?q=@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "必应")
+    IniWrite("https://baike.baidu.com/item/@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "百度百科")
+    IniWrite("https://zh.wikipedia.org/wiki/@W", OCRC_ConfigFilePath, "Baidu_SearchEngines", "维基百科")
 
     IniWrite("F4", OCRC_ConfigFilePath, "Mathpix", "Mathpix_Hotkey")
     IniWrite("",   OCRC_ConfigFilePath, "Mathpix", "Mathpix_AppID")
@@ -219,7 +228,7 @@ SettingGUI() {
     Setting.AddCheckBox("x32 y80 w90 vBasic_BaiduOCROnOff Right Checked" OCRC_Configs["Basic_BaiduOCROnOff"], "Baidu").OnEvent("Click", SwitchHotkey)
     Setting.AddCheckBox("x32 y+15 w90 vBasic_MathpixOCROnOff Right Checked" OCRC_Configs["Basic_MathpixOCROnOff"], "Mathpix").OnEvent("Click", SwitchHotkey)
 
-    Setting.AddGroupBox("x20 y160 w310 h120", "截图")
+    Setting.AddGroupBox("x20 y160 w310 h140", "截图")
     Setting.AddText("x15 y190 w80 h25 Right", "截图时间")
     Setting.AddEdit("x+15 w80 vBasic_SnipTime Number", OCRC_Configs["Basic_SnipTime"]).OnEvent("Change", UpdateVar)
     Setting.AddUpDown("vBasic_SnipTime_extra Range5-60", OCRC_Configs["Basic_SnipTime"])
@@ -228,6 +237,7 @@ SettingGUI() {
     Setting.AddEdit("x+15 w80 vBasic_WaitSnipTime Number", OCRC_Configs["Basic_WaitSnipTime"]).OnEvent("Change", UpdateVar)
     Setting.AddUpDown("vBasic_WaitSnipTime_extra Range100-5000 0x80", OCRC_Configs["Basic_WaitSnipTime"])
     Setting.AddText("x200 y230 w40 h25 Left", "毫秒")
+    Setting.AddCheckBox("x20 y+15 w200 vBasic_SnipWarning Right Checked" OCRC_Configs["Basic_SnipWarning"], "未检测到截图时抛出警告").OnEvent("Click", UpdateVar)
 
     Tabs.UseTab("Advance")
     Setting.AddGroupBox("x20 y50 w310 h80", "高级设置")
