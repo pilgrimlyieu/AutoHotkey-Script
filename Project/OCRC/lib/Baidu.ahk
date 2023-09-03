@@ -185,9 +185,9 @@
         search_engine := CtrlObj.Text, result := this.result
         if search_engine == "Everything" {
             if InStr(FileExist(result), "D")
-                Run(this.config["search_engines"]["Everything"] " -parent `"" result "`"")
+                Run(Baidu_SearchEngines["Everything"] " -parent `"" result "`"")
             else
-                Run(this.config["search_engines"]["Everything"] " -search `"" result "`"")
+                Run(Baidu_SearchEngines["Everything"] " -search `"" result "`"")
         }
         else
             try Run StrReplace(Baidu_SearchEngines[search_engine], "@W", result, 1)
