@@ -142,6 +142,35 @@ SHA256(String) {
     return HASH
 }
 
+SHA256HMAC(String, Hmac) {
+    static StrBuf(Str) {
+        Buf := Buffer(StrPut(Str, "UTF-8"))
+        StrPut(Str, Buf, "UTF-8")
+        return Buf
+    }
+    static FinishHash(hHash, &Buf, Size) {
+        Buf := Buffer(Size, 0)
+        DllCall("bcrypt\BCryptFinishHash", "Ptr", hHash, "Ptr", Buf, "UInt", Size, "UInt", Flags := 0, "UInt")
+    }
+    DllCall("bcrypt\BCryptOpenAlgorithmProvider", "Ptr*", &hAlgorithm := 0, "Str", "SHA256", "Ptr", Implementation := 0, "UInt", 0x00000008, "UInt")
+    Mac := StrBuf(Hmac)
+    DllCall("bcrypt\BCryptCreateHash", "Ptr", hAlgorithm, "Ptr*", &hHash := 0, "Ptr", 0, "UInt", 0, "Ptr", Mac, "UInt", Mac.Size - 1, "UInt", Flags := 0, "UInt")
+    Data := StrBuf(String)
+    DllCall("bcrypt\BCryptHashData", "Ptr", hHash, "Ptr", Data, "UInt", Data.Size - 1, "UInt", Flags := 0, "UInt")
+    DllCall("bcrypt\BCryptGetProperty", "Ptr", hAlgorithm, "Ptr", StrPtr("HashDigestLength"), "Ptr*", &HASH_LENGTH := 0, "UInt", 4, "UInt*", &Result := 0, "UInt", Flags := 0, "UInt")
+    HASH_DATA := Buffer(HASH_LENGTH, 0)
+    FinishHash(hHash, &HASH_DATA, HASH_LENGTH)
+    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", 0, "UInt*", &Size := 0)
+    BufOut := Buffer(Size << 1, 0)
+    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", BufOut, "UInt*", Size)
+    HASH := StrGet(BufOut)
+    if hHash
+        DllCall("bcrypt\BCryptDestroyHash", "Ptr", hHash, "UInt")
+    if hAlgorithm
+        DllCall("bcrypt\BCryptCloseAlgorithmProvider", "Ptr", hAlgorithm, "UInt", Flags := 0, "UInt")
+    return HASH
+}
+
 GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := "") {
     try {
         if !(If3pSnip && CmdOf3pSnip)
