@@ -71,9 +71,11 @@ global Baidu_e2cPunctuations      := Map(
 )
 global Baidu_TranslationEngines   := Map(
     "谷歌翻译", GoogleTranslate,
+    "腾讯翻译", TencentTranslate,
 )
 global Baidu_TranslationEngines_key := [
     "谷歌翻译",
+    "腾讯翻译",
 ]
 global Baidu_TranslationTypes     := Map(
     "自动检测", ["auto", "zh-CN"],
@@ -160,7 +162,7 @@ OCRC_BaiduOCR(ThisHotkey) {
             "punctuation_style",  OCRC_Configs["Baidu_PunctuationStyle"],
             "space_style",        OCRC_Configs["Baidu_SpaceStyle"],
             "translation_engine", OCRC_Configs["Baidu_TranslationEngine"],
-            "translation_proxy",  OCRC_Configs["Advance_TranslationProxy"],
+            "translation_proxy",  OCRC_Configs["Advance_GoogleTranslationProxy"],
             "translation_type",   OCRC_Configs["Baidu_TranslationType"],
             "search_engine",      OCRC_Configs["Baidu_SearchEngine"],
             "close_and_search",   OCRC_Configs["Baidu_CloseAndSearch"],
@@ -203,7 +205,7 @@ CreateConfig() {
     IniWrite(75, OCRC_ConfigFilePath, "Advance", "Advance_EBto64SQuality")
     IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotOnOff")
     IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotPath")
-    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TranslationProxy")
+    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_GoogleTranslationProxy")
 
     IniWrite("F7",  OCRC_ConfigFilePath, "Baidu", "Baidu_Hotkey")
     IniWrite("",    OCRC_ConfigFilePath, "Baidu", "Baidu_APIKey")
@@ -274,9 +276,13 @@ SettingGUI() {
     Setting.AddText("x15 y+15 w90 h25 Right", "路径")
     Setting.AddEdit("x+15 w200 h25 vAdvance_ThirdPartyScreenshotPath", OCRC_Configs["Advance_ThirdPartyScreenshotPath"]).OnEvent("Change", UpdateVar)
 
-    Setting.AddGroupBox("x20 y260 w310 h80", "代理设置")
-    Setting.AddText("x15 y290 w90 h25 Right", "翻译代理")
-    Setting.AddEdit("x+15 y290 w200 h25 vAdvance_TranslationProxy", OCRC_Configs["Advance_TranslationProxy"]).OnEvent("Change", UpdateVar)
+    Setting.AddGroupBox("x20 y260 w310 h150", "翻译设置")
+    Setting.AddText("x15 y290 w145 h25 Right", "谷歌翻译代理")
+    Setting.AddEdit("x+15 w145 h25 vAdvance_GoogleTranslationProxy", OCRC_Configs["Advance_GoogleTranslationProxy"]).OnEvent("Change", UpdateVar)
+    Setting.AddText("x15 y+15 w145 h25 Right", "腾讯翻译 SecretID")
+    Setting.AddEdit("x+15 w145 h25 vAdvance_TencentTranslationSecretID", OCRC_Configs["Advance_TencentTranslationSecretID"]).OnEvent("Change", UpdateVar)
+    Setting.AddText("x15 y+15 w145 h25 Right", "腾讯翻译 SecretKey")
+    Setting.AddEdit("x+15 w145 h25 vAdvance_TencentTranslationSecretKey", OCRC_Configs["Advance_TencentTranslationSecretKey"]).OnEvent("Change", UpdateVar)
 
     Tabs.UseTab("Baidu")
     Setting.AddGroupBox("x20 y50 w310 h230", "基础设置")

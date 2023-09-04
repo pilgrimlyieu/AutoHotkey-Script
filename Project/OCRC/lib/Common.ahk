@@ -124,9 +124,7 @@ Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette:=0) {
 SHA256(String) {
     DllCall("bcrypt\BCryptOpenAlgorithmProvider", "Ptr*", &hAlgorithm := 0, "Str", "SHA256", "Ptr", Implementation := 0, "UInt", 0, "UInt")
     DllCall("bcrypt\BCryptCreateHash", "Ptr", hAlgorithm, "Ptr*", &hHash := 0, "Ptr", 0, "UInt", 0, "Ptr", 0, "UInt", 0, "UInt", Flags := 0, "UInt")
-    Buf := Buffer(StrPut(String, "UTF-8"))
-    StrPut(String, Buf, "UTF-8")
-    Data := Buf
+    Buf := Buffer(StrPut(String, "UTF-8")), StrPut(String, Buf, "UTF-8"), Data := Buf
     DllCall("bcrypt\BCryptHashData", "Ptr", hHash, "Ptr", Data, "UInt", Data.Size - 1, "UInt", Flags := 0, "UInt")
     DllCall("bcrypt\BCryptGetProperty", "Ptr", hAlgorithm, "Ptr", StrPtr("HashDigestLength"), "Ptr*", &HASH_LENGTH := 0, "UInt", 4, "UInt*", &Result := 0, "UInt", Flags := 0, "UInt")
     HASH_DATA := Buffer(HASH_LENGTH, 0)
@@ -143,23 +141,14 @@ SHA256(String) {
 }
 
 SHA256HMAC(String, Hmac) {
-    static StrBuf(Str) {
-        Buf := Buffer(StrPut(Str, "UTF-8"))
-        StrPut(Str, Buf, "UTF-8")
-        return Buf
-    }
-    static FinishHash(hHash, &Buf, Size) {
-        Buf := Buffer(Size, 0)
-        DllCall("bcrypt\BCryptFinishHash", "Ptr", hHash, "Ptr", Buf, "UInt", Size, "UInt", Flags := 0, "UInt")
-    }
     DllCall("bcrypt\BCryptOpenAlgorithmProvider", "Ptr*", &hAlgorithm := 0, "Str", "SHA256", "Ptr", Implementation := 0, "UInt", 0x00000008, "UInt")
-    Mac := StrBuf(Hmac)
+    Buf := Buffer(StrPut(Hmac, "UTF-8")), StrPut(Hmac, Buf, "UTF-8"), Mac := Buf
     DllCall("bcrypt\BCryptCreateHash", "Ptr", hAlgorithm, "Ptr*", &hHash := 0, "Ptr", 0, "UInt", 0, "Ptr", Mac, "UInt", Mac.Size - 1, "UInt", Flags := 0, "UInt")
-    Data := StrBuf(String)
+    Buf := Buffer(StrPut(String, "UTF-8")), StrPut(String, Buf, "UTF-8"), Data := Buf
     DllCall("bcrypt\BCryptHashData", "Ptr", hHash, "Ptr", Data, "UInt", Data.Size - 1, "UInt", Flags := 0, "UInt")
     DllCall("bcrypt\BCryptGetProperty", "Ptr", hAlgorithm, "Ptr", StrPtr("HashDigestLength"), "Ptr*", &HASH_LENGTH := 0, "UInt", 4, "UInt*", &Result := 0, "UInt", Flags := 0, "UInt")
     HASH_DATA := Buffer(HASH_LENGTH, 0)
-    FinishHash(hHash, &HASH_DATA, HASH_LENGTH)
+    DllCall("bcrypt\BCryptFinishHash", "Ptr", hHash, "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", Flags := 0, "UInt")
     DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", 0, "UInt*", &Size := 0)
     BufOut := Buffer(Size << 1, 0)
     DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", BufOut, "UInt*", Size)
@@ -202,4 +191,35 @@ GoogleTranslate(text, from := "auto", to := "zh-CN", proxy := "") {
     return IsSet(result) ? result : ""
 }
 
-; TencentTranslate(text, from := "auto", to := "zh", proxy := "")
+TencentAuthorization(string_post_data, SecretID, SecretKey) {
+    CanonicalRequest := "POST`n/`n`ncontent-type:application/json`nhost:tmt.tencentcloudapi.com`nx-tc-action:texttranslate`n`ncontent-type;host;x-tc-action`n" SHA256(string_post_data)
+    StringToSign := "TC3-HMAC-SHA256`n" DateDiff(A_NowUTC, 19700101000000, "Seconds") "`n" FormatTime(A_NowUTC, "yyyy-MM-dd") "/tmt/tc3_request`n" SHA256(CanonicalRequest)
+    SecretDate := SHA256HMAC(FormatTime(A_NowUTC, "yyyy-MM-dd"), "TC3" SecretKey)
+    SecretService := SHA256HMAC("tmt", SecretDate)
+    SecretSigning := SHA256HMAC("tc3_request", SecretService)
+    Signature := SHA256HMAC(StringToSign, SecretSigning)
+    return "TC3-HMAC-SHA256 Credential=" SecretID "/" FormatTime(A_NowUTC, "yyyy-MM-dd") "/tmt/tc3_request, SignedHeaders=content-type;host;x-tc-action, Signature=" Signature
+}
+
+TencentTranslate(text, from := "auto", to := "zh", configs := {}) {
+    post_data := Map(
+        "SourceText", text,
+        "Source", from,
+        "Target", to,
+        "ProjectId", 0,
+    )
+    string_post_data := JSON.stringify(post_data)
+    headers := Map(
+        "HOST", "tmt.tencentcloudapi.com",
+        "Content-type", "application/json",
+        "X-TC-Action", "TextTranslate",
+        "X-TC-Version", "2018-03-21",
+        "X-TC-Region", "ap-guangzhou",
+        "X-TC-Timestamp", DateDiff(A_NowUTC, 19700101000000, "Seconds"),
+        "Authorization", TencentAuthorization(string_post_data, configs["secretid"], configs["secretkey"]),
+    )
+    result := JSON.parse(Request("https://tmt.tencentcloudapi.com", "UTF-8", "POST", string_post_data, headers))
+    try return result["Response"]["TargetText"]
+    catch
+        MsgBox(result["Error"]["Message"], "TencentTranslate Error" result["Error"]["Code"], "Iconx 0x1000")
+}
