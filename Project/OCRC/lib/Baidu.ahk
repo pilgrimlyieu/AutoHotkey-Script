@@ -182,7 +182,16 @@
 
     __Translate(CtrlObj, *) {
         translation_engine := Baidu_TranslationEngines_key[this.config["translation_engine"]], translation_type := CtrlObj.Text, result := this.result
-        MsgBox(Baidu_TranslationEngines[translation_engine].Call(result, Baidu_TranslationTypes[translation_type][1], Baidu_TranslationTypes[translation_type][2], this.config["translation_proxy"]), translation_engine)
+        TranslationGUI := Gui()
+        TranslationGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
+        TranslationGUI.Title := "OCRC (BaiduOCR) 「" translation_engine "（" translation_type "）」翻译结果"
+        TranslationGUI.BackColor := "EBEDF4"
+        TranslationGUI.SetFont(, "Microsoft YaHei")
+        TranslationGUI.AddEdit("x20 y20 w600 h300 vResult").SetFont("s18")
+        TranslationGUI["Result"].Value := Baidu_TranslationEngines[translation_engine].Call(result, Baidu_TranslationTypes[translation_type][1], Baidu_TranslationTypes[translation_type][2], this.config["translation_proxy"])
+        TranslationGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
+        this.__Clip(TranslationGUI["Result"])
+        TranslationGUI.Show("w640 h340")
     }
 
     __Search(CtrlObj, *) {
