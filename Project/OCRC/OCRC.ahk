@@ -221,7 +221,7 @@ CreateConfig() {
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SpaceStyle")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_TranslationEngine")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_TranslationType")
-    IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SearchEngine")
+    IniWrite(2,     OCRC_ConfigFilePath, "Baidu", "Baidu_SearchEngine")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_CloseAndSearch")
 
     IniWrite("https://www.baidu.com/s?wd=@W",      OCRC_ConfigFilePath, "Baidu_SearchEngines", "百度")
@@ -244,6 +244,7 @@ SettingGUI() {
 
     Setting := Gui(, "OCRC Setting")
     Setting.OnEvent("Close", (*) => OnMessage(0x200, CtrlToolTip, 0))
+    Setting.OnEvent("Close", (*) => ToolTip())
     Setting.Title := "OCRC 设置"
     Setting.BackColor := "EBEDF4"
     Setting.MarginX := 10
