@@ -3,7 +3,7 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.0.0
+ * @version 2.0.1
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
@@ -206,6 +206,8 @@ CreateConfig() {
     IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotOnOff")
     IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotPath")
     IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_GoogleTranslationProxy")
+    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TencentTranslationSecretID")
+    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TencentTranslationSecretKey")
 
     IniWrite("F7",  OCRC_ConfigFilePath, "Baidu", "Baidu_Hotkey")
     IniWrite("",    OCRC_ConfigFilePath, "Baidu", "Baidu_APIKey")
