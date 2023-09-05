@@ -168,8 +168,8 @@ GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := 
         RegExMatch(CmdOf3pSnip, "(?P<EXE>[^\/\\:*?`"<>|]+\.(?:exe|EXE)).*", &Snip)
     }
     catch
-        Run("explorer ms-screenclip:")
-    SnipEXE := Snip ? Snip["EXE"] : "ScreenClippingHost.exe"
+        Run("ms-screenclip:")
+    SnipEXE := IsSet(Snip) ? Snip["EXE"] : "ScreenClippingHost.exe"
     if WinWaitActive("ahk_exe " SnipEXE, , BufferTime / 1000) && WinWaitNotActive("ahk_exe " SnipEXE, , SnipTime - BufferTime / 1000) && ClipWait(0.5, 1)
         return 1
     return 0
