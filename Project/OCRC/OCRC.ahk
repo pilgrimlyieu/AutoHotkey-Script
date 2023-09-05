@@ -9,7 +9,7 @@
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
 
 if !FileExist("ahk-json.dll")
-    FileInstall("lib\ahk-json.dll", "ahk-json.dll", 1)
+    FileInstall("lib\ahk-json.dll", "ahk-json.dll")
 
 #Include <Common>
 #Include <Baidu>
@@ -317,7 +317,7 @@ SettingGUI() {
     Setting["Baidu_ProbabilityType"].ToolTip := "设置置信度类型：精准、模糊、关闭`n精准：根据每行置信度及其字符数目的权重，综合计算得到。`n模糊：每行置信度直接平均得到。`n关闭：不显示置信度。"
 
     Setting.AddGroupBox("x20 y290 w310 h310", "默认选项")
-    Setting.AddText("x15 y320 w120 h25 Right", "默认选项")
+    Setting.AddText("x15 y320 w120 h25 Right", "默认排版")
     Setting.AddDropDownList("x+15 w170 vBaidu_FormatStyle AltSubmit Choose" OCRC_Configs["Baidu_FormatStyle"], ["智能段落", "合并多行", "拆分多行"]).OnEvent("Change", UpdateVar)
     Setting["Baidu_FormatStyle"].ToolTip := "设置默认段落格式`n智能段落：根据返回结果智能合并段落。`n合并多行：将多行合并为一行。`n拆分多行：不对返回结果进行段落合并处理。"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认标点")
