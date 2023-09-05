@@ -243,7 +243,7 @@ SettingGUI() {
         CreateConfig()
 
     Setting := Gui(, "OCRC Setting")
-    Setting.OnEvent("Close", (*) => OnMessage(0x200, On_WM_MOUSEMOVE, 0))
+    Setting.OnEvent("Close", (*) => OnMessage(0x200, CtrlToolTip, 0))
     Setting.Title := "OCRC 设置"
     Setting.BackColor := "EBEDF4"
     Setting.MarginX := 10
@@ -281,11 +281,11 @@ SettingGUI() {
     Setting.AddUpDown("vAdvance_EBto64SQuality_extra Range0-100", OCRC_Configs["Advance_EBto64SQuality"])
 
     Setting.AddGroupBox("x20 y140 w310 h110", "外部截图软件支持")
-    Setting.AddCheckBox("x32 y170 w90 vAdvance_ThirdPartyScreenshotOnOff Right Checked" OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], "启用").OnEvent("Click", UpdateVar)
+    Setting.AddCheckBox("x0 y170 w90 vAdvance_ThirdPartyScreenshotOnOff Right Checked" OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], "启用").OnEvent("Click", UpdateVar)
     Setting["Advance_ThirdPartyScreenshotOnOff"].ToolTip := "设置是否启用外部截图软件支持。即使填写了下一个选项，也需要启用此选项才能生效"
-    Setting.AddText("x15 y+15 w90 h25 Right", "路径")
-    Setting.AddEdit("x+15 w200 h25 vAdvance_ThirdPartyScreenshotPath", OCRC_Configs["Advance_ThirdPartyScreenshotPath"]).OnEvent("Change", UpdateVar)
-    Setting["Advance_ThirdPartyScreenshotPath"].ToolTip := "设置外部截图软件的路径。允许额外添加参数，例如：Snipaste.exe clip -o clipboard"
+    Setting.AddText("x-15 y+15 w90 h25 Right", "路径")
+    Setting.AddEdit("x+15 w230 h25 vAdvance_ThirdPartyScreenshotPath", OCRC_Configs["Advance_ThirdPartyScreenshotPath"]).OnEvent("Change", UpdateVar)
+    Setting["Advance_ThirdPartyScreenshotPath"].ToolTip := "设置外部截图软件的路径。允许额外添加参数，例如：Snipaste.exe snip -o clipboard"
 
     Setting.AddGroupBox("x20 y260 w310 h150", "翻译设置")
     Setting.AddText("x15 y290 w145 h25 Right", "谷歌翻译代理")
@@ -311,29 +311,29 @@ SettingGUI() {
     Setting["Baidu_SecretKey"].ToolTip := "设置百度 OCR 的 Secret Key。如果不使用百度 OCR 则无需设置"
     Setting.AddText("x15 y+15 w90 h25 Right", "识别类型")
     Setting.AddDropDownList("x+15 w200 vBaidu_RecognitionType AltSubmit Choose" OCRC_Configs["Baidu_RecognitionType"], ["通用文字（标准）识别", "通用文字（高精度）识别", "手写文字识别", "网络图片文字识别"]).OnEvent("Change", UpdateVar)
-    Setting["Baidu_RecognitionType"].ToolTip := "设置百度 OCR 的识别类型。`n通用文字（标准）识别：适用于日常场景的简单文字识别。`n通用文字（高精度）识别：适用于复杂场景下的文字识别。`n手写文字识别：适用于手写场景下的文字识别。`n网络图片文字识别：适用于网络图片场景下的文字识别"
+    Setting["Baidu_RecognitionType"].ToolTip := "设置百度 OCR 的识别类型`n通用文字（标准）识别：适用于日常场景的简单文字识别。`n通用文字（高精度）识别：适用于复杂场景下的文字识别。`n手写文字识别：适用于手写场景下的文字识别。`n网络图片文字识别：适用于网络图片场景下的文字识别"
     Setting.AddCheckBox("x32 y+15 w90 vBaidu_ProbabilityType Right Check3 Checked" OCRC_Configs["Baidu_ProbabilityType"], "置信度").OnEvent("Click", UpdateVar)
-    Setting["Baidu_ProbabilityType"].ToolTip := "设置置信度类型：精准、模糊、关闭。`n精准：根据每行置信度及其字符数目的权重，综合计算得到。`n模糊：每行置信度直接平均得到。`n关闭：不显示置信度。"
+    Setting["Baidu_ProbabilityType"].ToolTip := "设置置信度类型：精准、模糊、关闭`n精准：根据每行置信度及其字符数目的权重，综合计算得到。`n模糊：每行置信度直接平均得到。`n关闭：不显示置信度。"
 
     Setting.AddGroupBox("x20 y290 w310 h310", "默认选项")
     Setting.AddText("x15 y320 w120 h25 Right", "默认选项")
     Setting.AddDropDownList("x+15 w170 vBaidu_FormatStyle AltSubmit Choose" OCRC_Configs["Baidu_FormatStyle"], ["智能段落", "合并多行", "拆分多行"]).OnEvent("Change", UpdateVar)
-    Setting["Baidu_FormatStyle"].ToolTip := "设置默认段落格式。`n智能段落：根据返回结果智能合并段落。`n合并多行：将多行合并为一行。`n拆分多行：不对返回结果进行段落合并处理。"
+    Setting["Baidu_FormatStyle"].ToolTip := "设置默认段落格式`n智能段落：根据返回结果智能合并段落。`n合并多行：将多行合并为一行。`n拆分多行：不对返回结果进行段落合并处理。"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认标点")
     Setting.AddDropDownList("x+15 w170 vBaidu_PunctuationStyle AltSubmit Choose" OCRC_Configs["Baidu_PunctuationStyle"], ["智能标点", "原始结果", "中文标点", "英文标点"]).OnEvent("Change", UpdateVar)
-    Setting["Baidu_PunctuationStyle"].ToolTip := "设置默认标点格式。`n智能标点（实验性，可能有较大问题！）：根据上下文智能转换标点。`n原始结果：不对返回结果进行标点处理。`n中文标点：将所有标点转换为中文标点。`n英文标点：将所有标点转换为英文标点。"
+    Setting["Baidu_PunctuationStyle"].ToolTip := "设置默认标点格式`n智能标点（实验性，可能有较大问题！）：根据上下文智能转换标点。`n原始结果：恢复上一文本处理操作前的状态（不支持连续恢复）。`n中文标点：将所有标点转换为中文标点。`n英文标点：将所有标点转换为英文标点。"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认空格")
     Setting.AddDropDownList("x+15 w170 vBaidu_SpaceStyle AltSubmit Choose" OCRC_Configs["Baidu_SpaceStyle"], ["智能空格", "原始结果", "去除空格"]).OnEvent("Change", UpdateVar)
-    Setting["Baidu_SpaceStyle"].ToolTip := "设置默认空格格式。`n智能空格（实验性，可能有较大问题！在对网址等文本处理不建议使用）：根据上下文智能转换空格。`n原始结果：不对返回结果进行空格处理。`n去除空格：去除所有空格。"
+    Setting["Baidu_SpaceStyle"].ToolTip := "设置默认空格格式`n智能空格（实验性，可能有较大问题！在对网址等文本处理不建议使用）：根据上下文智能转换空格。`n原始结果：恢复上一文本处理操作前的状态（不支持连续恢复）。`n去除空格：去除所有空格。"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认翻译引擎")
     Setting.AddDropDownList("x+15 w170 vBaidu_TranslationEngine AltSubmit Choose" OCRC_Configs["Baidu_TranslationEngine"], Baidu_TranslationEngines_key).OnEvent("Change", UpdateVar)
     Setting["Baidu_TranslationEngine"].ToolTip := "设置默认翻译引擎（目前仅「谷歌翻译」引擎可用，且可能需要配置代理）"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认翻译类型")
     Setting.AddDropDownList("x+15 w170 vBaidu_TranslationType AltSubmit Choose" OCRC_Configs["Baidu_TranslationType"], Baidu_TranslationTypes_key).OnEvent("Change", UpdateVar)
-    Setting["Baidu_TranslationType"].ToolTip := "设置默认翻译格式。`n自动检测：根据文本内容自动检测输入文本语言并翻译为中文。`n英->中：英文翻译为中文。`n中->英：中文翻译为英文。`n繁->简：繁体中文翻译为简体中文。`n日->中：日文翻译为中文。"
+    Setting["Baidu_TranslationType"].ToolTip := "设置默认翻译格式`n自动检测：根据文本内容自动检测输入文本语言并翻译为中文。`n英->中：英文翻译为中文。`n中->英：中文翻译为英文。`n繁->简：繁体中文翻译为简体中文。`n日->中：日文翻译为中文。"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认搜索引擎")
     Setting.AddDropDownList("x+15 w170 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], Baidu_SearchEngines_key).OnEvent("Change", UpdateVar)
-    Setting["Baidu_SearchEngine"].ToolTip := "设置默认搜索引擎。以下为默认选项（可在配置文件中移除）：`n百度：百度搜索。`n谷歌：谷歌搜索。`n必应：必应搜索。`n百度百科：百度百科搜索。`n维基百科：维基百科搜索。"
+    Setting["Baidu_SearchEngine"].ToolTip := "设置默认搜索引擎。以下为默认选项（可在配置文件中移除或添加）：`n百度：百度搜索。`n谷歌：谷歌搜索。`n必应：必应搜索。`n百度百科：百度百科搜索。`n维基百科：维基百科搜索。"
     Setting.AddCheckBox("x18 y+15 w180 vBaidu_CloseAndSearch Right Checked" OCRC_Configs["Baidu_CloseAndSearch"], "搜索时关闭结果窗口").OnEvent("Click", UpdateVar)
     Setting["Baidu_CloseAndSearch"].ToolTip := "设置是否在点击搜索后关闭结果窗口"
 
@@ -358,16 +358,17 @@ SettingGUI() {
     Setting["Mathpix_DisplayStyle"].ToolTip := "设置默认行间公式格式"
     Setting.AddText("x15 y+15 w90 h25 Right", "默认选择")
     Setting.AddDropDownList("x+15 w200 vMathpix_DefaultSelect AltSubmit Choose" OCRC_Configs["Mathpix_DefaultSelect"], ["LaTeX", "行内公式", "行间公式"]).OnEvent("Change", UpdateVar)
-    Setting["Mathpix_DefaultSelect"].ToolTip := "设置默认选择的公式类型。`nLaTeX：纯 LaTeX 代码（无数学分隔符）。`n行内公式：行内公式。`n行间公式：行间公式。`n文本公式：混排文本和公式时默认选择，智能区分文本和公式。"
-    OnMessage(0x200, On_WM_MOUSEMOVE)
+    Setting["Mathpix_DefaultSelect"].ToolTip := "设置默认选择的公式类型`nLaTeX：纯 LaTeX 代码（无数学分隔符）。`n行内公式：行内公式。`n行间公式：行间公式。`n文本公式：混排文本和公式时默认选择，智能区分文本和公式。"
+    OnMessage(0x200, CtrlToolTip)
+    OnMessage(0x2A3, (*) => ToolTip())
     Setting.Show()
 
-    On_WM_MOUSEMOVE(wParam, lParam, msg, Hwnd) {
+    CtrlToolTip(wParam, lParam, msg, Hwnd) {
         static PrevHwnd := 0
         if Hwnd != PrevHwnd {
             Text := "", ToolTip()
             if (CurrControl := GuiCtrlFromHwnd(Hwnd)) && CurrControl.HasProp("ToolTip")
-                SetTimer(() => ToolTip(CurrControl.ToolTip), -500), SetTimer(() => ToolTip(), -3500)
+                SetTimer(() => ToolTip(CurrControl.ToolTip), -500)
             PrevHwnd := Hwnd
         }
     }
