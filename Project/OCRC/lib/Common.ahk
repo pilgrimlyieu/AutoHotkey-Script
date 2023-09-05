@@ -1,7 +1,9 @@
 ﻿#Include <JSON>
 
-Request(url, Encoding := "", Method := "GET", postData := "", headers := "") {
+Request(url, Encoding := "", Method := "GET", postData := "", headers := "", proxy := "") {
     hObject := ComObject("WinHttp.WinHttpRequest.5.1")
+    if proxy
+        hObject.SetProxy(2, proxy)
     hObject.SetTimeouts(30000, 30000, 1200000, 1200000) 
     try hObject.Open(Method, url, (Method = "POST" ? True : False))  
     if IsObject(headers)
@@ -109,13 +111,53 @@ Gdip_CreateBitmapFromClipboard() {
         return -3
     if !(pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap))
         return -4
-    DllCall("DeleteObject", "UPtr", hBitmap) ; DeleteObject(hBitmap)
+    DllCall("DeleteObject", "UPtr", hBitmap)
     return pBitmap
 }
 
 Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette:=0) {
     DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", "UPtr", hBitmap, "UPtr", Palette, "UPtr*", &pBitmap:=0)
     return pBitmap
+}
+
+; Adapted from https://github.com/jNizM/AHK_CNG/blob/master/src/Class_CNG.ahk
+SHA256(String) {
+    DllCall("bcrypt\BCryptOpenAlgorithmProvider", "Ptr*", &hAlgorithm := 0, "Str", "SHA256", "Ptr", Implementation := 0, "UInt", 0, "UInt")
+    DllCall("bcrypt\BCryptCreateHash", "Ptr", hAlgorithm, "Ptr*", &hHash := 0, "Ptr", 0, "UInt", 0, "Ptr", 0, "UInt", 0, "UInt", Flags := 0, "UInt")
+    Buf := Buffer(StrPut(String, "UTF-8")), StrPut(String, Buf, "UTF-8"), Data := Buf
+    DllCall("bcrypt\BCryptHashData", "Ptr", hHash, "Ptr", Data, "UInt", Data.Size - 1, "UInt", Flags := 0, "UInt")
+    DllCall("bcrypt\BCryptGetProperty", "Ptr", hAlgorithm, "Ptr", StrPtr("HashDigestLength"), "Ptr*", &HASH_LENGTH := 0, "UInt", 4, "UInt*", &Result := 0, "UInt", Flags := 0, "UInt")
+    HASH_DATA := Buffer(HASH_LENGTH, 0)
+    DllCall("bcrypt\BCryptFinishHash", "Ptr", hHash, "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", Flags := 0, "UInt")
+    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", 0, "UInt*", &Size := 0)
+    BufOut := Buffer(Size << 1, 0)
+    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", BufOut, "UInt*", Size)
+    HASH := StrGet(BufOut)
+    if hHash
+        DllCall("bcrypt\BCryptDestroyHash", "Ptr", hHash, "UInt")
+    if hAlgorithm
+        DllCall("bcrypt\BCryptCloseAlgorithmProvider", "Ptr", hAlgorithm, "UInt", Flags := 0, "UInt")
+    return HASH
+}
+
+SHA256HMAC(String, Hmac) {
+    DllCall("bcrypt\BCryptOpenAlgorithmProvider", "Ptr*", &hAlgorithm := 0, "Str", "SHA256", "Ptr", Implementation := 0, "UInt", 0x00000008, "UInt")
+    Buf := Buffer(StrPut(Hmac, "UTF-8")), StrPut(Hmac, Buf, "UTF-8"), Mac := Buf
+    DllCall("bcrypt\BCryptCreateHash", "Ptr", hAlgorithm, "Ptr*", &hHash := 0, "Ptr", 0, "UInt", 0, "Ptr", Mac, "UInt", Mac.Size - 1, "UInt", Flags := 0, "UInt")
+    Buf := Buffer(StrPut(String, "UTF-8")), StrPut(String, Buf, "UTF-8"), Data := Buf
+    DllCall("bcrypt\BCryptHashData", "Ptr", hHash, "Ptr", Data, "UInt", Data.Size - 1, "UInt", Flags := 0, "UInt")
+    DllCall("bcrypt\BCryptGetProperty", "Ptr", hAlgorithm, "Ptr", StrPtr("HashDigestLength"), "Ptr*", &HASH_LENGTH := 0, "UInt", 4, "UInt*", &Result := 0, "UInt", Flags := 0, "UInt")
+    HASH_DATA := Buffer(HASH_LENGTH, 0)
+    DllCall("bcrypt\BCryptFinishHash", "Ptr", hHash, "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", Flags := 0, "UInt")
+    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", 0, "UInt*", &Size := 0)
+    BufOut := Buffer(Size << 1, 0)
+    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", BufOut, "UInt*", Size)
+    HASH := StrGet(BufOut)
+    if hHash
+        DllCall("bcrypt\BCryptDestroyHash", "Ptr", hHash, "UInt")
+    if hAlgorithm
+        DllCall("bcrypt\BCryptCloseAlgorithmProvider", "Ptr", hAlgorithm, "UInt", Flags := 0, "UInt")
+    return HASH
 }
 
 GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := "") {
@@ -140,4 +182,44 @@ Img2Base(Front := False, Quality := 75) {
     DllCall("gdiplus\GdipDisposeImage", "UPtr", pBitmap)
     Gdip_Shutdown(pToken)
     return Front ? "data:image/jpg;base64," base64string : base64string
+}
+
+GoogleTranslate(text, from := "auto", to := "zh-CN", proxy := "") {
+    try result := JSON.Parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , proxy))["sentences"][1]["trans"]
+    if IsSet(result)
+        try result := JSON.Parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , proxy))[1][1][1]
+    return IsSet(result) ? result : ""
+}
+
+TencentAuthorization(string_post_data, SecretID, SecretKey) {
+    CanonicalRequest := "POST`n/`n`ncontent-type:application/json`nhost:tmt.tencentcloudapi.com`nx-tc-action:texttranslate`n`ncontent-type;host;x-tc-action`n" SHA256(string_post_data)
+    StringToSign := "TC3-HMAC-SHA256`n" DateDiff(A_NowUTC, 19700101000000, "Seconds") "`n" FormatTime(A_NowUTC, "yyyy-MM-dd") "/tmt/tc3_request`n" SHA256(CanonicalRequest)
+    SecretDate := SHA256HMAC(FormatTime(A_NowUTC, "yyyy-MM-dd"), "TC3" SecretKey)
+    SecretService := SHA256HMAC("tmt", SecretDate)
+    SecretSigning := SHA256HMAC("tc3_request", SecretService)
+    Signature := SHA256HMAC(StringToSign, SecretSigning)
+    return "TC3-HMAC-SHA256 Credential=" SecretID "/" FormatTime(A_NowUTC, "yyyy-MM-dd") "/tmt/tc3_request, SignedHeaders=content-type;host;x-tc-action, Signature=" Signature
+}
+
+TencentTranslate(text, from := "auto", to := "zh", configs := {}) {
+    post_data := Map(
+        "SourceText", text,
+        "Source", from,
+        "Target", to,
+        "ProjectId", 0,
+    )
+    string_post_data := JSON.stringify(post_data)
+    headers := Map(
+        "HOST", "tmt.tencentcloudapi.com",
+        "Content-type", "application/json",
+        "X-TC-Action", "TextTranslate",
+        "X-TC-Version", "2018-03-21",
+        "X-TC-Region", "ap-guangzhou",
+        "X-TC-Timestamp", DateDiff(A_NowUTC, 19700101000000, "Seconds"),
+        "Authorization", TencentAuthorization(string_post_data, configs["secretid"], configs["secretkey"]),
+    )
+    result := JSON.parse(Request("https://tmt.tencentcloudapi.com", "UTF-8", "POST", string_post_data, headers))
+    try return result["Response"]["TargetText"]
+    catch
+        MsgBox(result["Error"]["Message"], "TencentTranslate Error" result["Error"]["Code"], "Iconx 0x1000")
 }

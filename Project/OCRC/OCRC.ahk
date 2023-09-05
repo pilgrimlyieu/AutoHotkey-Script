@@ -69,6 +69,28 @@ global Baidu_e2cPunctuations      := Map(
     "[", "【",
     "]", "】",
 )
+global Baidu_TranslationEngines   := Map(
+    "谷歌翻译", GoogleTranslate,
+    "腾讯翻译", TencentTranslate,
+)
+global Baidu_TranslationEngines_key := [
+    "谷歌翻译",
+    "腾讯翻译",
+]
+global Baidu_TranslationTypes     := Map(
+    "自动检测", ["auto", "zh-CN"],
+    "英->中", ["en", "zh-CN"],
+    "中->英", ["zh-CN", "en"],
+    "繁->简", ["zh-TW", "zh-CN"],
+    "日->中", ["ja", "zh-CN"],
+)
+global Baidu_TranslationTypes_key := [
+    "自动检测",
+    "英->中",
+    "中->英",
+    "繁->简",
+    "日->中",
+]
 global Mathpix_InlineStyles       := [
     ["$", "$"],
     ["\(", "\)"],
@@ -131,17 +153,19 @@ OCRC_BaiduOCR(ThisHotkey) {
             "probability", OCRC_Configs["Baidu_ProbabilityType"] ? "true" : "false",
         ),
         Map(
-            "api_key",           OCRC_Configs["Baidu_APIKey"],
-            "secret_key",        OCRC_Configs["Baidu_SecretKey"],
-            "image_base64",      base64string,
-            "recognition_type",  Baidu_RecognitionTypes_key[OCRC_Configs["Baidu_RecognitionType"]],
-            "probability_type",  OCRC_Configs["Baidu_ProbabilityType"],
-            "format_style",      OCRC_Configs["Baidu_FormatStyle"],
-            "punctuation_style", OCRC_Configs["Baidu_PunctuationStyle"],
-            "space_style",       OCRC_Configs["Baidu_SpaceStyle"],
-            "translation_type",  OCRC_Configs["Baidu_TranType"],
-            "search_engine",     OCRC_Configs["Baidu_SearchEngine"],
-            "close_and_search",  OCRC_Configs["Baidu_CloseAndSearch"],
+            "api_key",            OCRC_Configs["Baidu_APIKey"],
+            "secret_key",         OCRC_Configs["Baidu_SecretKey"],
+            "image_base64",       base64string,
+            "recognition_type",   Baidu_RecognitionTypes_key[OCRC_Configs["Baidu_RecognitionType"]],
+            "probability_type",   OCRC_Configs["Baidu_ProbabilityType"],
+            "format_style",       OCRC_Configs["Baidu_FormatStyle"],
+            "punctuation_style",  OCRC_Configs["Baidu_PunctuationStyle"],
+            "space_style",        OCRC_Configs["Baidu_SpaceStyle"],
+            "translation_engine", OCRC_Configs["Baidu_TranslationEngine"],
+            "translation_proxy",  OCRC_Configs["Advance_GoogleTranslationProxy"],
+            "translation_type",   OCRC_Configs["Baidu_TranslationType"],
+            "search_engine",      OCRC_Configs["Baidu_SearchEngine"],
+            "close_and_search",   OCRC_Configs["Baidu_CloseAndSearch"],
         )
     )
 }
@@ -181,6 +205,7 @@ CreateConfig() {
     IniWrite(75, OCRC_ConfigFilePath, "Advance", "Advance_EBto64SQuality")
     IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotOnOff")
     IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotPath")
+    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_GoogleTranslationProxy")
 
     IniWrite("F7",  OCRC_ConfigFilePath, "Baidu", "Baidu_Hotkey")
     IniWrite("",    OCRC_ConfigFilePath, "Baidu", "Baidu_APIKey")
@@ -192,7 +217,8 @@ CreateConfig() {
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_FormatStyle")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_PunctuationStyle")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SpaceStyle")
-    IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_TranType")
+    IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_TranslationEngine")
+    IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_TranslationType")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_SearchEngine")
     IniWrite(1,     OCRC_ConfigFilePath, "Baidu", "Baidu_CloseAndSearch")
 
@@ -231,7 +257,7 @@ SettingGUI() {
     Setting.AddCheckBox("x32 y+15 w90 vBasic_MathpixOCROnOff Right Checked" OCRC_Configs["Basic_MathpixOCROnOff"], "Mathpix").OnEvent("Click", SwitchHotkey)
     Setting["Basic_MathpixOCROnOff"].ToolTip := "设置是否启用 Mathpix OCR 识别"
 
-    Setting.AddGroupBox("x20 y160 w310 h140", "截图")
+    Setting.AddGroupBox("x20 y160 w310 h150", "截图")
     Setting.AddText("x15 y190 w80 h25 Right", "截图时间")
     Setting.AddEdit("x+15 w80 vBasic_SnipTime Number", OCRC_Configs["Basic_SnipTime"]).OnEvent("Change", UpdateVar)
     Setting["Basic_SnipTime"].ToolTip := "设置截图时间。超时将自动结束 OCR"
@@ -242,7 +268,7 @@ SettingGUI() {
     Setting["Basic_WaitSnipTime"].ToolTip := "设置等待截图窗口出现的缓冲时间，设置时间过短可能导致经常性的截图失败。超时将自动结束 OCR"
     Setting.AddUpDown("vBasic_WaitSnipTime_extra Range100-5000 0x80", OCRC_Configs["Basic_WaitSnipTime"])
     Setting.AddText("x200 y230 w40 h25 Left", "毫秒")
-    Setting.AddCheckBox("x20 y+15 w200 vBasic_SnipWarning Right Checked" OCRC_Configs["Basic_SnipWarning"], "未检测到截图时抛出警告").OnEvent("Click", UpdateVar)
+    Setting.AddCheckBox("x21 y+15 w200 vBasic_SnipWarning Right Checked" OCRC_Configs["Basic_SnipWarning"], "未检测到截图时抛出警告").OnEvent("Click", UpdateVar)
     Setting["Basic_SnipWarning"].ToolTip := "设置是否在未检测到截图时抛出警告"
 
     Tabs.UseTab("Advance")
@@ -258,6 +284,14 @@ SettingGUI() {
     Setting.AddText("x15 y+15 w90 h25 Right", "路径")
     Setting.AddEdit("x+15 w200 h25 vAdvance_ThirdPartyScreenshotPath", OCRC_Configs["Advance_ThirdPartyScreenshotPath"]).OnEvent("Change", UpdateVar)
     Setting["Advance_ThirdPartyScreenshotPath"].ToolTip := "设置外部截图软件的路径。允许额外添加参数，例如：Snipaste.exe clip -o clipboard"
+
+    Setting.AddGroupBox("x20 y260 w310 h150", "翻译设置")
+    Setting.AddText("x15 y290 w145 h25 Right", "谷歌翻译代理")
+    Setting.AddEdit("x+15 w145 h25 vAdvance_GoogleTranslationProxy", OCRC_Configs["Advance_GoogleTranslationProxy"]).OnEvent("Change", UpdateVar)
+    Setting.AddText("x15 y+15 w145 h25 Right", "腾讯翻译 SecretID")
+    Setting.AddEdit("x+15 w145 h25 vAdvance_TencentTranslationSecretID", OCRC_Configs["Advance_TencentTranslationSecretID"]).OnEvent("Change", UpdateVar)
+    Setting.AddText("x15 y+15 w145 h25 Right", "腾讯翻译 SecretKey")
+    Setting.AddEdit("x+15 w145 h25 vAdvance_TencentTranslationSecretKey", OCRC_Configs["Advance_TencentTranslationSecretKey"]).OnEvent("Change", UpdateVar)
 
     Tabs.UseTab("Baidu")
     Setting.AddGroupBox("x20 y50 w310 h230", "基础设置")
@@ -276,23 +310,25 @@ SettingGUI() {
     Setting.AddCheckBox("x32 y+15 w90 vBaidu_ProbabilityType Right Check3 Checked" OCRC_Configs["Baidu_ProbabilityType"], "置信度").OnEvent("Click", UpdateVar)
     Setting["Baidu_ProbabilityType"].ToolTip := "设置置信度类型：精准、模糊、关闭。`n精准：根据每行置信度及其字符数目的权重，综合计算得到。`n模糊：每行置信度直接平均得到。`n关闭：不显示置信度。"
 
-    Setting.AddGroupBox("x20 y290 w310 h250", "默认选项")
-    Setting.AddText("x15 y320 w90 h25 Right", "默认选项")
-    Setting.AddDropDownList("x+15 w200 vBaidu_FormatStyle AltSubmit Choose" OCRC_Configs["Baidu_FormatStyle"], ["智能段落", "合并多行", "拆分多行"]).OnEvent("Change", UpdateVar)
+    Setting.AddGroupBox("x20 y290 w310 h310", "默认选项")
+    Setting.AddText("x15 y320 w120 h25 Right", "默认选项")
+    Setting.AddDropDownList("x+15 w170 vBaidu_FormatStyle AltSubmit Choose" OCRC_Configs["Baidu_FormatStyle"], ["智能段落", "合并多行", "拆分多行"]).OnEvent("Change", UpdateVar)
     Setting["Baidu_FormatStyle"].ToolTip := "设置默认段落格式"
-    Setting.AddText("x15 y+15 w90 h25 Right", "默认标点")
-    Setting.AddDropDownList("x+15 w200 vBaidu_PunctuationStyle AltSubmit Choose" OCRC_Configs["Baidu_PunctuationStyle"], ["智能标点", "原始结果", "中文标点", "英文标点"]).OnEvent("Change", UpdateVar)
+    Setting.AddText("x15 y+15 w120 h25 Right", "默认标点")
+    Setting.AddDropDownList("x+15 w170 vBaidu_PunctuationStyle AltSubmit Choose" OCRC_Configs["Baidu_PunctuationStyle"], ["智能标点", "原始结果", "中文标点", "英文标点"]).OnEvent("Change", UpdateVar)
     Setting["Baidu_PunctuationStyle"].ToolTip := "设置默认标点格式"
-    Setting.AddText("x15 y+15 w90 h25 Right", "默认空格")
-    Setting.AddDropDownList("x+15 w200 vBaidu_SpaceStyle AltSubmit Choose" OCRC_Configs["Baidu_SpaceStyle"], ["智能空格", "原始结果", "去除空格"]).OnEvent("Change", UpdateVar)
+    Setting.AddText("x15 y+15 w120 h25 Right", "默认空格")
+    Setting.AddDropDownList("x+15 w170 vBaidu_SpaceStyle AltSubmit Choose" OCRC_Configs["Baidu_SpaceStyle"], ["智能空格", "原始结果", "去除空格"]).OnEvent("Change", UpdateVar)
     Setting["Baidu_SpaceStyle"].ToolTip := "设置默认空格格式"
-    Setting.AddText("x15 y+15 w90 h25 Right", "默认翻译")
-    Setting.AddDropDownList("x+15 w200 vBaidu_TranType AltSubmit Choose" OCRC_Configs["Baidu_TranType"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).OnEvent("Change", UpdateVar)
-    Setting["Baidu_TranType"].ToolTip := "设置默认翻译格式"
-    Setting.AddText("x15 y+15 w90 h25 Right", "默认搜索")
-    Setting.AddDropDownList("x+15 w200 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], Baidu_SearchEngines_key).OnEvent("Change", UpdateVar)
+    Setting.AddText("x15 y+15 w120 h25 Right", "默认翻译引擎")
+    Setting.AddDropDownList("x+15 w170 vBaidu_TranslationEngine AltSubmit Choose" OCRC_Configs["Baidu_TranslationEngine"], Baidu_TranslationEngines_key).OnEvent("Change", UpdateVar)
+    Setting.AddText("x15 y+15 w120 h25 Right", "默认翻译类型")
+    Setting.AddDropDownList("x+15 w170 vBaidu_TranslationType AltSubmit Choose" OCRC_Configs["Baidu_TranslationType"], Baidu_TranslationTypes_key).OnEvent("Change", UpdateVar)
+    Setting["Baidu_TranslationType"].ToolTip := "设置默认翻译格式"
+    Setting.AddText("x15 y+15 w120 h25 Right", "默认搜索引擎")
+    Setting.AddDropDownList("x+15 w170 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], Baidu_SearchEngines_key).OnEvent("Change", UpdateVar)
     Setting["Baidu_SearchEngine"].ToolTip := "设置默认搜索引擎"
-    Setting.AddCheckBox("x20 y+15 w180 vBaidu_CloseAndSearch Right Checked" OCRC_Configs["Baidu_CloseAndSearch"], "搜索时关闭结果窗口").OnEvent("Click", UpdateVar)
+    Setting.AddCheckBox("x18 y+15 w180 vBaidu_CloseAndSearch Right Checked" OCRC_Configs["Baidu_CloseAndSearch"], "搜索时关闭结果窗口").OnEvent("Click", UpdateVar)
     Setting["Baidu_CloseAndSearch"].ToolTip := "设置是否在点击搜索后关闭结果窗口"
 
     Tabs.UseTab("Mathpix")
@@ -307,7 +343,7 @@ SettingGUI() {
     Setting.AddEdit("x+15 w200 h25 vMathpix_AppKey", OCRC_Configs["Mathpix_AppKey"]).OnEvent("Change", UpdateVar)
     Setting["Mathpix_AppKey"].ToolTip := "设置 Mathpix OCR 的 App Key"
 
-    Setting.AddGroupBox("x20 y210 w310 h160", "默认选项")
+    Setting.AddGroupBox("x20 y210 w310 h150", "默认选项")
     Setting.AddText("x15 y240 w90 h25 Right", "行内公式")
     Setting.AddDropDownList("x+15 w200 vMathpix_InlineStyle AltSubmit Choose" OCRC_Configs["Mathpix_InlineStyle"], ["$...$", "\(...\)"]).OnEvent("Change", UpdateVar)
     Setting["Mathpix_InlineStyle"].ToolTip := "设置默认行内公式格式"
@@ -351,5 +387,3 @@ UpdateHotkey(CtrlObj, *) {
 }
 
 SwitchHotkey(CtrlObj, *) => (UpdateVar(CtrlObj), Hotkey(OCRC_Configs["Baidu_Hotkey"], OCRC_BaiduOCR, CtrlObj.Value ? "On" : "Off"))
-
-!a::SettingGUI()

@@ -31,6 +31,7 @@
         this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
         this.ResultGUI.AddText("x+15 w42 h30", "翻译").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w90 vTranslationType AltSubmit Choose" this.config["translation_type"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
+        this.ResultGUI["TranslationType"].OnEvent("Change", ObjBindMethod(this, "__Translate"))
         this.ResultGUI.AddText("x+15 w42 h30", "搜索").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.config["search_engine"], Baidu_SearchEngines_key).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
@@ -179,7 +180,19 @@
         this.__Clip(this.ResultGUI["Result"])
     }
 
-    ; __Translate(CtrlObj, *) => () ; TODO
+    __Translate(CtrlObj, *) {
+        translation_engine := Baidu_TranslationEngines_key[this.config["translation_engine"]], translation_type := CtrlObj.Text, result := this.result
+        TranslationGUI := Gui()
+        TranslationGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
+        TranslationGUI.Title := "OCRC (BaiduOCR) 「" translation_engine "（" translation_type "）」翻译结果"
+        TranslationGUI.BackColor := "EBEDF4"
+        TranslationGUI.SetFont(, "Microsoft YaHei")
+        TranslationGUI.AddEdit("x20 y20 w600 h300 vResult").SetFont("s18")
+        TranslationGUI["Result"].Value := Baidu_TranslationEngines[translation_engine].Call(result, Baidu_TranslationTypes[translation_type][1], Baidu_TranslationTypes[translation_type][2], this.config["translation_proxy"])
+        TranslationGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
+        this.__Clip(TranslationGUI["Result"])
+        TranslationGUI.Show("w640 h340")
+    }
 
     __Search(CtrlObj, *) {
         search_engine := CtrlObj.Text, result := this.result
