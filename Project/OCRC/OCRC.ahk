@@ -215,6 +215,7 @@ SettingGUI() {
         CreateConfig()
 
     Setting := Gui(, "OCRC Setting")
+    Setting.OnEvent("Close", (*) => OnMessage(0x200, On_WM_MOUSEMOVE, 0))
     Setting.Title := "OCRC 设置"
     Setting.BackColor := "EBEDF4"
     Setting.MarginX := 10
@@ -324,7 +325,7 @@ SettingGUI() {
         if Hwnd != PrevHwnd {
             Text := "", ToolTip()
             if (CurrControl := GuiCtrlFromHwnd(Hwnd)) && CurrControl.HasProp("ToolTip")
-                SetTimer(() => ToolTip(CurrControl.ToolTip), -500), SetTimer(() => ToolTip(), -3000)
+                SetTimer(() => ToolTip(CurrControl.ToolTip), -500), SetTimer(() => ToolTip(), -3500)
             PrevHwnd := Hwnd
         }
     }
