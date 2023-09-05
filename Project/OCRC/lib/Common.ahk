@@ -184,10 +184,10 @@ Img2Base(Front := False, Quality := 75) {
     return Front ? "data:image/jpg;base64," base64string : base64string
 }
 
-GoogleTranslate(text, from := "auto", to := "zh-CN", proxy := "") {
-    try result := JSON.Parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , proxy))["sentences"][1]["trans"]
+GoogleTranslate(text, from := "auto", to := "zh-CN", configs := {}) {
+    try result := JSON.Parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))["sentences"][1]["trans"]
     if IsSet(result)
-        try result := JSON.Parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , proxy))[1][1][1]
+        try result := JSON.Parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))[1][1][1]
     return IsSet(result) ? result : ""
 }
 
