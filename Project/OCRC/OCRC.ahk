@@ -241,6 +241,7 @@ SettingGUI() {
         CreateConfig()
 
     Setting := Gui(, "OCRC Setting")
+    Setting.OnEvent("Close", (*) => OnMessage(0x200, On_WM_MOUSEMOVE, 0))
     Setting.Title := "OCRC 设置"
     Setting.BackColor := "EBEDF4"
     Setting.MarginX := 10
@@ -252,29 +253,37 @@ SettingGUI() {
     Tabs.UseTab("Basic")
     Setting.AddGroupBox("x20 y50 w310 h100", "OCR 启用")
     Setting.AddCheckBox("x32 y80 w90 vBasic_BaiduOCROnOff Right Checked" OCRC_Configs["Basic_BaiduOCROnOff"], "Baidu").OnEvent("Click", SwitchHotkey)
+    Setting["Basic_BaiduOCROnOff"].ToolTip := "设置是否启用百度 OCR 识别"
     Setting.AddCheckBox("x32 y+15 w90 vBasic_MathpixOCROnOff Right Checked" OCRC_Configs["Basic_MathpixOCROnOff"], "Mathpix").OnEvent("Click", SwitchHotkey)
+    Setting["Basic_MathpixOCROnOff"].ToolTip := "设置是否启用 Mathpix OCR 识别"
 
     Setting.AddGroupBox("x20 y160 w310 h150", "截图")
     Setting.AddText("x15 y190 w80 h25 Right", "截图时间")
     Setting.AddEdit("x+15 w80 vBasic_SnipTime Number", OCRC_Configs["Basic_SnipTime"]).OnEvent("Change", UpdateVar)
+    Setting["Basic_SnipTime"].ToolTip := "设置截图时间。超时将自动结束 OCR"
     Setting.AddUpDown("vBasic_SnipTime_extra Range5-60", OCRC_Configs["Basic_SnipTime"])
     Setting.AddText("x200 y190 w20 h25 Left", "秒")
     Setting.AddText("x15 y+15 w80 h25 Right", "缓冲时间")
     Setting.AddEdit("x+15 w80 vBasic_WaitSnipTime Number", OCRC_Configs["Basic_WaitSnipTime"]).OnEvent("Change", UpdateVar)
+    Setting["Basic_WaitSnipTime"].ToolTip := "设置等待截图窗口出现的缓冲时间，设置时间过短可能导致经常性的截图失败。超时将自动结束 OCR"
     Setting.AddUpDown("vBasic_WaitSnipTime_extra Range100-5000 0x80", OCRC_Configs["Basic_WaitSnipTime"])
     Setting.AddText("x200 y230 w40 h25 Left", "毫秒")
     Setting.AddCheckBox("x21 y+15 w200 vBasic_SnipWarning Right Checked" OCRC_Configs["Basic_SnipWarning"], "未检测到截图时抛出警告").OnEvent("Click", UpdateVar)
+    Setting["Basic_SnipWarning"].ToolTip := "设置是否在未检测到截图时抛出警告"
 
     Tabs.UseTab("Advance")
     Setting.AddGroupBox("x20 y50 w310 h80", "高级设置")
     Setting.AddText("x15 y80 w90 h25 Right", "编码精度")
     Setting.AddEdit("x+15 w60 vAdvance_EBto64SQuality Number", OCRC_Configs["Advance_EBto64SQuality"]).OnEvent("Change", UpdateVar)
+    Setting["Advance_EBto64SQuality"].ToolTip := "设置 JPEG 编码精度。数值越高，编码越精确，但是编码后的字符串越长"
     Setting.AddUpDown("vAdvance_EBto64SQuality_extra Range0-100", OCRC_Configs["Advance_EBto64SQuality"])
 
     Setting.AddGroupBox("x20 y140 w310 h110", "外部截图软件支持")
     Setting.AddCheckBox("x32 y170 w90 vAdvance_ThirdPartyScreenshotOnOff Right Checked" OCRC_Configs["Advance_ThirdPartyScreenshotOnOff"], "启用").OnEvent("Click", UpdateVar)
+    Setting["Advance_ThirdPartyScreenshotOnOff"].ToolTip := "设置是否启用外部截图软件支持。即使填写了下一个选项，也需要启用此选项才能生效"
     Setting.AddText("x15 y+15 w90 h25 Right", "路径")
     Setting.AddEdit("x+15 w200 h25 vAdvance_ThirdPartyScreenshotPath", OCRC_Configs["Advance_ThirdPartyScreenshotPath"]).OnEvent("Change", UpdateVar)
+    Setting["Advance_ThirdPartyScreenshotPath"].ToolTip := "设置外部截图软件的路径。允许额外添加参数，例如：Snipaste.exe clip -o clipboard"
 
     Setting.AddGroupBox("x20 y260 w310 h150", "翻译设置")
     Setting.AddText("x15 y290 w145 h25 Right", "谷歌翻译代理")
@@ -288,46 +297,74 @@ SettingGUI() {
     Setting.AddGroupBox("x20 y50 w310 h230", "基础设置")
     Setting.AddText("x15 y80 w90 h25 Right", "热键")
     Setting.AddHotkey("x+15 w200 h25 vBaidu_Hotkey", OCRC_Configs["Baidu_Hotkey"]).OnEvent("Change", UpdateHotkey)
+    Setting["Baidu_Hotkey"].ToolTip := "设置百度 OCR 的热键"
     Setting.AddText("x15 y+15 w90 h25 Right", "API Key")
     Setting.AddEdit("x+15 w200 h25 vBaidu_APIKey", OCRC_Configs["Baidu_APIKey"]).OnEvent("Change", UpdateVar)
+    Setting["Baidu_APIKey"].ToolTip := "设置百度 OCR 的 API Key"
     Setting.AddText("x15 y+15 w90 h25 Right", "Secret Key")
     Setting.AddEdit("x+15 w200 h25 vBaidu_SecretKey", OCRC_Configs["Baidu_SecretKey"]).OnEvent("Change", UpdateVar)
+    Setting["Baidu_SecretKey"].ToolTip := "设置百度 OCR 的 Secret Key"
     Setting.AddText("x15 y+15 w90 h25 Right", "识别类型")
     Setting.AddDropDownList("x+15 w200 vBaidu_RecognitionType AltSubmit Choose" OCRC_Configs["Baidu_RecognitionType"], ["通用文字（标准）识别", "通用文字（高精度）识别", "手写文字识别", "网络图片文字识别"]).OnEvent("Change", UpdateVar)
+    Setting["Baidu_RecognitionType"].ToolTip := "设置百度 OCR 的识别类型"
     Setting.AddCheckBox("x32 y+15 w90 vBaidu_ProbabilityType Right Check3 Checked" OCRC_Configs["Baidu_ProbabilityType"], "置信度").OnEvent("Click", UpdateVar)
+    Setting["Baidu_ProbabilityType"].ToolTip := "设置置信度类型：精准、模糊、关闭。`n精准：根据每行置信度及其字符数目的权重，综合计算得到。`n模糊：每行置信度直接平均得到。`n关闭：不显示置信度。"
 
     Setting.AddGroupBox("x20 y290 w310 h310", "默认选项")
     Setting.AddText("x15 y320 w120 h25 Right", "默认选项")
     Setting.AddDropDownList("x+15 w170 vBaidu_FormatStyle AltSubmit Choose" OCRC_Configs["Baidu_FormatStyle"], ["智能段落", "合并多行", "拆分多行"]).OnEvent("Change", UpdateVar)
+    Setting["Baidu_FormatStyle"].ToolTip := "设置默认段落格式"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认标点")
     Setting.AddDropDownList("x+15 w170 vBaidu_PunctuationStyle AltSubmit Choose" OCRC_Configs["Baidu_PunctuationStyle"], ["智能标点", "原始结果", "中文标点", "英文标点"]).OnEvent("Change", UpdateVar)
+    Setting["Baidu_PunctuationStyle"].ToolTip := "设置默认标点格式"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认空格")
     Setting.AddDropDownList("x+15 w170 vBaidu_SpaceStyle AltSubmit Choose" OCRC_Configs["Baidu_SpaceStyle"], ["智能空格", "原始结果", "去除空格"]).OnEvent("Change", UpdateVar)
+    Setting["Baidu_SpaceStyle"].ToolTip := "设置默认空格格式"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认翻译引擎")
     Setting.AddDropDownList("x+15 w170 vBaidu_TranslationEngine AltSubmit Choose" OCRC_Configs["Baidu_TranslationEngine"], Baidu_TranslationEngines_key).OnEvent("Change", UpdateVar)
     Setting.AddText("x15 y+15 w120 h25 Right", "默认翻译类型")
     Setting.AddDropDownList("x+15 w170 vBaidu_TranslationType AltSubmit Choose" OCRC_Configs["Baidu_TranslationType"], Baidu_TranslationTypes_key).OnEvent("Change", UpdateVar)
+    Setting["Baidu_TranslationType"].ToolTip := "设置默认翻译格式"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认搜索引擎")
     Setting.AddDropDownList("x+15 w170 vBaidu_SearchEngine AltSubmit Choose" OCRC_Configs["Baidu_SearchEngine"], Baidu_SearchEngines_key).OnEvent("Change", UpdateVar)
+    Setting["Baidu_SearchEngine"].ToolTip := "设置默认搜索引擎"
     Setting.AddCheckBox("x18 y+15 w180 vBaidu_CloseAndSearch Right Checked" OCRC_Configs["Baidu_CloseAndSearch"], "搜索时关闭结果窗口").OnEvent("Click", UpdateVar)
+    Setting["Baidu_CloseAndSearch"].ToolTip := "设置是否在点击搜索后关闭结果窗口"
 
     Tabs.UseTab("Mathpix")
     Setting.AddGroupBox("x20 y50 w310 h150", "基础设置")
     Setting.AddText("x15 y80 w90 h25 Right", "热键")
     Setting.AddHotkey("x+15 w200 h25 vMathpix_Hotkey", OCRC_Configs["Mathpix_Hotkey"]).OnEvent("Change", UpdateHotkey)
+    Setting["Mathpix_Hotkey"].ToolTip := "设置 Mathpix OCR 的热键"
     Setting.AddText("x15 y+15 w90 h25 Right", "App ID")
     Setting.AddEdit("x+15 w200 h25 vMathpix_AppID", OCRC_Configs["Mathpix_AppID"]).OnEvent("Change", UpdateVar)
+    Setting["Mathpix_AppID"].ToolTip := "设置 Mathpix OCR 的 App ID"
     Setting.AddText("x15 y+15 w90 h25 Right", "App Key")
     Setting.AddEdit("x+15 w200 h25 vMathpix_AppKey", OCRC_Configs["Mathpix_AppKey"]).OnEvent("Change", UpdateVar)
+    Setting["Mathpix_AppKey"].ToolTip := "设置 Mathpix OCR 的 App Key"
 
     Setting.AddGroupBox("x20 y210 w310 h150", "默认选项")
     Setting.AddText("x15 y240 w90 h25 Right", "行内公式")
     Setting.AddDropDownList("x+15 w200 vMathpix_InlineStyle AltSubmit Choose" OCRC_Configs["Mathpix_InlineStyle"], ["$...$", "\(...\)"]).OnEvent("Change", UpdateVar)
+    Setting["Mathpix_InlineStyle"].ToolTip := "设置默认行内公式格式"
     Setting.AddText("x15 y+15 w90 h25 Right", "行间公式")
     Setting.AddDropDownList("x+15 w200 vMathpix_DisplayStyle AltSubmit Choose" OCRC_Configs["Mathpix_DisplayStyle"], ["$$...$$", "\[...\]"]).OnEvent("Change", UpdateVar)
+    Setting["Mathpix_DisplayStyle"].ToolTip := "设置默认行间公式格式"
     Setting.AddText("x15 y+15 w90 h25 Right", "默认选择")
     Setting.AddDropDownList("x+15 w200 vMathpix_DefaultSelect AltSubmit Choose" OCRC_Configs["Mathpix_DefaultSelect"], ["LaTeX", "行内公式", "行间公式"]).OnEvent("Change", UpdateVar)
+    Setting["Mathpix_DefaultSelect"].ToolTip := "设置默认选择的公式类型"
+    OnMessage(0x200, On_WM_MOUSEMOVE)
     Setting.Show()
+
+    On_WM_MOUSEMOVE(wParam, lParam, msg, Hwnd) {
+        static PrevHwnd := 0
+        if Hwnd != PrevHwnd {
+            Text := "", ToolTip()
+            if (CurrControl := GuiCtrlFromHwnd(Hwnd)) && CurrControl.HasProp("ToolTip")
+                SetTimer(() => ToolTip(CurrControl.ToolTip), -500), SetTimer(() => ToolTip(), -3500)
+            PrevHwnd := Hwnd
+        }
+    }
 }
 
 UpdateVar(CtrlObj, *) => IniWrite(OCRC_Configs[CtrlObj.Name] := CtrlObj.Value, OCRC_ConfigFilePath, CtrlObj.Gui["Tabs"].Text, CtrlObj.Name)
