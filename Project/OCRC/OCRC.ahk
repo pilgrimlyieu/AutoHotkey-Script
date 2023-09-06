@@ -77,7 +77,7 @@ global Baidu_TranslationEngines_key := [
     "谷歌翻译",
     "腾讯翻译",
 ]
-global Baidu_TranslationTypes     := Map(
+global Baidu_TranslationTypes     := Map( ; TODO Add more translation types
     "自动检测", ["auto", "zh-CN"],
     "英->中", ["en", "zh-CN"],
     "中->英", ["zh-CN", "en"],
@@ -151,6 +151,7 @@ OCRC_BaiduOCR(ThisHotkey) {
         Map(
             "paragraph"  , "true",
             "probability", OCRC_Configs["Baidu_ProbabilityType"] ? "true" : "false",
+            "language_type", "CHN_ENG", ; TODO Add custom language type
         ),
         Map(
             "api_key",            OCRC_Configs["Baidu_APIKey"],
