@@ -1,5 +1,6 @@
 ﻿class Mathpix {
     __New(config, header) {
+        this.config := config
         headers := Map(
             "app_id"      , header["app_id"],
             "app_key"     , header["app_key"],
@@ -9,10 +10,11 @@
             "src"                 , header["image_base64"],
             "idiomatic_eqn_arrays", True,
             "formats"             , ["text", "latex_styled"],
+            "math_inline_delimiters", this.config["math_inline_delimiters"],
+            "math_display_delimiters", this.config["math_display_delimiters"],
         )
         for key, value in config
             post_data[key] := value
-        this.config := config
         this.json := JSON.parse(Request("https://api.mathpix.com/v3/text", "UTF-8", "POST", JSON.stringify(post_data), headers))
         this.__Show()
     }
@@ -22,9 +24,9 @@
             return MsgBox(this.json["error_info"]["message"], "MathpixOCR ERROR: " this.json["error_info"]["id"], "Iconx 0x1000")
 
         latex_result   := this.json.Has("latex_styled") ? this.json["latex_styled"] : ""
-        inline_result  := this.config["math_inline_delimiters"][1] latex_result this.config["math_inline_delimiters"][2]
+        inline_result  := this.config["math_inline_delimiters"][1] StrReplace(latex_result, "`n", " ") this.config["math_inline_delimiters"][2]
         display_result := this.config["math_display_delimiters"][1] "`n" latex_result "`n" this.config["math_display_delimiters"][2] "`n"
-        text_result    := StrReplace(StrReplace(this.json["text"], "\n", "`n"), "\\", "\")
+        text_result    := this.json["text"]
 
         this.ResultGUI := Gui()
         this.ResultGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
