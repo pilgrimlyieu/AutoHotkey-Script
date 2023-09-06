@@ -78,6 +78,8 @@
 
     __Probability() {
         probability_sum := 0
+        if !this.result
+            return this.probability := 0
         if this.config["probability_type"] == 1 {
             for index, value in this.json["words_result"]
                 probability_sum += value["probability"]["average"] * StrLen(value["words"])

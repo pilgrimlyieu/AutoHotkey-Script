@@ -49,7 +49,7 @@
             gui_height_case += 1
             this.ResultGUI.AddText("x10 y+20 w100 Right", "文本公式")
             this.ResultGUI.AddEdit("x120 yp w370 h36 vTextResult ReadOnly -Multi -VScroll", text_result).OnEvent("Focus", Clip)
-            if text_result != inline_result && !(latex_result ~= "\\begin\{")
+            if !(latex_result ~= "\\begin\{")
                 FocusSelect(this.ResultGUI["TextResult"])
         }
 
