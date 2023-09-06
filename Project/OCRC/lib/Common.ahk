@@ -185,10 +185,13 @@ Img2Base(Front := False, Quality := 75) {
 }
 
 GoogleTranslate(text, from := "auto", to := "zh-CN", configs := {}) {
-    try result := JSON.Parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))["sentences"][1]["trans"]
-    if IsSet(result)
-        try result := JSON.Parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))[1][1][1]
-    return IsSet(result) ? result : ""
+    result := ""
+    try for index, sentence in JSON.Parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))["sentences"]
+        result .= sentence["trans"]
+    if !result
+        try for index, sentence in JSON.Parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))[1]
+            result .= sentence[1]
+    return result
 }
 
 TencentAuthorization(string_post_data, SecretID, SecretKey) {
