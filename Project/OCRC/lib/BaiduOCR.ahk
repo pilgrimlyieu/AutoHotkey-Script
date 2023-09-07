@@ -33,7 +33,7 @@
         this.ResultGUI["TranslateType"].OnEvent("Change", ObjBindMethod(this, "__Translate"))
         this.ResultGUI["TranslateType"].OnEvent("ContextMenu", ObjBindMethod(this, "__Translate"))
         this.ResultGUI.AddText("x+15 w42 h30", "搜索").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["BaiduOCR_SearchEngines"])).SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
         this.ResultGUI["SearchEngine"].OnEvent("ContextMenu", ObjBindMethod(this, "__Search"))
 
@@ -189,7 +189,7 @@
         TranslateGUI.BackColor := "EBEDF4"
         TranslateGUI.SetFont(, "Microsoft YaHei")
         TranslateGUI.AddEdit("x20 y20 w600 h300 vTranslate").SetFont("s18")
-        TranslateGUI["Translate"].Value := GoogleTranslate(result, BaiduOCR_TranslateTypes[translate_type][1], BaiduOCR_TranslateTypes[translate_type][2], {proxy: this.configs["translate_proxy"]})
+        TranslateGUI["Translate"].Value := GoogleTranslate(result, Index2Value(OCRC_Configs["TextOCR_TranslateLanguages"], OCRC_Configs["BaiduOCR_TranslateFrom"]), Index2Value(OCRC_Configs["TextOCR_TranslateLanguages"], OCRC_Configs["BaiduOCR_TranslateTo"]), {proxy: this.configs["translate_proxy"]})
         TranslateGUI["Translate"].OnEvent("Change", (CtrlObj, *) => A_Clipboard := CtrlObj.Value)
         A_Clipboard := TranslateGUI["Translate"].Value
         TranslateGUI.Show("w640 h340")
@@ -198,12 +198,12 @@
     __Search(CtrlObj, *) {
         search_engine := CtrlObj.Text, result := this.result
         if search_engine == "Everything" {
-            try Run(OCRC_Configs["BaiduOCR_SearchEngines"]["Everything"] (DirExist(result) ? " -parent `"" : " -search `"") result "`"")
+            try Run(OCRC_Configs["TextOCR_SearchEngines"]["Everything"] (DirExist(result) ? " -parent `"" : " -search `"") result "`"")
             catch
                 MsgBox("Everything 路径错误", "Everything ERROR", "Iconx 0x1000")
         }
         else {
-            try Run(StrReplace(OCRC_Configs["BaiduOCR_SearchEngines"][search_engine], "@W", result, 1))
+            try Run(StrReplace(OCRC_Configs["TextOCR_SearchEngines"][search_engine], "@W", result, 1))
             catch
                 MsgBox("搜索引擎「" search_engine "」无效或错误", "SearchEngine ERROR", "Iconx 0x1000")
         }

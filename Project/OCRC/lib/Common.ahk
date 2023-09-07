@@ -127,6 +127,8 @@ Map2Array(in_map, forkey := 1) {
     return out_array
 }
 
+Index2Value(in_map, index) => in_map[Map2Array(in_map)[index]]
+
 GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := "") {
     try {
         if !(If3pSnip && CmdOf3pSnip)
@@ -196,6 +198,16 @@ UpdateHotkey(CtrlObj, OCRFunction, *) {
 }
 
 SwitchHotkey(CtrlObj, OCRType, OCRFunction, *) => (UpdateVar(CtrlObj), Hotkey(OCRC_Configs["Basic"][OCRType], OCRFunction, CtrlObj.Value ? "On" : "Off"))
+
+CtrlToolTip(wParam, lParam, msg, Hwnd) {
+    static PrevHwnd := 0
+    if Hwnd != PrevHwnd {
+        Text := "", ToolTip()
+        if (CurrControl := GuiCtrlFromHwnd(Hwnd)) && CurrControl.HasProp("ToolTip")
+            SetTimer(() => ToolTip(CurrControl.ToolTip), -500)
+        PrevHwnd := Hwnd
+    }
+}
 
 GoogleTranslate(text, from := "auto", to := "zh-CN", configs := {}) {
     result := ""

@@ -24,11 +24,12 @@ GlobalConstants()
 
 A_IconTip := "OCRC"
 A_TrayMenu.Delete()
-A_TrayMenu.Add("设置", (*) => SettingGUI())
+A_TrayMenu.Add("OCRC 设置", SettingGUI)
+A_TrayMenu.Add("OCR 引擎设置", OCREnginesGUI)
 A_TrayMenu.Add("重启", (*) => Reload())
 A_TrayMenu.Add("退出", (*) => ExitApp())
 A_TrayMenu.ClickCount := 1
-A_TrayMenu.Default    := "设置"
+A_TrayMenu.Default    := "OCRC 设置"
 
 global Basic_TextOCRHotkey_temp := OCRC_Configs["Basic"]["Basic_TextOCRHotkey"], Basic_FormulaOCRHotkey_temp := OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"]
 if OCRC_Configs["Basic"]["Basic_TextOCROnOff"]
@@ -53,14 +54,15 @@ TextOCR_BaiduOCR(ThisHotkey) {
                 "image_base64",      base64string,
                 "recognition_type",  Map2Array(BaiduOCR_RecognitionTypes)[OCRC_Configs["BaiduOCR"]["BaiduOCR_RecognitionType"]],
                 "probability_type",  OCRC_Configs["BaiduOCR"]["BaiduOCR_ProbabilityType"],
-                "format_style",      OCRC_Configs["BaiduOCR"]["BaiduOCR_FormatStyle"],
-                "punctuation_style", OCRC_Configs["BaiduOCR"]["BaiduOCR_PunctuationStyle"],
-                "space_style",       OCRC_Configs["BaiduOCR"]["BaiduOCR_SpaceStyle"],
-                "translate_engine",  OCRC_Configs["BaiduOCR"]["BaiduOCR_TranslateEngine"],
+                "format_style",      OCRC_Configs["TextOCR"]["TextOCR_FormatStyle"],
+                "punctuation_style", OCRC_Configs["TextOCR"]["TextOCR_PunctuationStyle"],
+                "space_style",       OCRC_Configs["TextOCR"]["TextOCR_SpaceStyle"],
+                "translate_engine",  OCRC_Configs["TextOCR"]["TextOCR_TranslateEngine"],
                 "translate_proxy",   OCRC_Configs["Advance"]["Advance_GoogleTranslateProxy"],
-                "translate_type",    OCRC_Configs["BaiduOCR"]["BaiduOCR_TranslateType"],
-                "search_engine",     OCRC_Configs["BaiduOCR"]["BaiduOCR_SearchEngine"],
-                "close_and_search",  OCRC_Configs["BaiduOCR"]["BaiduOCR_CloseAndSearch"],
+                "translate_from",    OCRC_Configs["TextOCR"]["TextOCR_TranslateFrom"],
+                "translate_to",      OCRC_Configs["TextOCR"]["TextOCR_TranslateTo"],
+                "search_engine",     OCRC_Configs["TextOCR"]["TextOCR_SearchEngine"],
+                "close_and_search",  OCRC_Configs["TextOCR"]["TextOCR_CloseAndSearch"],
             )
         )
 }
@@ -70,9 +72,9 @@ FormulaOCR_MathpixOCR(ThisHotkey) {
     if base64string := PrepareOCR(True)
         MathpixOCR := Mathpix(
             Map(
-                "math_inline_delimiters",  LaTeX_InlineStyles[OCRC_Configs["LaTeX"]["LaTeX_InlineStyle"]],
-                "math_display_delimiters", LaTeX_DisplayStyles[OCRC_Configs["LaTeX"]["LaTeX_DisplayStyle"]],
-                "default_select",          OCRC_Configs["LaTeX"]["LaTeX_DefaultSelect"],
+                "math_inline_delimiters",  FormulaOCR_InlineStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_InlineStyle"]],
+                "math_display_delimiters", FormulaOCR_DisplayStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_DisplayStyle"]],
+                "default_select",          OCRC_Configs["FormulaOCR"]["FormulaOCR_DefaultSelect"],
             ),
             Map(
                 "app_id",       OCRC_Configs["MathpixOCR"]["MathpixOCR_AppID"],
@@ -88,9 +90,9 @@ FormulaOCR_BingOCR(ThisHotkey) {
         BingOCR := Bing(
             Map(
                 "image_base64", base64string,
-                "math_inline_delimiters",  LaTeX_InlineStyles[OCRC_Configs["LaTeX"]["LaTeX_InlineStyle"]],
-                "math_display_delimiters", LaTeX_DisplayStyles[OCRC_Configs["LaTeX"]["LaTeX_DisplayStyle"]],
-                "default_select",          OCRC_Configs["LaTeX"]["LaTeX_DefaultSelect"],
+                "math_inline_delimiters",  FormulaOCR_InlineStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_InlineStyle"]],
+                "math_display_delimiters", FormulaOCR_DisplayStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_DisplayStyle"]],
+                "default_select",          OCRC_Configs["FormulaOCR"]["FormulaOCR_DefaultSelect"],
             )
         )
 }

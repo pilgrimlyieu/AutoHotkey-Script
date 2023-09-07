@@ -56,11 +56,11 @@ global BaiduOCR_e2cPunctuations  := Map(
     "]", "】",
 )
 
-global LaTeX_InlineStyles        := [
+global FormulaOCR_InlineStyles        := [
     ["$", "$"],
     ["\(", "\)"],
 ]
-global LaTeX_DisplayStyles       := [
+global FormulaOCR_DisplayStyles       := [
     ["$$", "$$"],
     ["\[", "\]"],
 ]
