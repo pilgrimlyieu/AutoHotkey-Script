@@ -1,9 +1,9 @@
 GoogleTranslate(text, from := "auto", to := "zh-CN", configs := {}) {
     result := ""
-    try for index, sentence in JSON.Parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))["sentences"]
+    try for index, sentence in JSON.parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))["sentences"]
         result .= sentence["trans"]
     if !result
-        try for index, sentence in JSON.Parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))[1]
+        try for index, sentence in JSON.parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))[1]
             result .= sentence[1]
     return result
 }

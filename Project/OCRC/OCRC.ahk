@@ -162,57 +162,18 @@ OCRC_BingOCR(ThisHotkey) {
         )
 }
 
-CreateConfig() {
-    IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_BaiduOCROnOff")
-    IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_MathpixOCROnOff")
-    IniWrite(10,  OCRC_ConfigFilePath, "Basic", "Basic_SnipTime")
-    IniWrite(500, OCRC_ConfigFilePath, "Basic", "Basic_WaitSnipTime")
-    IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_SnipWarning")
-
-    IniWrite(75, OCRC_ConfigFilePath, "Advance", "Advance_EBto64SQuality")
-    IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotOnOff")
-    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotPath")
-    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_GoogleTranslateProxy")
-    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TencentTranslateSecretID")
-    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TencentTranslateSecretKey")
-
-    IniWrite("F7",  OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_Hotkey")
-    IniWrite("",    OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_APIKey")
-    IniWrite("",    OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_SecretKey")
-    IniWrite("",    OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_Token")
-    IniWrite(A_Now, OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_TokenExpiration")
-    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_RecognitionType")
-    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_ProbabilityType")
-    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_FormatStyle")
-    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_PunctuationStyle")
-    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_SpaceStyle")
-    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_TranslateEngine")
-    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_TranslateType")
-    IniWrite(2,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_SearchEngine")
-    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_CloseAndSearch")
-
-    IniWrite("https://www.baidu.com/s?wd=@W",      OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "百度")
-    IniWrite("https://www.google.com/search?q=@W", OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "谷歌")
-    IniWrite("https://cn.bing.com/search?q=@W",    OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "必应")
-    IniWrite("https://baike.baidu.com/item/@W",    OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "百度百科")
-    IniWrite("https://zh.wikipedia.org/wiki/@W",   OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "维基百科")
-
-    IniWrite("F4", OCRC_ConfigFilePath, "MathpixOCR", "MathpixOCR_Hotkey")
-    IniWrite("",   OCRC_ConfigFilePath, "MathpixOCR", "MathpixOCR_AppID")
-    IniWrite("",   OCRC_ConfigFilePath, "MathpixOCR", "MathpixOCR_AppKey")
-    IniWrite(1,    OCRC_ConfigFilePath, "MathpixOCR", "MathpixOCR_DefaultSelect")
-
-    IniWrite(1,    OCRC_ConfigFilePath, "LaTeX", "LaTeX_InlineStyle")
-    IniWrite(1,    OCRC_ConfigFilePath, "LaTeX", "LaTeX_DisplayStyle")
-}
+!a::SettingGUI()
 
 SettingGUI() {
     if !FileExist(OCRC_ConfigFilePath)
         CreateConfig()
 
     Setting := Gui(, "OCRC Setting")
-    Setting.OnEvent("Close", (*) => OnMessage(0x200, CtrlToolTip, 0))
-    Setting.OnEvent("Close", (*) => ToolTip())
+    Setting.OnEvent("Close", (*) => (
+        OnMessage(0x200, CtrlToolTip, 0)
+        OnMessage(0x2A3, (*) => ToolTip(), 0)
+        ToolTip()
+    ))
     Setting.Title := "OCRC 设置"
     Setting.BackColor := "EBEDF4"
     Setting.MarginX := 10
@@ -241,6 +202,15 @@ SettingGUI() {
     Setting.AddText("x200 y230 w40 h25 Left", "毫秒")
     Setting.AddCheckBox("x21 y+15 w200 vBasic_SnipWarning Right Checked" OCRC_Configs["Basic"]["Basic_SnipWarning"], "未检测到截图时抛出警告").OnEvent("Click", UpdateVar)
     Setting["Basic_SnipWarning"].ToolTip := "设置是否在未检测到截图时抛出警告"
+
+    Setting.AddGroupBox("x20 y320 w310 h75", "OCRC")
+    Setting.AddCheckBox("x20 y350 w155 vBasic_OCRCToolTips Right Checked" OCRC_Configs["Basic"]["Basic_OCRCToolTips"], "设置界面工具提示").OnEvent("Click", (CtrlObj, *) => (
+        UpdateVar(CtrlObj),
+        OnMessage(0x200, CtrlToolTip, CtrlObj.Value)
+        OnMessage(0x2A3, (*) => ToolTip(), CtrlObj.Value)
+        ToolTip()
+    ))
+    Setting["Basic_OCRCToolTips"].ToolTip := "设置是否在 OCRC 设置界面显示工具提示"
 
     Setting["Tabs"].UseTab("Advance")
     Setting.AddGroupBox("x20 y50 w310 h80", "高级设置")
@@ -332,8 +302,10 @@ SettingGUI() {
     Setting.AddDropDownList("x+15 w200 vLaTeX_DisplayStyle AltSubmit Choose" OCRC_Configs["LaTeX"]["LaTeX_DisplayStyle"], ["$$...$$", "\[...\]"]).OnEvent("Change", UpdateVar)
     Setting["LaTeX_DisplayStyle"].ToolTip := "设置默认行间公式格式"
 
-    OnMessage(0x200, CtrlToolTip)
-    OnMessage(0x2A3, (*) => ToolTip())
+    if OCRC_Configs["Basic"]["Basic_OCRCToolTips"] {
+        OnMessage(0x200, CtrlToolTip)
+        OnMessage(0x2A3, (*) => ToolTip())
+    }
     Setting.Show()
 
     CtrlToolTip(wParam, lParam, msg, Hwnd) {
@@ -345,6 +317,55 @@ SettingGUI() {
             PrevHwnd := Hwnd
         }
     }
+}
+
+CreateConfig() {
+    IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_BaiduOCROnOff")
+    IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_MathpixOCROnOff")
+    IniWrite(10,  OCRC_ConfigFilePath, "Basic", "Basic_SnipTime")
+    IniWrite(500, OCRC_ConfigFilePath, "Basic", "Basic_WaitSnipTime")
+    IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_SnipWarning")
+    IniWrite(1,   OCRC_ConfigFilePath, "Basic", "Basic_OCRCToolTips")
+
+    IniWrite(75, OCRC_ConfigFilePath, "Advance", "Advance_EBto64SQuality")
+    IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotOnOff")
+    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotPath")
+    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_GoogleTranslateProxy")
+    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TencentTranslateSecretID")
+    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TencentTranslateSecretKey")
+
+    IniWrite("F7",  OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_Hotkey")
+    IniWrite("",    OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_APIKey")
+    IniWrite("",    OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_SecretKey")
+    IniWrite("",    OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_Token")
+    IniWrite(A_Now, OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_TokenExpiration")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_RecognitionType")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_ProbabilityType")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_FormatStyle")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_PunctuationStyle")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_SpaceStyle")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_TranslateEngine")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_TranslateType")
+    IniWrite(2,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_SearchEngine")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_CloseAndSearch")
+
+    IniWrite("auto_detect", OCRC_ConfigFilePath, "BaiduOCR_LanguageTypes", "自动检测")
+    IniWrite("CHN_ENG",     OCRC_ConfigFilePath, "BaiduOCR_LanguageTypes", "中英文混合")
+    IniWrite("ENG",         OCRC_ConfigFilePath, "BaiduOCR_LanguageTypes", "英文")
+
+    IniWrite("https://www.baidu.com/s?wd=@W",      OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "百度")
+    IniWrite("https://www.google.com/search?q=@W", OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "谷歌")
+    IniWrite("https://cn.bing.com/search?q=@W",    OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "必应")
+    IniWrite("https://baike.baidu.com/item/@W",    OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "百度百科")
+    IniWrite("https://zh.wikipedia.org/wiki/@W",   OCRC_ConfigFilePath, "BaiduOCR_SearchEngines", "维基百科")
+
+    IniWrite("F4", OCRC_ConfigFilePath, "MathpixOCR", "MathpixOCR_Hotkey")
+    IniWrite("",   OCRC_ConfigFilePath, "MathpixOCR", "MathpixOCR_AppID")
+    IniWrite("",   OCRC_ConfigFilePath, "MathpixOCR", "MathpixOCR_AppKey")
+    IniWrite(1,    OCRC_ConfigFilePath, "MathpixOCR", "MathpixOCR_DefaultSelect")
+
+    IniWrite(1,    OCRC_ConfigFilePath, "LaTeX", "LaTeX_InlineStyle")
+    IniWrite(1,    OCRC_ConfigFilePath, "LaTeX", "LaTeX_DisplayStyle")
 }
 
 UpdateGlobalVar() {
