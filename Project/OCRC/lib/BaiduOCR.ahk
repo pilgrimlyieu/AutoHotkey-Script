@@ -19,25 +19,29 @@
         this.ResultGUI.BackColor := "EBEDF4"
         this.ResultGUI.SetFont(, "Microsoft YaHei")
 
-        this.ResultGUI.AddText("x20 w42 h30", "排版").SetFont("s16")
+        this.ResultGUI.AddText("x20 w42 h30", "引擎").SetFont("s16")
+        this.ResultGUI.AddDropDownList("x+5 w90 vTextOCREngine AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
+        this.ResultGUI.AddText("x20 y+10 w42 h30", "排版").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w90 vFormatStyle AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
         this.ResultGUI["FormatStyle"].OnEvent("Change", ObjBindMethod(this, "__Format"))
-        this.ResultGUI.AddText("x+15 w42 h30", "标点").SetFont("s16")
+        this.ResultGUI.AddText("x+5 y5 w42 h30", "标点").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w90 vPunctuationStyle AltSubmit Choose" this.configs["punctuation_style"], ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
         this.ResultGUI["PunctuationStyle"].OnEvent("Change", ObjBindMethod(this, "__Punctuation"))
-        this.ResultGUI.AddText("x+15 w42 h30", "空格").SetFont("s16")
+        this.ResultGUI.AddText("x162 y+10 w42 h30", "空格").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w90 vSpaceStyle AltSubmit Choose" this.configs["space_style"], ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
         this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
-        this.ResultGUI.AddText("x+15 w42 h30", "翻译").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vTranslateType AltSubmit Choose" this.configs["translate_type"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
-        this.ResultGUI["TranslateType"].OnEvent("Change", ObjBindMethod(this, "__Translate"))
-        this.ResultGUI["TranslateType"].OnEvent("ContextMenu", ObjBindMethod(this, "__Translate"))
-        this.ResultGUI.AddText("x+15 w42 h30", "搜索").SetFont("s16")
+        this.ResultGUI.AddText("x+5 y5 w55 h15", "原始语言").SetFont("s10")
+        this.ResultGUI.AddDropDownList("x+5 w65 vTranslateFrom AltSubmit Choose" this.configs["translate_from"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
+        this.ResultGUI["TranslateFrom"].SetFont("s8")
+        this.ResultGUI.AddText("x305 y+5 w55 h15", "目标语言").SetFont("s10")
+        this.ResultGUI.AddDropDownList("x+5 w65 vTranslateTo AltSubmit Choose" this.configs["translate_to"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
+        this.ResultGUI["TranslateTo"].SetFont("s8")
+        this.ResultGUI.AddText("x+5 y5 w42 h30", "搜索").SetFont("s16")
         this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
         this.ResultGUI["SearchEngine"].OnEvent("ContextMenu", ObjBindMethod(this, "__Search"))
 
-        this.ResultGUI.AddEdit("x20 y50 w760 h400 vResult").SetFont("s18")
+        this.ResultGUI.AddEdit("x20 y70 w760 h400 vResult").SetFont("s18")
         this.ResultGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
         this.__Format(this.ResultGUI["FormatStyle"])
         if this.configs["probability_type"]
@@ -56,7 +60,7 @@
             this.ResultGUI.AddText("x20 yp w800 h30 Center BackgroundTrans", this.probability "%").SetFont("s18")
         }
 
-        this.ResultGUI.Show("w800 h" (this.configs["probability_type"] ? 500 : 470))
+        this.ResultGUI.Show("w800 h" (this.configs["probability_type"] ? 520 : 490))
     }
 
     __Token() {

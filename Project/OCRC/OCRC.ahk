@@ -57,7 +57,6 @@ TextOCR_BaiduOCR(ThisHotkey) {
                 "format_style",      OCRC_Configs["TextOCR"]["TextOCR_FormatStyle"],
                 "punctuation_style", OCRC_Configs["TextOCR"]["TextOCR_PunctuationStyle"],
                 "space_style",       OCRC_Configs["TextOCR"]["TextOCR_SpaceStyle"],
-                "translate_engine",  OCRC_Configs["TextOCR"]["TextOCR_TranslateEngine"],
                 "translate_proxy",   OCRC_Configs["Advance"]["Advance_GoogleTranslateProxy"],
                 "translate_from",    OCRC_Configs["TextOCR"]["TextOCR_TranslateFrom"],
                 "translate_to",      OCRC_Configs["TextOCR"]["TextOCR_TranslateTo"],

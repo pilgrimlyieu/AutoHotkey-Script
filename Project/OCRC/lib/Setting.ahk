@@ -90,7 +90,7 @@ SettingGUI(*) {
     Setting.AddText("x15 y+15 w135 h25 Right", "默认翻译原始语言")
     Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateFrom AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateFrom"], Map2Array(OCRC_Configs["TextOCR_TranslateLanguages"])).OnEvent("Change", UpdateVar)
     Setting["TextOCR_TranslateFrom"].ToolTip := ""
-    Setting.AddText("x15 y+15 w135 h25 Right", "默认翻译结果语言")
+    Setting.AddText("x15 y+15 w135 h25 Right", "默认翻译目标语言")
     Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateTo AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateTo"], Map2Array(OCRC_Configs["TextOCR_TranslateLanguages"])).OnEvent("Change", UpdateVar)
     Setting["TextOCR_TranslateTo"].ToolTip := ""
     Setting.AddText("x15 y+15 w135 h25 Right", "默认搜索引擎")
