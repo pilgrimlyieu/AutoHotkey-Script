@@ -109,9 +109,9 @@ OCRC_BaiduOCR(ThisHotkey) {
     if base64string := PrepareOCR(False)
         BaiduOCR := Baidu(
             Map(
-                "paragraph",   "true",
+                "paragraph",     "true",
                 "probability",   OCRC_Configs["BaiduOCR"]["BaiduOCR_ProbabilityType"] ? "true" : "false",
-                "language_type", "CHN_ENG", ; TODO Add custom language type
+                "language_type", Map2Array(OCRC_Configs["BaiduOCR_LanguageTypes"], 0)[OCRC_Configs["BaiduOCR"]["BaiduOCR_LanguageType"]]
             ),
             Map(
                 "api_key",           OCRC_Configs["BaiduOCR"]["BaiduOCR_APIKey"],
@@ -167,6 +167,7 @@ OCRC_BingOCR(ThisHotkey) {
 SettingGUI() {
     if !FileExist(OCRC_ConfigFilePath)
         CreateConfig()
+    UpdateGlobalVar()
 
     Setting := Gui(, "OCRC Setting")
     Setting.OnEvent("Close", (*) => (
@@ -238,7 +239,7 @@ SettingGUI() {
     Setting["Advance_TencentTranslateSecretKey"].ToolTip := "设置腾讯翻译的 SecretKey。如不使用腾讯翻译则无需设置`n注意：腾讯翻译暂不可用"
 
     Setting["Tabs"].UseTab("BaiduOCR")
-    Setting.AddGroupBox("x20 y50 w310 h230", "基础设置")
+    Setting.AddGroupBox("x20 y50 w310 h260", "基础设置")
     Setting.AddText("x15 y80 w90 h25 Right", "热键")
     Setting.AddHotkey("x+15 w200 h25 vBaiduOCR_Hotkey", OCRC_Configs["BaiduOCR"]["BaiduOCR_Hotkey"]).OnEvent("Change", UpdateHotkey)
     Setting["BaiduOCR_Hotkey"].ToolTip := "设置百度 OCR 的热键。如果不使用百度 OCR 则需要在基础设置关闭"
@@ -248,14 +249,17 @@ SettingGUI() {
     Setting.AddText("x15 y+15 w90 h25 Right", "Secret Key")
     Setting.AddEdit("x+15 w200 h25 vBaiduOCR_SecretKey", OCRC_Configs["BaiduOCR"]["BaiduOCR_SecretKey"]).OnEvent("Change", UpdateVar)
     Setting["BaiduOCR_SecretKey"].ToolTip := "设置百度 OCR 的 Secret Key。如果不使用百度 OCR 则无需设置"
+    Setting.AddText("x15 y+15 w90 h25 Right", "识别语言")
+    Setting.AddDropDownList("x+15 w200 vBaiduOCR_LanguageType AltSubmit Choose" OCRC_Configs["BaiduOCR"]["BaiduOCR_LanguageType"], Map2Array(OCRC_Configs["BaiduOCR_LanguageTypes"])).OnEvent("Change", UpdateVar)
+    Setting["BaiduOCR_LanguageType"].ToolTip := "设置百度 OCR 的识别语言。默认有「中英文混合」和「英文」，可在配置文件中自行设置"
     Setting.AddText("x15 y+15 w90 h25 Right", "识别类型")
-    Setting.AddDropDownList("x+15 w200 vBaiduOCR_RecognitionType AltSubmit Choose" OCRC_Configs["BaiduOCR"]["BaiduOCR_RecognitionType"], ["通用文字（标准）识别", "通用文字（高精度）识别", "手写文字识别", "网络图片文字识别"]).OnEvent("Change", UpdateVar)
+    Setting.AddDropDownList("x+15 w200 vBaiduOCR_RecognitionType AltSubmit Choose" OCRC_Configs["BaiduOCR"]["BaiduOCR_RecognitionType"], Map2Array(BaiduOCR_RecognitionTypes, 0)).OnEvent("Change", UpdateVar)
     Setting["BaiduOCR_RecognitionType"].ToolTip := "设置百度 OCR 的识别类型`n通用文字（标准）识别：适用于日常场景的简单文字识别。`n通用文字（高精度）识别：适用于复杂场景下的文字识别。`n手写文字识别：适用于手写场景下的文字识别。`n网络图片文字识别：适用于网络图片场景下的文字识别"
-    Setting.AddCheckBox("x32 y+15 w90 vBaiduOCR_ProbabilityType Right Check3 Checked" OCRC_Configs["BaiduOCR"]["BaiduOCR_ProbabilityType"], "置信度").OnEvent("Click", UpdateVar)
+    Setting.AddCheckBox("x30 y+15 w90 vBaiduOCR_ProbabilityType Right Check3 Checked" OCRC_Configs["BaiduOCR"]["BaiduOCR_ProbabilityType"], "置信度").OnEvent("Click", UpdateVar)
     Setting["BaiduOCR_ProbabilityType"].ToolTip := "设置置信度类型：精准、模糊、关闭`n精准：根据每行置信度及其字符数目的权重，综合计算得到。`n模糊：每行置信度直接平均得到。`n关闭：不显示置信度。"
 
-    Setting.AddGroupBox("x20 y290 w310 h310", "默认选项")
-    Setting.AddText("x15 y320 w120 h25 Right", "默认排版")
+    Setting.AddGroupBox("x20 y320 w310 h310", "默认选项")
+    Setting.AddText("x15 y350 w120 h25 Right", "默认排版")
     Setting.AddDropDownList("x+15 w170 vBaiduOCR_FormatStyle AltSubmit Choose" OCRC_Configs["BaiduOCR"]["BaiduOCR_FormatStyle"], ["智能段落", "合并多行", "拆分多行"]).OnEvent("Change", UpdateVar)
     Setting["BaiduOCR_FormatStyle"].ToolTip := "设置默认段落格式`n智能段落：根据返回结果智能合并段落。`n合并多行：将多行合并为一行。`n拆分多行：不对返回结果进行段落合并处理。"
     Setting.AddText("x15 y+15 w120 h25 Right", "默认标点")
