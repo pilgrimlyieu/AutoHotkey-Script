@@ -151,6 +151,52 @@ Img2Base64(Front := False, Quality := 75) {
     return Front ? "data:image/jpg;base64," base64string : base64string
 }
 
+GlobalConstants() {
+    ConfigSections := StrSplit(IniRead(OCRC_ConfigFilePath), "`n")
+    for section_index, section in ConfigSections {
+        ConfigKeys := StrSplit(IniRead(OCRC_ConfigFilePath, section), "`n")
+        OCRC_Configs[section] := Map()
+        for key_index, key in ConfigKeys {
+            ConfigValues := StrSplit(key, "=", , 2)
+            OCRC_Configs[section][ConfigValues[1]] := ConfigValues[2]
+        }
+    }
+}
+
+PrepareOCR(base64_front) {
+    ClipSaved := ClipboardAll(), A_Clipboard := ""
+    if !GetScreenshot(OCRC_Configs["Basic"]["Basic_SnipTime"], OCRC_Configs["Basic"]["Basic_WaitSnipTime"], OCRC_Configs["Advance"]["Advance_ThirdPartyScreenshotOnOff"], OCRC_Configs["Advance"]["Advance_ThirdPartyScreenshotPath"]) {
+        A_Clipboard := ClipSaved, ClipSaved := ""
+        if OCRC_Configs["Basic"]["Basic_SnipWarning"]
+            MsgBox("未检测到截图", "Clipping ERROR", "Iconx 0x1000")
+        return
+    }
+    base64string := Img2Base64(base64_front, OCRC_Configs["Advance"]["Advance_EBto64SQuality"])
+    A_Clipboard := ClipSaved, ClipSaved := ""
+    return base64string
+}
+
+UpdateVar(CtrlObj, *) => IniWrite(OCRC_Configs[CtrlObj.Gui["Tabs"].Text][CtrlObj.Name] := CtrlObj.Value, OCRC_ConfigFilePath, CtrlObj.Gui["Tabs"].Text, CtrlObj.Name)
+
+UpdateHotkey(CtrlObj, OCRFunction, *) {
+    UpdateVar(CtrlObj)
+    if !CtrlObj.Value
+        return
+    global Basic_TextOCRHotkey_temp, Basic_FormulaOCRHotkey_temp
+    if CtrlObj.Name == "Basic_TextOCRHotkey" {
+        Hotkey(Basic_TextOCRHotkey_temp, OCRFunction, "Off")
+        Hotkey(CtrlObj.Value, OCRFunction, "On")
+        Basic_TextOCRHotkey_temp := CtrlObj.Value
+    }
+    else {
+        Hotkey(Basic_FormulaOCRHotkey_temp, OCRFunction, "Off")
+        Hotkey(CtrlObj.Value, OCRFunction, "On")
+        Basic_FormulaOCRHotkey_temp := CtrlObj.Value
+    }
+}
+
+SwitchHotkey(CtrlObj, OCRType, OCRFunction, *) => (UpdateVar(CtrlObj), Hotkey(OCRC_Configs["Basic"][OCRType], OCRFunction, CtrlObj.Value ? "On" : "Off"))
+
 GoogleTranslate(text, from := "auto", to := "zh-CN", configs := {}) {
     result := ""
     try for index, sentence in JSON.parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))["sentences"]

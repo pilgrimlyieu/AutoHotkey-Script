@@ -25,13 +25,14 @@ class Bing {
         this.ResultGUI.SetFont("s18", "Microsoft YaHei")
 
         Clip(CtrlObj, *) => A_Clipboard := CtrlObj.Value
-        this.ResultGUI.AddText("x10 y20 w100 Right", "LaTeX")
+        this.ResultGUI.AddText("x10 y20 w100 vFocus Right", "LaTeX")
         this.ResultGUI.AddEdit("x120 yp w370 h36 vLaTeXResult ReadOnly -Multi -VScroll", latex_result).OnEvent("Focus", Clip)
         this.ResultGUI.AddText("x10 y+20 w100 Right", "行内公式")
         this.ResultGUI.AddEdit("x120 yp w370 h36 vInlineResult ReadOnly -Multi -VScroll", inline_result).OnEvent("Focus", Clip)
         this.ResultGUI.AddText("x10 y+20 w100 Right", "行间公式")
         this.ResultGUI.AddEdit("x120 yp w370 h36 vDisplayResult ReadOnly -Multi -VScroll", display_result).OnEvent("Focus", Clip)
         Clip(this.ResultGUI[["LaTeXResult", "InlineResult", "DisplayResult"][this.configs["default_select"]]])
+        this.ResultGUI["Focus"].Focus()
         this.ResultGUI.Show("w500 h190")
     }
 }
