@@ -33,7 +33,7 @@
         this.ResultGUI["TranslateType"].OnEvent("Change", ObjBindMethod(this, "__Translate"))
         this.ResultGUI["TranslateType"].OnEvent("ContextMenu", ObjBindMethod(this, "__Translate"))
         this.ResultGUI.AddText("x+15 w42 h30", "搜索").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], BaiduOCR_SearchEngines_key).SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["BaiduOCR_SearchEngines"])).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
         this.ResultGUI["SearchEngine"].OnEvent("ContextMenu", ObjBindMethod(this, "__Search"))
 
@@ -182,7 +182,7 @@
     }
 
     __Translate(CtrlObj, *) {
-        translate_engine := BaiduOCR_TranslateEngines_key[this.configs["translate_engine"]], translate_type := CtrlObj.Text, result := this.result
+        translate_engine := Map2Array(BaiduOCR_TranslateEngines)[this.configs["translate_engine"]], translate_type := CtrlObj.Text, result := this.result
         TranslateGUI := Gui()
         TranslateGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
         TranslateGUI.Title := "OCRC (BaiduOCR) 「" translate_engine "（" translate_type "）」翻译结果"
@@ -198,12 +198,12 @@
     __Search(CtrlObj, *) {
         search_engine := CtrlObj.Text, result := this.result
         if search_engine == "Everything" {
-            try Run(BaiduOCR_SearchEngines["Everything"] (DirExist(result) ? " -parent `"" : " -search `"") result "`"")
+            try Run(OCRC_Configs["BaiduOCR_SearchEngines"]["Everything"] (DirExist(result) ? " -parent `"" : " -search `"") result "`"")
             catch
                 MsgBox("Everything 路径错误", "Everything ERROR", "Iconx 0x1000")
         }
         else {
-            try Run(StrReplace(BaiduOCR_SearchEngines[search_engine], "@W", result, 1))
+            try Run(StrReplace(OCRC_Configs["BaiduOCR_SearchEngines"][search_engine], "@W", result, 1))
             catch
                 MsgBox("搜索引擎「" search_engine "」无效或错误", "SearchEngine ERROR", "Iconx 0x1000")
         }

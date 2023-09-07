@@ -160,6 +160,13 @@ SHA256HMAC(String, Hmac) {
     return HASH
 }
 
+Map2Array(in_map, forkey := 1) {
+    out_array := []
+    for key, value in in_map
+        out_array.Push(forkey ? key : value)
+    return out_array
+}
+
 GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := "") {
     try {
         if !(If3pSnip && CmdOf3pSnip)

@@ -33,7 +33,7 @@ TencentTranslate(text, from := "auto", to := "zh", configs := {}) {
         "X-TC-Version", "2018-03-21",
         "X-TC-Region", "ap-guangzhou",
         "X-TC-Timestamp", DateDiff(A_NowUTC, 19700101000000, "Seconds"),
-        "Authorization", TencentAuthorization(string_post_data, configs["secretid"], configs["secretkey"]),
+        "Authorization", TencentAuthorization(string_post_data, configs.secretid, configs.secretkey),
     )
     result := JSON.parse(Request("https://tmt.tencentcloudapi.com", "UTF-8", "POST", string_post_data, headers))
     try return result["Response"]["TargetText"]
