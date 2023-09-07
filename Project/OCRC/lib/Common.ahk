@@ -120,46 +120,6 @@ Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette:=0) {
     return pBitmap
 }
 
-; Adapted from https://github.com/jNizM/AHK_CNG/blob/master/src/Class_CNG.ahk
-SHA256(String) {
-    DllCall("bcrypt\BCryptOpenAlgorithmProvider", "Ptr*", &hAlgorithm := 0, "Str", "SHA256", "Ptr", Implementation := 0, "UInt", 0, "UInt")
-    DllCall("bcrypt\BCryptCreateHash", "Ptr", hAlgorithm, "Ptr*", &hHash := 0, "Ptr", 0, "UInt", 0, "Ptr", 0, "UInt", 0, "UInt", Flags := 0, "UInt")
-    Buf := Buffer(StrPut(String, "UTF-8")), StrPut(String, Buf, "UTF-8"), Data := Buf
-    DllCall("bcrypt\BCryptHashData", "Ptr", hHash, "Ptr", Data, "UInt", Data.Size - 1, "UInt", Flags := 0, "UInt")
-    DllCall("bcrypt\BCryptGetProperty", "Ptr", hAlgorithm, "Ptr", StrPtr("HashDigestLength"), "Ptr*", &HASH_LENGTH := 0, "UInt", 4, "UInt*", &Result := 0, "UInt", Flags := 0, "UInt")
-    HASH_DATA := Buffer(HASH_LENGTH, 0)
-    DllCall("bcrypt\BCryptFinishHash", "Ptr", hHash, "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", Flags := 0, "UInt")
-    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", 0, "UInt*", &Size := 0)
-    BufOut := Buffer(Size << 1, 0)
-    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", BufOut, "UInt*", Size)
-    HASH := StrGet(BufOut)
-    if hHash
-        DllCall("bcrypt\BCryptDestroyHash", "Ptr", hHash, "UInt")
-    if hAlgorithm
-        DllCall("bcrypt\BCryptCloseAlgorithmProvider", "Ptr", hAlgorithm, "UInt", Flags := 0, "UInt")
-    return HASH
-}
-
-SHA256HMAC(String, Hmac) {
-    DllCall("bcrypt\BCryptOpenAlgorithmProvider", "Ptr*", &hAlgorithm := 0, "Str", "SHA256", "Ptr", Implementation := 0, "UInt", 0x00000008, "UInt")
-    Buf := Buffer(StrPut(Hmac, "UTF-8")), StrPut(Hmac, Buf, "UTF-8"), Mac := Buf
-    DllCall("bcrypt\BCryptCreateHash", "Ptr", hAlgorithm, "Ptr*", &hHash := 0, "Ptr", 0, "UInt", 0, "Ptr", Mac, "UInt", Mac.Size - 1, "UInt", Flags := 0, "UInt")
-    Buf := Buffer(StrPut(String, "UTF-8")), StrPut(String, Buf, "UTF-8"), Data := Buf
-    DllCall("bcrypt\BCryptHashData", "Ptr", hHash, "Ptr", Data, "UInt", Data.Size - 1, "UInt", Flags := 0, "UInt")
-    DllCall("bcrypt\BCryptGetProperty", "Ptr", hAlgorithm, "Ptr", StrPtr("HashDigestLength"), "Ptr*", &HASH_LENGTH := 0, "UInt", 4, "UInt*", &Result := 0, "UInt", Flags := 0, "UInt")
-    HASH_DATA := Buffer(HASH_LENGTH, 0)
-    DllCall("bcrypt\BCryptFinishHash", "Ptr", hHash, "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", Flags := 0, "UInt")
-    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", 0, "UInt*", &Size := 0)
-    BufOut := Buffer(Size << 1, 0)
-    DllCall("crypt32\CryptBinaryToStringW", "Ptr", HASH_DATA, "UInt", HASH_LENGTH, "UInt", 1073741836, "Ptr", BufOut, "UInt*", Size)
-    HASH := StrGet(BufOut)
-    if hHash
-        DllCall("bcrypt\BCryptDestroyHash", "Ptr", hHash, "UInt")
-    if hAlgorithm
-        DllCall("bcrypt\BCryptCloseAlgorithmProvider", "Ptr", hAlgorithm, "UInt", Flags := 0, "UInt")
-    return HASH
-}
-
 Map2Array(in_map, forkey := 1) {
     out_array := []
     for key, value in in_map
@@ -189,4 +149,14 @@ Img2Base64(Front := False, Quality := 75) {
     DllCall("gdiplus\GdipDisposeImage", "UPtr", pBitmap)
     Gdip_Shutdown(pToken)
     return Front ? "data:image/jpg;base64," base64string : base64string
+}
+
+GoogleTranslate(text, from := "auto", to := "zh-CN", configs := {}) {
+    result := ""
+    try for index, sentence in JSON.parse(Request("https://translate.google.com/translate_a/single?client=gtx&dt=t&dj=1&ie=UTF-8&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))["sentences"]
+        result .= sentence["trans"]
+    if !result
+        try for index, sentence in JSON.parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))[1]
+            result .= sentence[1]
+    return result
 }

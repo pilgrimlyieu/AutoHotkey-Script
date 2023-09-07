@@ -182,14 +182,14 @@
     }
 
     __Translate(CtrlObj, *) {
-        translate_engine := Map2Array(BaiduOCR_TranslateEngines)[this.configs["translate_engine"]], translate_type := CtrlObj.Text, result := this.result
+        translate_type := CtrlObj.Text, result := this.result
         TranslateGUI := Gui()
         TranslateGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
-        TranslateGUI.Title := "OCRC (BaiduOCR) 「" translate_engine "（" translate_type "）」翻译结果"
+        TranslateGUI.Title := "OCRC (BaiduOCR) 「谷歌翻译（" translate_type "）」翻译结果"
         TranslateGUI.BackColor := "EBEDF4"
         TranslateGUI.SetFont(, "Microsoft YaHei")
         TranslateGUI.AddEdit("x20 y20 w600 h300 vTranslate").SetFont("s18")
-        TranslateGUI["Translate"].Value := BaiduOCR_TranslateEngines[translate_engine].Call(result, BaiduOCR_TranslateTypes[translate_type][1], BaiduOCR_TranslateTypes[translate_type][2], {proxy: this.configs["translate_proxy"]})
+        TranslateGUI["Translate"].Value := GoogleTranslate(result, BaiduOCR_TranslateTypes[translate_type][1], BaiduOCR_TranslateTypes[translate_type][2], {proxy: this.configs["translate_proxy"]})
         TranslateGUI["Translate"].OnEvent("Change", (CtrlObj, *) => A_Clipboard := CtrlObj.Value)
         A_Clipboard := TranslateGUI["Translate"].Value
         TranslateGUI.Show("w640 h340")
