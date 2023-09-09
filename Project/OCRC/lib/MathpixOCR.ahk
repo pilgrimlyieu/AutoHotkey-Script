@@ -27,7 +27,7 @@
 
         this.ResultGUI := Gui()
         this.ResultGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
-        this.ResultGUI.Title := "OCRC (MathpixOCR) 识别结果"
+        this.ResultGUI.Title := "OCRC (Mathpix OCR) 识别结果"
         this.ResultGUI.BackColor := "EBEDF4"
         this.ResultGUI.SetFont("s18", "Microsoft YaHei")
 

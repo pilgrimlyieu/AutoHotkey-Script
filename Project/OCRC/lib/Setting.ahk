@@ -19,21 +19,21 @@ SettingGUI(*) {
 
     Setting["Tabs"].UseTab("Basic")
     Setting.AddGroupBox("x20 y50 w325 h270", "OCR")
-    Setting.AddCheckBox("x30 y80 w120 vBasic_TextOCROnOff Right Checked" OCRC_Configs["Basic"]["Basic_TextOCROnOff"], "文本 OCR").OnEvent("Click", (CtrlObj, *) => SwitchHotkey(CtrlObj, "Basic_TextOCRHotkey", Basic_TextOCREngines[CtrlObj.Text]))
+    Setting.AddCheckBox("x30 y80 w120 vBasic_TextOCROnOff Right Checked" OCRC_Configs["Basic"]["Basic_TextOCROnOff"], "文本 OCR").OnEvent("Click", (CtrlObj, *) => SwitchHotkey(CtrlObj, "Basic_TextOCRHotkey", Basic_TextOCREngines[Setting["Basic_TextOCREngine"].Text]))
     Setting["Basic_TextOCROnOff"].ToolTip := "设置是否启用「文本 OCR」"
-    Setting.AddCheckBox("x30 y+15 w120 vBasic_FormulaOCROnOff Right Checked" OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"], "公式 OCR").OnEvent("Click", (CtrlObj, *) => SwitchHotkey(CtrlObj, "Basic_FormulaOCRHotkey", Basic_FormulaOCREngines[CtrlObj.Text]))
+    Setting.AddCheckBox("x30 y+15 w120 vBasic_FormulaOCROnOff Right Checked" OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"], "公式 OCR").OnEvent("Click", (CtrlObj, *) => SwitchHotkey(CtrlObj, "Basic_FormulaOCRHotkey", Basic_FormulaOCREngines[Setting["Basic_FormulaOCREngine"].Text]))
     Setting["Basic_FormulaOCROnOff"].ToolTip := "设置是否启用「公式 OCR」"
     Setting.AddText("x15 y+15 w120 h25 Right", "文本 OCR 引擎")
-    Setting.AddDropDownList("x+15 w185 vBasic_TextOCREngine AltSubmit Choose" OCRC_Configs["Basic"]["Basic_TextOCREngine"], Map2Array(Basic_TextOCREngines)).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Text", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"], Basic_TextOCREngines[CtrlObj.Text])))
+    Setting.AddDropDownList("x+15 w185 vBasic_TextOCREngine AltSubmit Choose" OCRC_Configs["Basic"]["Basic_TextOCREngine"], Map2Array(Basic_TextOCREngines)).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Text", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"], Basic_TextOCREngines[CtrlObj.Text], OCRC_Configs["Basic"]["Basic_TextOCROnOff"])))
     Setting["Basic_TextOCREngine"].ToolTip := "设置文本 OCR 的引擎。目前仅支持「百度 OCR」"
     Setting.AddText("x15 y+15 w120 h25 Right", "公式 OCR 引擎")
-    Setting.AddDropDownList("x+15 w185 vBasic_FormulaOCREngine AltSubmit Choose" OCRC_Configs["Basic"]["Basic_FormulaOCREngine"], Map2Array(Basic_FormulaOCREngines)).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Formula", OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"], Basic_FormulaOCREngines[CtrlObj.Text])))
+    Setting.AddDropDownList("x+15 w185 vBasic_FormulaOCREngine AltSubmit Choose" OCRC_Configs["Basic"]["Basic_FormulaOCREngine"], Map2Array(Basic_FormulaOCREngines)).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Formula", OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"], Basic_FormulaOCREngines[CtrlObj.Text], OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"])))
     Setting["Basic_FormulaOCREngine"].ToolTip := "设置公式 OCR 的引擎。目前支持「Bing OCR」和「Mathpix OCR」"
     Setting.AddText("x0 y+15 w135 h25 Right", "文本 OCR 热键")
-    Setting.AddHotkey("x+15 w185 h25 vBasic_TextOCRHotkey", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Text", CtrlObj.Value, Basic_TextOCREngines[CtrlObj.Text])))
+    Setting.AddHotkey("x+15 w185 h25 vBasic_TextOCRHotkey", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Text", CtrlObj.Value, Basic_TextOCREngines[Setting["Basic_TextOCREngine"].Text], OCRC_Configs["Basic"]["Basic_TextOCROnOff"])))
     Setting["Basic_TextOCRHotkey"].ToolTip := "设置文本 OCR 的热键。如果不使用文本 OCR 则需要在基础设置关闭"
     Setting.AddText("x0 y+15 w135 h25 Right", "公式 OCR 热键")
-    Setting.AddHotkey("x+15 w185 h25 vBasic_FormulaOCRHotkey", OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Formula", CtrlObj.Value, Basic_FormulaOCREngines[CtrlObj.Text])))
+    Setting.AddHotkey("x+15 w185 h25 vBasic_FormulaOCRHotkey", OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Formula", CtrlObj.Value, Basic_FormulaOCREngines[Setting["Basic_FormulaOCREngine"].Text], OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"])))
     Setting["Basic_FormulaOCRHotkey"].ToolTip := "设置公式 OCR 的热键。如果不使用公式 OCR 则需要在基础设置关闭"
 
     Setting.AddGroupBox("x20 y330 w325 h150", "截图")
@@ -190,8 +190,6 @@ CreateConfig() {
     IniWrite(0,  OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotOnOff")
     IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_ThirdPartyScreenshotPath")
     IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_GoogleTranslateProxy")
-    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TencentTranslateSecretID")
-    IniWrite("", OCRC_ConfigFilePath, "Advance", "Advance_TencentTranslateSecretKey")
 
     IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_FormatStyle")
     IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_PunctuationStyle")

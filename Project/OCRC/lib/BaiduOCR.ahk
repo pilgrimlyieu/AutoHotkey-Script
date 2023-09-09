@@ -15,7 +15,7 @@
     __Show() {
         this.ResultGUI := Gui()
         this.ResultGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
-        this.ResultGUI.Title := "OCRC (BaiduOCR) 「" BaiduOCR_RecognitionTypes[this.configs["recognition_type"]] "」识别结果"
+        this.ResultGUI.Title := "OCRC (Baidu OCR) 「" BaiduOCR_RecognitionTypes[this.configs["recognition_type"]] "」识别结果"
         this.ResultGUI.BackColor := "EBEDF4"
         this.ResultGUI.SetFont(, "Microsoft YaHei")
 

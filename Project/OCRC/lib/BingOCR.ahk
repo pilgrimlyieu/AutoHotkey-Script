@@ -20,7 +20,7 @@ class Bing {
 
         this.ResultGUI := Gui()
         this.ResultGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
-        this.ResultGUI.Title := "OCRC (BingOCR) 识别结果"
+        this.ResultGUI.Title := "OCRC (Bing OCR) 识别结果"
         this.ResultGUI.BackColor := "EBEDF4"
         this.ResultGUI.SetFont("s18", "Microsoft YaHei")
 

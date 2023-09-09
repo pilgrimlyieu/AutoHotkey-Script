@@ -151,11 +151,13 @@ GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := 
 }
 
 Img2Base64(Front := False, Quality := 75) {
-    pToken       := Gdip_Startup()
-    pBitmap      := Gdip_CreateBitmapFromClipboard()
-    base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG", Quality)
-    DllCall("gdiplus\GdipDisposeImage", "UPtr", pBitmap)
-    Gdip_Shutdown(pToken)
+    try {
+        pToken       := Gdip_Startup()
+        pBitmap      := Gdip_CreateBitmapFromClipboard()
+        base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG", Quality)
+        DllCall("gdiplus\GdipDisposeImage", "UPtr", pBitmap)
+        Gdip_Shutdown(pToken)
+    }
     return Front ? "data:image/jpg;base64," base64string : base64string
 }
 
@@ -186,8 +188,10 @@ PrepareOCR(base64_front) {
 
 UpdateVar(CtrlObj, *) => IniWrite(OCRC_Configs[CtrlObj.Gui["Tabs"].Text][CtrlObj.Name] := CtrlObj.Value, OCRC_ConfigFilePath, CtrlObj.Gui["Tabs"].Text, CtrlObj.Name)
 
-UpdateHotkey(OCRType, OCRKey, OCRFunction, *) {
+UpdateHotkey(OCRType, OCRKey, OCRFunction, IsOn, *) {
     global Basic_TextOCRHotkey_temp, Basic_FormulaOCRHotkey_temp
+    if !IsOn
+        return
     if OCRType == "Text" {
         Hotkey(Basic_TextOCRHotkey_temp, , "Off")
         Hotkey(OCRKey, OCRFunction, "On")
