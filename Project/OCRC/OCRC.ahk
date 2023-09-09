@@ -8,6 +8,9 @@
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
 
+if !FileExist("ahk-json.dll")
+    FileInstall("lib\ahk-json.dll", "ahk-json.dll")
+
 #Include <Constants>
 #Include <Common>
 #Include <Setting>
@@ -15,8 +18,6 @@
 #Include <MathpixOCR>
 #Include <BingOCR>
 
-if !FileExist("ahk-json.dll")
-    FileInstall("lib\ahk-json.dll", "ahk-json.dll")
 if !FileExist(OCRC_ConfigFilePath)
     CreateConfig()
 

@@ -91,10 +91,10 @@ SettingGUI(*) {
     Setting["TextOCR_SpaceStyle"].ToolTip := "设置默认空格格式`n智能空格（实验性，可能有较大问题！在对网址等文本处理不建议使用）：根据上下文智能转换空格。`n原始结果：恢复上一文本处理操作前的状态（不支持连续恢复）。`n去除空格：去除所有空格。"
     Setting.AddText("x15 y+15 w135 h25 Right", "默认翻译原始语言")
     Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateFrom AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateFrom"], TLs := Map2Array(TL := OCRC_Configs["TextOCR_TranslateLanguages"])).OnEvent("Change", UpdateVar)
-    Setting["TextOCR_TranslateFrom"].ToolTip := ""
+    Setting["TextOCR_TranslateFrom"].ToolTip := "设置翻译的默认原始语言，可在配置文件中自行添加，默认有「自动检测」「中文」和英文，默认选择「自动检测」"
     Setting.AddText("x15 y+15 w135 h25 Right", "默认翻译目标语言")
     Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateTo AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateTo"], TL.Has("自动检测") ? (TLs.RemoveAt(IndexOf("自动检测", TLs)), TLs) : TLs).OnEvent("Change", UpdateVar)
-    Setting["TextOCR_TranslateTo"].ToolTip := ""
+    Setting["TextOCR_TranslateTo"].ToolTip := "设置翻译的默认目标语言，可在配置文件中自行添加，默认有「中文」和英文，默认选择「中文」"
     Setting.AddText("x15 y+15 w135 h25 Right", "默认搜索引擎")
     Setting.AddDropDownList("x+15 w170 vTextOCR_SearchEngine AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_SearchEngine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).OnEvent("Change", UpdateVar)
     Setting["TextOCR_SearchEngine"].ToolTip := "设置默认搜索引擎。以下为默认选项（可在配置文件中移除或添加）：`n百度：百度搜索。`n谷歌：谷歌搜索。`n必应：必应搜索。`n百度百科：百度百科搜索。`n维基百科：维基百科搜索。"
@@ -151,7 +151,7 @@ OCREnginesGUI(*) {
     OCREngines["BaiduOCR_SecretKey"].ToolTip := "设置百度 OCR 的 Secret Key。如果不使用百度 OCR 则无需设置"
     OCREngines.AddText("x15 y+15 w90 h25 Right", "识别语言")
     OCREngines.AddDropDownList("x+15 w215 vBaiduOCR_LanguageType AltSubmit Choose" OCRC_Configs["BaiduOCR"]["BaiduOCR_LanguageType"], Map2Array(OCRC_Configs["BaiduOCR_LanguageTypes"])).OnEvent("Change", UpdateVar)
-    OCREngines["BaiduOCR_LanguageType"].ToolTip := "设置百度 OCR 的识别语言。默认有「中英文混合」和「英文」，可在配置文件中自行设置"
+    OCREngines["BaiduOCR_LanguageType"].ToolTip := "设置百度 OCR 的识别语言。默认有「中英文混合」和「英文」，可在配置文件中自行添加"
     OCREngines.AddText("x15 y+15 w90 h25 Right", "识别类型")
     OCREngines.AddDropDownList("x+15 w215 vBaiduOCR_RecognitionType AltSubmit Choose" OCRC_Configs["BaiduOCR"]["BaiduOCR_RecognitionType"], Map2Array(BaiduOCR_RecognitionTypes, 0)).OnEvent("Change", UpdateVar)
     OCREngines["BaiduOCR_RecognitionType"].ToolTip := "设置百度 OCR 的识别类型`n通用文字（标准）识别：适用于日常场景的简单文字识别。`n通用文字（高精度）识别：适用于复杂场景下的文字识别。`n手写文字识别：适用于手写场景下的文字识别。`n网络图片文字识别：适用于网络图片场景下的文字识别"
@@ -205,6 +205,9 @@ CreateConfig() {
     IniWrite(1, OCRC_ConfigFilePath, "FormulaOCR", "FormulaOCR_DisplayStyle")
     IniWrite(1, OCRC_ConfigFilePath, "FormulaOCR", "FormulaOCR_DefaultSelect")
 
+    IniWrite("auto",  OCRC_ConfigFilePath, "TextOCR_TranslateLanguages", "自动检测")
+    IniWrite("zh-cn", OCRC_ConfigFilePath, "TextOCR_TranslateLanguages", "简体中文")
+    IniWrite("en",    OCRC_ConfigFilePath, "TextOCR_TranslateLanguages", "英文")
 
     IniWrite("https://www.baidu.com/s?wd=@W",      OCRC_ConfigFilePath, "TextOCR_SearchEngines", "百度")
     IniWrite("https://www.google.com/search?q=@W", OCRC_ConfigFilePath, "TextOCR_SearchEngines", "谷歌")
@@ -216,10 +219,10 @@ CreateConfig() {
     IniWrite("",    OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_SecretKey")
     IniWrite("",    OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_Token")
     IniWrite(A_Now, OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_TokenExpiration")
+    IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_LanguageType")
     IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_RecognitionType")
     IniWrite(1,     OCRC_ConfigFilePath, "BaiduOCR", "BaiduOCR_ProbabilityType")
 
-    IniWrite("auto_detect", OCRC_ConfigFilePath, "BaiduOCR_LanguageTypes", "自动检测")
     IniWrite("CHN_ENG",     OCRC_ConfigFilePath, "BaiduOCR_LanguageTypes", "中英文混合")
     IniWrite("ENG",         OCRC_ConfigFilePath, "BaiduOCR_LanguageTypes", "英文")
 
