@@ -1,6 +1,6 @@
 ﻿class Baidu {
     __New(post, configs) {
-        this.configs := configs
+        this.post := post, this.configs := configs
         if this.__Token() != "success"
             return
         post_data := "image=" UrlEncode(this.configs["image_base64"])
@@ -20,21 +20,29 @@
         this.ResultGUI.SetFont(, "Microsoft YaHei")
 
         this.ResultGUI.AddText("x20 w42 h30", "引擎").SetFont("s12")
-        this.ResultGUI.AddDropDownList("x+0 w90 vTextOCREngine AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
-        this.ResultGUI.AddText("x20 y+15 w42 h30", "排版").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w120 vTextOCREngine AltSubmit Choose" this.configs["format_style"], Map2Array(Basic_TextOCRTypes)).SetFont("s12")
+        this.ResultGUI["TextOCREngine"].OnEvent("Change", (CtrlObj, *) => Basic_TextOCRTypes[Basic_TextOCRTypes[CtrlObj.Text]].Call())
+        this.ResultGUI.AddText("x20 y+15 w42 h30", "语言").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w120 vLanguageType AltSubmit Choose" this.configs["language_type"], Map2Array(OCRC_Configs["BaiduOCR_LanguageTypes"])).SetFont("s12")
+        this.ResultGUI["LanguageType"].OnEvent("Change", (CtrlObj, *) => (
+            post := this.post, configs := this.configs,
+            post["language_type"] := OCRC_Configs["BaiduOCR_LanguageTypes"][CtrlObj.Text], configs["language_type"] := CtrlObj.Value,
+            newBaiduOCR := Baidu(post, configs)
+        ))
+        this.ResultGUI.AddText("x+15 y5 w42 h30", "排版").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w90 vFormatStyle AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
         this.ResultGUI["FormatStyle"].OnEvent("Change", ObjBindMethod(this, "__Format"))
-        this.ResultGUI.AddText("x+15 y5 w42 h30", "标点").SetFont("s12")
+        this.ResultGUI.AddText("x197 y+15 w42 h30", "标点").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w90 vPunctuationStyle AltSubmit Choose" this.configs["punctuation_style"], ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
         this.ResultGUI["PunctuationStyle"].OnEvent("Change", ObjBindMethod(this, "__Punctuation"))
-        this.ResultGUI.AddText("x167 y+15 w42 h30", "空格").SetFont("s12")
+        this.ResultGUI.AddText("x+15 y5 w42 h30", "空格").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w90 vSpaceStyle AltSubmit Choose" this.configs["space_style"], ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
         this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
         this.ResultGUI.AddText("x+15 y5 w55 h15", "原始语言").SetFont("s10")
         this.ResultGUI.AddDropDownList("x+0 w65 vTranslateFrom AltSubmit Choose" this.configs["translate_from"], TLs := Map2Array(TL := OCRC_Configs["TextOCR_TranslateLanguages"])).SetFont("s8")
-        this.ResultGUI.AddText("x314 y+0 w55 h15", "目标语言").SetFont("s10")
+        this.ResultGUI.AddText("x492 y+0 w55 h15", "目标语言").SetFont("s10")
         this.ResultGUI.AddDropDownList("x+0 w65 vTranslateTo AltSubmit Choose" this.configs["translate_to"], TL.Has("自动检测") ? (TLs.RemoveAt(IndexOf("自动检测", TLs)), TLs) : TLs).SetFont("s8")
-        this.ResultGUI.AddButton("x314 y+0 w120 h20 vTranslate", "翻译").SetFont("s10")
+        this.ResultGUI.AddButton("x492 y+0 w120 h20 vTranslate", "翻译").SetFont("s10")
         this.ResultGUI["Translate"].OnEvent("Click", ObjBindMethod(this, "__Translate"))
         this.ResultGUI.AddText("x+15 y5 w42 h30", "搜索").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).SetFont("s12")

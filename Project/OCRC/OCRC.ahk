@@ -52,6 +52,7 @@ TextOCR_BaiduOCR(ThisHotkey) {
                 "token",             OCRC_Configs["BaiduOCR"]["BaiduOCR_Token"],
                 "token_expiration",  OCRC_Configs["BaiduOCR"]["BaiduOCR_TokenExpiration"],
                 "image_base64",      base64string,
+                "language_type",     OCRC_Configs["BaiduOCR"]["BaiduOCR_LanguageType"],
                 "recognition_type",  Map2Array(BaiduOCR_RecognitionTypes)[OCRC_Configs["BaiduOCR"]["BaiduOCR_RecognitionType"]],
                 "probability_type",  OCRC_Configs["BaiduOCR"]["BaiduOCR_ProbabilityType"],
                 "format_style",      OCRC_Configs["TextOCR"]["TextOCR_FormatStyle"],
