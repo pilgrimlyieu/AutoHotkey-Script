@@ -27,7 +27,7 @@
         this.ResultGUI["LanguageType"].OnEvent("Change", (CtrlObj, *) => (
             post := this.post, configs := this.configs,
             post["language_type"] := OCRC_Configs["BaiduOCR_LanguageTypes"][CtrlObj.Text], configs["language_type"] := CtrlObj.Value,
-            newBaiduOCR := Baidu(post, configs)
+            BaiduOCR_lang := Baidu(post, configs)
         ))
         this.ResultGUI.AddText("x+15 y5 w42 h30", "排版").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w90 vFormatStyle AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
@@ -52,8 +52,7 @@
         this.ResultGUI.AddEdit("x20 y70 w760 h400 vResult").SetFont("s18")
         this.ResultGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
         this.__Format(this.ResultGUI["FormatStyle"])
-        if this.configs["probability_type"]
-            this.__Probability()
+        this.__Probability()
         this.__Punctuation(this.ResultGUI["PunctuationStyle"])
         this.__Space(this.ResultGUI["SpaceStyle"])
 
@@ -95,7 +94,7 @@
                 probability_sum += value["probability"]["average"] * StrLen(value["words"])
             this.probability := Format("{:.2f}", 100 * probability_sum / StrLen(this.result))
         }
-        else {
+        else if this.configs["probability_type"] == -1 {
             for index, value in this.json["words_result"]
                 probability_sum += value["probability"]["average"]
             this.probability := Format("{:.2f}", 100 * probability_sum / this.json["words_result_num"])
