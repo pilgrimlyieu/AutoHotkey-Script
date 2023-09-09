@@ -129,6 +129,12 @@ Map2Array(in_map, forkey := 1) {
 
 Index2Value(in_map, index) => in_map[Map2Array(in_map)[index]]
 
+IndexOf(item, list) {
+    for index, value in list
+        if value == item
+            return index
+}
+
 GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := "") {
     try {
         if !(If3pSnip && CmdOf3pSnip)

@@ -88,10 +88,10 @@ SettingGUI(*) {
     Setting.AddDropDownList("x+15 w170 vTextOCR_SpaceStyle AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_SpaceStyle"], ["智能空格", "原始结果", "去除空格"]).OnEvent("Change", UpdateVar)
     Setting["TextOCR_SpaceStyle"].ToolTip := "设置默认空格格式`n智能空格（实验性，可能有较大问题！在对网址等文本处理不建议使用）：根据上下文智能转换空格。`n原始结果：恢复上一文本处理操作前的状态（不支持连续恢复）。`n去除空格：去除所有空格。"
     Setting.AddText("x15 y+15 w135 h25 Right", "默认翻译原始语言")
-    Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateFrom AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateFrom"], Map2Array(OCRC_Configs["TextOCR_TranslateLanguages"])).OnEvent("Change", UpdateVar)
+    Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateFrom AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateFrom"], TLs := Map2Array(TL := OCRC_Configs["TextOCR_TranslateLanguages"])).OnEvent("Change", UpdateVar)
     Setting["TextOCR_TranslateFrom"].ToolTip := ""
     Setting.AddText("x15 y+15 w135 h25 Right", "默认翻译目标语言")
-    Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateTo AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateTo"], Map2Array(OCRC_Configs["TextOCR_TranslateLanguages"])).OnEvent("Change", UpdateVar)
+    Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateTo AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateTo"], TL.Has("自动检测") ? (TLs.RemoveAt(IndexOf("自动检测", TLs)), TLs) : TLs).OnEvent("Change", UpdateVar)
     Setting["TextOCR_TranslateTo"].ToolTip := ""
     Setting.AddText("x15 y+15 w135 h25 Right", "默认搜索引擎")
     Setting.AddDropDownList("x+15 w170 vTextOCR_SearchEngine AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_SearchEngine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).OnEvent("Change", UpdateVar)

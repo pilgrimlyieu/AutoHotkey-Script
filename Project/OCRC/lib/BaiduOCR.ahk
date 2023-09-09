@@ -19,25 +19,25 @@
         this.ResultGUI.BackColor := "EBEDF4"
         this.ResultGUI.SetFont(, "Microsoft YaHei")
 
-        this.ResultGUI.AddText("x20 w42 h30", "引擎").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vTextOCREngine AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
-        this.ResultGUI.AddText("x20 y+10 w42 h30", "排版").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vFormatStyle AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
+        this.ResultGUI.AddText("x20 w42 h30", "引擎").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w90 vTextOCREngine AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
+        this.ResultGUI.AddText("x20 y+15 w42 h30", "排版").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w90 vFormatStyle AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
         this.ResultGUI["FormatStyle"].OnEvent("Change", ObjBindMethod(this, "__Format"))
-        this.ResultGUI.AddText("x+5 y5 w42 h30", "标点").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vPunctuationStyle AltSubmit Choose" this.configs["punctuation_style"], ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
+        this.ResultGUI.AddText("x+15 y5 w42 h30", "标点").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w90 vPunctuationStyle AltSubmit Choose" this.configs["punctuation_style"], ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
         this.ResultGUI["PunctuationStyle"].OnEvent("Change", ObjBindMethod(this, "__Punctuation"))
-        this.ResultGUI.AddText("x162 y+10 w42 h30", "空格").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vSpaceStyle AltSubmit Choose" this.configs["space_style"], ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
+        this.ResultGUI.AddText("x167 y+15 w42 h30", "空格").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w90 vSpaceStyle AltSubmit Choose" this.configs["space_style"], ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
         this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
-        this.ResultGUI.AddText("x+5 y5 w55 h15", "原始语言").SetFont("s10")
-        this.ResultGUI.AddDropDownList("x+5 w65 vTranslateFrom AltSubmit Choose" this.configs["translate_from"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
-        this.ResultGUI["TranslateFrom"].SetFont("s8")
-        this.ResultGUI.AddText("x305 y+5 w55 h15", "目标语言").SetFont("s10")
-        this.ResultGUI.AddDropDownList("x+5 w65 vTranslateTo AltSubmit Choose" this.configs["translate_to"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
-        this.ResultGUI["TranslateTo"].SetFont("s8")
-        this.ResultGUI.AddText("x+5 y5 w42 h30", "搜索").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).SetFont("s12")
+        this.ResultGUI.AddText("x+15 y5 w55 h15", "原始语言").SetFont("s10")
+        this.ResultGUI.AddDropDownList("x+0 w65 vTranslateFrom AltSubmit Choose" this.configs["translate_from"], TLs := Map2Array(TL := OCRC_Configs["TextOCR_TranslateLanguages"])).SetFont("s8")
+        this.ResultGUI.AddText("x314 y+0 w55 h15", "目标语言").SetFont("s10")
+        this.ResultGUI.AddDropDownList("x+0 w65 vTranslateTo AltSubmit Choose" this.configs["translate_to"], TL.Has("自动检测") ? (TLs.RemoveAt(IndexOf("自动检测", TLs)), TLs) : TLs).SetFont("s8")
+        this.ResultGUI.AddButton("x314 y+0 w120 h20 vTranslate", "翻译").SetFont("s10")
+        this.ResultGUI["Translate"].OnEvent("Click", ObjBindMethod(this, "__Translate"))
+        this.ResultGUI.AddText("x+15 y5 w42 h30", "搜索").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
         this.ResultGUI["SearchEngine"].OnEvent("ContextMenu", ObjBindMethod(this, "__Search"))
 
@@ -186,14 +186,14 @@
     }
 
     __Translate(CtrlObj, *) {
-        translate_type := CtrlObj.Text, result := this.result
+        result := this.result
         TranslateGUI := Gui()
         TranslateGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
-        TranslateGUI.Title := "OCRC (BaiduOCR) 「谷歌翻译（" translate_type "）」翻译结果"
+        TranslateGUI.Title := "OCRC (BaiduOCR) 「谷歌翻译（" this.ResultGUI["TranslateFrom"].Text "->" this.ResultGUI["TranslateTo"].Text "）」翻译结果"
         TranslateGUI.BackColor := "EBEDF4"
         TranslateGUI.SetFont(, "Microsoft YaHei")
         TranslateGUI.AddEdit("x20 y20 w600 h300 vTranslate").SetFont("s18")
-        TranslateGUI["Translate"].Value := GoogleTranslate(result, Index2Value(OCRC_Configs["TextOCR_TranslateLanguages"], OCRC_Configs["BaiduOCR_TranslateFrom"]), Index2Value(OCRC_Configs["TextOCR_TranslateLanguages"], OCRC_Configs["BaiduOCR_TranslateTo"]), {proxy: this.configs["translate_proxy"]})
+        TranslateGUI["Translate"].Value := GoogleTranslate(result, Index2Value(TL := OCRC_Configs["TextOCR_TranslateLanguages"], this.ResultGUI["TranslateFrom"].Value), Index2Value(TL, this.ResultGUI["TranslateTo"].Value), {proxy: this.configs["translate_proxy"]})
         TranslateGUI["Translate"].OnEvent("Change", (CtrlObj, *) => A_Clipboard := CtrlObj.Value)
         A_Clipboard := TranslateGUI["Translate"].Value
         TranslateGUI.Show("w640 h340")
