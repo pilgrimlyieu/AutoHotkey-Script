@@ -25,8 +25,10 @@ SettingGUI(*) {
     Setting["Basic_FormulaOCROnOff"].ToolTip := "设置是否启用「公式 OCR」"
     Setting.AddText("x15 y+15 w120 h25 Right", "文本 OCR 引擎")
     Setting.AddDropDownList("x+15 w185 vBasic_TextOCREngine AltSubmit Choose" OCRC_Configs["Basic"]["Basic_TextOCREngine"], Map2Array(Basic_TextOCREngines)).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Text", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"], Basic_TextOCREngines[CtrlObj.Text])))
+    Setting["Basic_TextOCREngine"].ToolTip := "设置文本 OCR 的引擎。目前仅支持「百度 OCR」"
     Setting.AddText("x15 y+15 w120 h25 Right", "公式 OCR 引擎")
     Setting.AddDropDownList("x+15 w185 vBasic_FormulaOCREngine AltSubmit Choose" OCRC_Configs["Basic"]["Basic_FormulaOCREngine"], Map2Array(Basic_FormulaOCREngines)).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Formula", OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"], Basic_FormulaOCREngines[CtrlObj.Text])))
+    Setting["Basic_FormulaOCREngine"].ToolTip := "设置公式 OCR 的引擎。目前支持「Bing OCR」和「Mathpix OCR」"
     Setting.AddText("x0 y+15 w135 h25 Right", "文本 OCR 热键")
     Setting.AddHotkey("x+15 w185 h25 vBasic_TextOCRHotkey", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Text", CtrlObj.Value, Basic_TextOCREngines[CtrlObj.Text])))
     Setting["Basic_TextOCRHotkey"].ToolTip := "设置文本 OCR 的热键。如果不使用文本 OCR 则需要在基础设置关闭"
@@ -37,13 +39,13 @@ SettingGUI(*) {
     Setting.AddGroupBox("x20 y330 w325 h150", "截图")
     Setting.AddText("x15 y360 w80 h25 Right", "截图时间")
     Setting.AddEdit("x+15 w95 vBasic_SnipTime Number", OCRC_Configs["Basic"]["Basic_SnipTime"]).OnEvent("Change", UpdateVar)
-    Setting["Basic_SnipTime"].ToolTip := "设置截图时间。超时将自动结束 OCR"
     Setting.AddUpDown("vBasic_SnipTime_extra Range5-60", OCRC_Configs["Basic"]["Basic_SnipTime"])
+    Setting["Basic_SnipTime"].ToolTip := "设置截图时间。超时将自动结束 OCR"
     Setting.AddText("x215 y360 w20 h25 Left", "秒")
     Setting.AddText("x15 y+15 w80 h25 Right", "缓冲时间")
     Setting.AddEdit("x+15 w95 vBasic_WaitSnipTime Number", OCRC_Configs["Basic"]["Basic_WaitSnipTime"]).OnEvent("Change", UpdateVar)
-    Setting["Basic_WaitSnipTime"].ToolTip := "设置等待截图窗口出现的缓冲时间。设置时间过短可能导致经常性的截图失败。超时将自动结束 OCR"
     Setting.AddUpDown("vBasic_WaitSnipTime_extra Range100-5000 0x80", OCRC_Configs["Basic"]["Basic_WaitSnipTime"])
+    Setting["Basic_WaitSnipTime"].ToolTip := "设置等待截图窗口出现的缓冲时间。设置时间过短可能导致经常性的截图失败。超时将自动结束 OCR"
     Setting.AddText("x215 y400 w40 h25 Left", "毫秒")
     Setting.AddCheckBox("x21 y+15 w200 vBasic_SnipWarning Right Checked" OCRC_Configs["Basic"]["Basic_SnipWarning"], "未检测到截图时抛出警告").OnEvent("Click", UpdateVar)
     Setting["Basic_SnipWarning"].ToolTip := "设置是否在未检测到截图时抛出警告"
@@ -61,8 +63,8 @@ SettingGUI(*) {
     Setting.AddGroupBox("x20 y50 w325 h80", "高级设置")
     Setting.AddText("x15 y80 w90 h25 Right", "编码精度")
     Setting.AddEdit("x+15 w75 vAdvance_EBto64SQuality Number", OCRC_Configs["Advance"]["Advance_EBto64SQuality"]).OnEvent("Change", UpdateVar)
-    Setting["Advance_EBto64SQuality"].ToolTip := "设置 JPEG 编码精度。数值越高，编码越精确，但是编码后的字符串越长"
     Setting.AddUpDown("vAdvance_EBto64SQuality_extra Range0-100", OCRC_Configs["Advance"]["Advance_EBto64SQuality"])
+    Setting["Advance_EBto64SQuality"].ToolTip := "设置 JPEG 编码精度。数值越高，编码越精确，但是编码后的字符串越长"
 
     Setting.AddGroupBox("x20 y140 w325 h110", "外部截图软件支持")
     Setting.AddCheckBox("x0 y170 w90 vAdvance_ThirdPartyScreenshotOnOff Right Checked" OCRC_Configs["Advance"]["Advance_ThirdPartyScreenshotOnOff"], "启用").OnEvent("Click", UpdateVar)
@@ -110,8 +112,8 @@ SettingGUI(*) {
 
     Setting.AddGroupBox("x20 y180 w325 h75", "默认选项")
     Setting.AddText("x15 w90 y210 h25 Right", "默认选择")
-    Setting.AddDropDownList("x+15 w215 vFormulaOCR_DefaultSelect AltSubmit Choose" OCRC_Configs["FormulaOCR"]["FormulaOCR_DefaultSelect"], ["FormulaOCR", "行内公式", "行间公式"]).OnEvent("Change", UpdateVar)
-    Setting["FormulaOCR_DefaultSelect"].ToolTip := "设置默认选择的公式类型`nFormulaOCR：纯 FormulaOCR 代码（无数学分隔符）。`n行内公式：行内公式。`n行间公式：行间公式。`n文本公式：混排文本和公式时默认选择，智能区分文本和公式。"
+    Setting.AddDropDownList("x+15 w215 vFormulaOCR_DefaultSelect AltSubmit Choose" OCRC_Configs["FormulaOCR"]["FormulaOCR_DefaultSelect"], ["LaTeX", "行内公式", "行间公式"]).OnEvent("Change", UpdateVar)
+    Setting["FormulaOCR_DefaultSelect"].ToolTip := "设置默认选择的公式类型`nLaTeX：纯 LaTeX 代码（无数学分隔符）。`n行内公式：行内公式。`n行间公式：行间公式。`n文本公式：混排文本和公式时默认选择，智能区分文本和公式。"
 
     if OCRC_Configs["Basic"]["Basic_OCRCToolTips"] {
         OnMessage(0x200, CtrlToolTip)
@@ -194,7 +196,6 @@ CreateConfig() {
     IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_FormatStyle")
     IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_PunctuationStyle")
     IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_SpaceStyle")
-    IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_TranslateEngine")
     IniWrite(2, OCRC_ConfigFilePath, "TextOCR", "TextOCR_TranslateFrom")
     IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_TranslateTo")
     IniWrite(2, OCRC_ConfigFilePath, "TextOCR", "TextOCR_SearchEngine")
