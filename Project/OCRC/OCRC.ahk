@@ -98,6 +98,3 @@ FormulaOCR_BingOCR(ThisHotkey, image := 0) {
             )
         )
 }
-
-!a::SettingGUI()
-!z::ListHotkeys()
