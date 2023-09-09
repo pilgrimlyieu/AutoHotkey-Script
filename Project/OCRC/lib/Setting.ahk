@@ -19,19 +19,19 @@ SettingGUI(*) {
 
     Setting["Tabs"].UseTab("Basic")
     Setting.AddGroupBox("x20 y50 w325 h270", "OCR")
-    Setting.AddCheckBox("x30 y80 w120 vBasic_TextOCROnOff Right Checked" OCRC_Configs["Basic"]["Basic_TextOCROnOff"], "文本 OCR").OnEvent("Click", (CtrlObj, *) => SwitchHotkey(CtrlObj, "Basic_TextOCRHotkey", Basic_TextOCRTypes[CtrlObj.Text]))
+    Setting.AddCheckBox("x30 y80 w120 vBasic_TextOCROnOff Right Checked" OCRC_Configs["Basic"]["Basic_TextOCROnOff"], "文本 OCR").OnEvent("Click", (CtrlObj, *) => SwitchHotkey(CtrlObj, "Basic_TextOCRHotkey", Basic_TextOCREngines[CtrlObj.Text]))
     Setting["Basic_TextOCROnOff"].ToolTip := "设置是否启用「文本 OCR」"
-    Setting.AddCheckBox("x30 y+15 w120 vBasic_FormulaOCROnOff Right Checked" OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"], "公式 OCR").OnEvent("Click", (CtrlObj, *) => SwitchHotkey(CtrlObj, "Basic_FormulaOCRHotkey", Basic_FormulaOCRTypes[CtrlObj.Text]))
+    Setting.AddCheckBox("x30 y+15 w120 vBasic_FormulaOCROnOff Right Checked" OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"], "公式 OCR").OnEvent("Click", (CtrlObj, *) => SwitchHotkey(CtrlObj, "Basic_FormulaOCRHotkey", Basic_FormulaOCREngines[CtrlObj.Text]))
     Setting["Basic_FormulaOCROnOff"].ToolTip := "设置是否启用「公式 OCR」"
     Setting.AddText("x15 y+15 w120 h25 Right", "文本 OCR 引擎")
-    Setting.AddDropDownList("x+15 w185 vBasic_TextOCRType AltSubmit Choose" OCRC_Configs["Basic"]["Basic_TextOCRType"], Map2Array(Basic_TextOCRTypes)).OnEvent("Change", UpdateVar)
+    Setting.AddDropDownList("x+15 w185 vBasic_TextOCREngine AltSubmit Choose" OCRC_Configs["Basic"]["Basic_TextOCREngine"], Map2Array(Basic_TextOCREngines)).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Text", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"], Basic_TextOCREngines[CtrlObj.Text])))
     Setting.AddText("x15 y+15 w120 h25 Right", "公式 OCR 引擎")
-    Setting.AddDropDownList("x+15 w185 vBasic_FormulaOCRType AltSubmit Choose" OCRC_Configs["Basic"]["Basic_FormulaOCRType"], Map2Array(Basic_FormulaOCRTypes)).OnEvent("Change", UpdateVar)
+    Setting.AddDropDownList("x+15 w185 vBasic_FormulaOCREngine AltSubmit Choose" OCRC_Configs["Basic"]["Basic_FormulaOCREngine"], Map2Array(Basic_FormulaOCREngines)).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Formula", OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"], Basic_FormulaOCREngines[CtrlObj.Text])))
     Setting.AddText("x0 y+15 w135 h25 Right", "文本 OCR 热键")
-    Setting.AddHotkey("x+15 w185 h25 vBasic_TextOCRHotkey", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => UpdateHotkey(CtrlObj, Basic_TextOCRTypes[CtrlObj.Text]))
+    Setting.AddHotkey("x+15 w185 h25 vBasic_TextOCRHotkey", OCRC_Configs["Basic"]["Basic_TextOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Text", CtrlObj.Value, Basic_TextOCREngines[CtrlObj.Text])))
     Setting["Basic_TextOCRHotkey"].ToolTip := "设置文本 OCR 的热键。如果不使用文本 OCR 则需要在基础设置关闭"
     Setting.AddText("x0 y+15 w135 h25 Right", "公式 OCR 热键")
-    Setting.AddHotkey("x+15 w185 h25 vBasic_FormulaOCRHotkey", OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => UpdateHotkey(CtrlObj, Basic_FormulaOCRTypes[CtrlObj.Text]))
+    Setting.AddHotkey("x+15 w185 h25 vBasic_FormulaOCRHotkey", OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"]).OnEvent("Change", (CtrlObj, *) => (UpdateVar(CtrlObj), UpdateHotkey("Formula", CtrlObj.Value, Basic_FormulaOCREngines[CtrlObj.Text])))
     Setting["Basic_FormulaOCRHotkey"].ToolTip := "设置公式 OCR 的热键。如果不使用公式 OCR 则需要在基础设置关闭"
 
     Setting.AddGroupBox("x20 y330 w325 h150", "截图")
@@ -175,8 +175,8 @@ OCREnginesGUI(*) {
 CreateConfig() {
     IniWrite(1,    OCRC_ConfigFilePath, "Basic", "Basic_TextOCROnOff")
     IniWrite(1,    OCRC_ConfigFilePath, "Basic", "Basic_FormulaOCROnOff")
-    IniWrite(1,    OCRC_ConfigFilePath, "Basic", "Basic_TextOCRType")
-    IniWrite(1,    OCRC_ConfigFilePath, "Basic", "Basic_FormulaOCRType")
+    IniWrite(1,    OCRC_ConfigFilePath, "Basic", "Basic_TextOCREngine")
+    IniWrite(1,    OCRC_ConfigFilePath, "Basic", "Basic_FormulaOCREngine")
     IniWrite("F7", OCRC_ConfigFilePath, "Basic", "Basic_TextOCRHotkey")
     IniWrite("F4", OCRC_ConfigFilePath, "Basic", "Basic_FormulaOCRHotkey")
     IniWrite(10,   OCRC_ConfigFilePath, "Basic", "Basic_SnipTime")

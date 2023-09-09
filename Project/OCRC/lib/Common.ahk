@@ -186,20 +186,17 @@ PrepareOCR(base64_front) {
 
 UpdateVar(CtrlObj, *) => IniWrite(OCRC_Configs[CtrlObj.Gui["Tabs"].Text][CtrlObj.Name] := CtrlObj.Value, OCRC_ConfigFilePath, CtrlObj.Gui["Tabs"].Text, CtrlObj.Name)
 
-UpdateHotkey(CtrlObj, OCRFunction, *) {
-    UpdateVar(CtrlObj)
-    if !CtrlObj.Value
-        return
+UpdateHotkey(OCRType, OCRKey, OCRFunction, *) {
     global Basic_TextOCRHotkey_temp, Basic_FormulaOCRHotkey_temp
-    if CtrlObj.Name == "Basic_TextOCRHotkey" {
-        Hotkey(Basic_TextOCRHotkey_temp, OCRFunction, "Off")
-        Hotkey(CtrlObj.Value, OCRFunction, "On")
-        Basic_TextOCRHotkey_temp := CtrlObj.Value
+    if OCRType == "Text" {
+        Hotkey(Basic_TextOCRHotkey_temp, , "Off")
+        Hotkey(OCRKey, OCRFunction, "On")
+        Basic_TextOCRHotkey_temp := OCRKey
     }
-    else {
-        Hotkey(Basic_FormulaOCRHotkey_temp, OCRFunction, "Off")
-        Hotkey(CtrlObj.Value, OCRFunction, "On")
-        Basic_FormulaOCRHotkey_temp := CtrlObj.Value
+    else if OCRType == "Formula"{
+        Hotkey(Basic_FormulaOCRHotkey_temp, , "Off")
+        Hotkey(OCRKey, OCRFunction, "On")
+        Basic_FormulaOCRHotkey_temp := OCRKey
     }
 }
 

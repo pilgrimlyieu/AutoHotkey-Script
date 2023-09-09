@@ -1,10 +1,10 @@
 global OCRC_ConfigFilePath       := "OCRC.ini"
 global OCRC_Configs              := Map()
 
-global Basic_TextOCRTypes        := Map(
+global Basic_TextOCREngines        := Map(
     "百度 OCR", TextOCR_BaiduOCR,
 )
-global Basic_FormulaOCRTypes     := Map(
+global Basic_FormulaOCREngines     := Map(
     "Mathpix OCR", FormulaOCR_MathpixOCR,
     "Bing OCR", FormulaOCR_BingOCR,
 )

@@ -20,8 +20,8 @@
         this.ResultGUI.SetFont(, "Microsoft YaHei")
 
         this.ResultGUI.AddText("x20 w42 h30", "引擎").SetFont("s12")
-        this.ResultGUI.AddDropDownList("x+0 w120 vTextOCREngine AltSubmit Choose" this.configs["format_style"], Map2Array(Basic_TextOCRTypes)).SetFont("s12")
-        this.ResultGUI["TextOCREngine"].OnEvent("Change", (CtrlObj, *) => Basic_TextOCRTypes[Basic_TextOCRTypes[CtrlObj.Text]].Call())
+        this.ResultGUI.AddDropDownList("x+0 w120 vTextOCREngine AltSubmit Choose" this.configs["textocr_engine"], Map2Array(Basic_TextOCREngines)).SetFont("s12")
+        this.ResultGUI["TextOCREngine"].OnEvent("Change", (CtrlObj, *) => Basic_TextOCREngines[CtrlObj.Text].Call("", this.configs["image_base64"]))
         this.ResultGUI.AddText("x20 y+15 w42 h30", "语言").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w120 vLanguageType AltSubmit Choose" this.configs["language_type"], Map2Array(OCRC_Configs["BaiduOCR_LanguageTypes"])).SetFont("s12")
         this.ResultGUI["LanguageType"].OnEvent("Change", (CtrlObj, *) => (
