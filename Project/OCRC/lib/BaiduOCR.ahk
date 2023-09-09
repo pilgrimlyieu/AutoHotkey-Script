@@ -1,6 +1,6 @@
 ﻿class Baidu {
     __New(post, configs) {
-        this.configs := configs
+        this.post := post, this.configs := configs
         if this.__Token() != "success"
             return
         post_data := "image=" UrlEncode(this.configs["image_base64"])
@@ -19,29 +19,40 @@
         this.ResultGUI.BackColor := "EBEDF4"
         this.ResultGUI.SetFont(, "Microsoft YaHei")
 
-        this.ResultGUI.AddText("x20 w42 h30", "排版").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vFormatStyle AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
+        this.ResultGUI.AddText("x20 w42 h30", "引擎").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w120 vTextOCREngine AltSubmit Choose" this.configs["textocr_engine"], Map2Array(Basic_TextOCREngines)).SetFont("s12")
+        this.ResultGUI["TextOCREngine"].OnEvent("Change", (CtrlObj, *) => Basic_TextOCREngines[CtrlObj.Text].Call("", this.configs["image_base64"]))
+        this.ResultGUI.AddText("x20 y+15 w42 h30", "语言").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w120 vLanguageType AltSubmit Choose" this.configs["language_type"], Map2Array(OCRC_Configs["BaiduOCR_LanguageTypes"])).SetFont("s12")
+        this.ResultGUI["LanguageType"].OnEvent("Change", (CtrlObj, *) => (
+            post := this.post, configs := this.configs,
+            post["language_type"] := OCRC_Configs["BaiduOCR_LanguageTypes"][CtrlObj.Text], configs["language_type"] := CtrlObj.Value,
+            BaiduOCR_lang := Baidu(post, configs)
+        ))
+        this.ResultGUI.AddText("x+15 y5 w42 h30", "排版").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w90 vFormatStyle AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
         this.ResultGUI["FormatStyle"].OnEvent("Change", ObjBindMethod(this, "__Format"))
-        this.ResultGUI.AddText("x+15 w42 h30", "标点").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vPunctuationStyle AltSubmit Choose" this.configs["punctuation_style"], ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
+        this.ResultGUI.AddText("x197 y+15 w42 h30", "标点").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w90 vPunctuationStyle AltSubmit Choose" this.configs["punctuation_style"], ["智能标点", "原始结果", "中文标点", "英文标点"]).SetFont("s12")
         this.ResultGUI["PunctuationStyle"].OnEvent("Change", ObjBindMethod(this, "__Punctuation"))
-        this.ResultGUI.AddText("x+15 w42 h30", "空格").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vSpaceStyle AltSubmit Choose" this.configs["space_style"], ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
+        this.ResultGUI.AddText("x+15 y5 w42 h30", "空格").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w90 vSpaceStyle AltSubmit Choose" this.configs["space_style"], ["智能空格", "原始结果", "去除空格"]).SetFont("s12")
         this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__Space"))
-        this.ResultGUI.AddText("x+15 w42 h30", "翻译").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w90 vTranslateType AltSubmit Choose" this.configs["translate_type"], ["自动检测", "英->中", "中->英", "繁->简", "日->中"]).SetFont("s12")
-        this.ResultGUI["TranslateType"].OnEvent("Change", ObjBindMethod(this, "__Translate"))
-        this.ResultGUI["TranslateType"].OnEvent("ContextMenu", ObjBindMethod(this, "__Translate"))
-        this.ResultGUI.AddText("x+15 w42 h30", "搜索").SetFont("s16")
-        this.ResultGUI.AddDropDownList("x+5 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], BaiduOCR_SearchEngines_key).SetFont("s12")
+        this.ResultGUI.AddText("x+15 y5 w55 h15", "原始语言").SetFont("s10")
+        this.ResultGUI.AddDropDownList("x+0 w65 vTranslateFrom AltSubmit Choose" this.configs["translate_from"], TLs := Map2Array(TL := OCRC_Configs["TextOCR_TranslateLanguages"])).SetFont("s8")
+        this.ResultGUI.AddText("x492 y+0 w55 h15", "目标语言").SetFont("s10")
+        this.ResultGUI.AddDropDownList("x+0 w65 vTranslateTo AltSubmit Choose" this.configs["translate_to"], TL.Has("自动检测") ? (TLs.RemoveAt(IndexOf("自动检测", TLs)), TLs) : TLs).SetFont("s8")
+        this.ResultGUI.AddButton("x492 y+0 w120 h20 vTranslate", "翻译").SetFont("s10")
+        this.ResultGUI["Translate"].OnEvent("Click", ObjBindMethod(this, "__Translate"))
+        this.ResultGUI.AddText("x+15 y5 w42 h30", "搜索").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x+0 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
         this.ResultGUI["SearchEngine"].OnEvent("ContextMenu", ObjBindMethod(this, "__Search"))
 
-        this.ResultGUI.AddEdit("x20 y50 w760 h400 vResult").SetFont("s18")
+        this.ResultGUI.AddEdit("x20 y70 w760 h400 vResult").SetFont("s18")
         this.ResultGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
         this.__Format(this.ResultGUI["FormatStyle"])
-        if this.configs["probability_type"]
-            this.__Probability()
+        this.__Probability()
         this.__Punctuation(this.ResultGUI["PunctuationStyle"])
         this.__Space(this.ResultGUI["SpaceStyle"])
 
@@ -56,7 +67,7 @@
             this.ResultGUI.AddText("x20 yp w800 h30 Center BackgroundTrans", this.probability "%").SetFont("s18")
         }
 
-        this.ResultGUI.Show("w800 h" (this.configs["probability_type"] ? 500 : 470))
+        this.ResultGUI.Show("w800 h" (this.configs["probability_type"] ? 520 : 490))
     }
 
     __Token() {
@@ -83,7 +94,7 @@
                 probability_sum += value["probability"]["average"] * StrLen(value["words"])
             this.probability := Format("{:.2f}", 100 * probability_sum / StrLen(this.result))
         }
-        else {
+        else if this.configs["probability_type"] == -1 {
             for index, value in this.json["words_result"]
                 probability_sum += value["probability"]["average"]
             this.probability := Format("{:.2f}", 100 * probability_sum / this.json["words_result_num"])
@@ -182,14 +193,14 @@
     }
 
     __Translate(CtrlObj, *) {
-        translate_engine := BaiduOCR_TranslateEngines_key[this.configs["translate_engine"]], translate_type := CtrlObj.Text, result := this.result
+        result := this.result
         TranslateGUI := Gui()
         TranslateGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
-        TranslateGUI.Title := "OCRC (BaiduOCR) 「" translate_engine "（" translate_type "）」翻译结果"
+        TranslateGUI.Title := "OCRC (BaiduOCR) 「谷歌翻译（" this.ResultGUI["TranslateFrom"].Text "->" this.ResultGUI["TranslateTo"].Text "）」翻译结果"
         TranslateGUI.BackColor := "EBEDF4"
         TranslateGUI.SetFont(, "Microsoft YaHei")
         TranslateGUI.AddEdit("x20 y20 w600 h300 vTranslate").SetFont("s18")
-        TranslateGUI["Translate"].Value := BaiduOCR_TranslateEngines[translate_engine].Call(result, BaiduOCR_TranslateTypes[translate_type][1], BaiduOCR_TranslateTypes[translate_type][2], {proxy: this.configs["translate_proxy"]})
+        TranslateGUI["Translate"].Value := GoogleTranslate(result, Index2Value(TL := OCRC_Configs["TextOCR_TranslateLanguages"], this.ResultGUI["TranslateFrom"].Value), Index2Value(TL, this.ResultGUI["TranslateTo"].Value), {proxy: this.configs["translate_proxy"]})
         TranslateGUI["Translate"].OnEvent("Change", (CtrlObj, *) => A_Clipboard := CtrlObj.Value)
         A_Clipboard := TranslateGUI["Translate"].Value
         TranslateGUI.Show("w640 h340")
@@ -198,12 +209,12 @@
     __Search(CtrlObj, *) {
         search_engine := CtrlObj.Text, result := this.result
         if search_engine == "Everything" {
-            try Run(BaiduOCR_SearchEngines["Everything"] (DirExist(result) ? " -parent `"" : " -search `"") result "`"")
+            try Run(OCRC_Configs["TextOCR_SearchEngines"]["Everything"] (DirExist(result) ? " -parent `"" : " -search `"") result "`"")
             catch
                 MsgBox("Everything 路径错误", "Everything ERROR", "Iconx 0x1000")
         }
         else {
-            try Run(StrReplace(BaiduOCR_SearchEngines[search_engine], "@W", result, 1))
+            try Run(StrReplace(OCRC_Configs["TextOCR_SearchEngines"][search_engine], "@W", result, 1))
             catch
                 MsgBox("搜索引擎「" search_engine "」无效或错误", "SearchEngine ERROR", "Iconx 0x1000")
         }

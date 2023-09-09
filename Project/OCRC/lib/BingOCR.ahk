@@ -25,13 +25,17 @@ class Bing {
         this.ResultGUI.SetFont("s18", "Microsoft YaHei")
 
         Clip(CtrlObj, *) => A_Clipboard := CtrlObj.Value
-        this.ResultGUI.AddText("x10 y20 w100 Right", "LaTeX")
+        this.ResultGUI.AddText("x10 y5 w40 vFocus Right", "引擎").SetFont("s12")
+        this.ResultGUI.AddDropDownList("x60 y5 w150 vFormulaOCREngine AltSubmit Choose" this.configs["formulaocr_engine"], Map2Array(Basic_FormulaOCREngines)).SetFont("s12")
+        this.ResultGUI["FormulaOCREngine"].OnEvent("Change", (CtrlObj, *) => Basic_FormulaOCREngines[CtrlObj.Text].Call("", this.configs["image_base64"]))
+        this.ResultGUI.AddText("x10 y40 w100 Right", "LaTeX")
         this.ResultGUI.AddEdit("x120 yp w370 h36 vLaTeXResult ReadOnly -Multi -VScroll", latex_result).OnEvent("Focus", Clip)
         this.ResultGUI.AddText("x10 y+20 w100 Right", "行内公式")
         this.ResultGUI.AddEdit("x120 yp w370 h36 vInlineResult ReadOnly -Multi -VScroll", inline_result).OnEvent("Focus", Clip)
         this.ResultGUI.AddText("x10 y+20 w100 Right", "行间公式")
         this.ResultGUI.AddEdit("x120 yp w370 h36 vDisplayResult ReadOnly -Multi -VScroll", display_result).OnEvent("Focus", Clip)
         Clip(this.ResultGUI[["LaTeXResult", "InlineResult", "DisplayResult"][this.configs["default_select"]]])
-        this.ResultGUI.Show("w500 h190")
+        this.ResultGUI["Focus"].Focus()
+        this.ResultGUI.Show("w500 h210")
     }
 }
