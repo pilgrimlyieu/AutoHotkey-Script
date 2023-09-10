@@ -1,0 +1,1 @@
+#Include Correction\Pinyin.ahk

@@ -1,4 +1,5 @@
 #NoTrayIcon
+SetMouseDelay -1
 
 global LBKeyNum := 600, LimitMins := 30, BreakSeconds := 60, ForceSeconds := 30
 

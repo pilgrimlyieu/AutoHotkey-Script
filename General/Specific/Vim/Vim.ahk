@@ -59,5 +59,5 @@ CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 
 #Hotstring * C0 ? X
 
-::jkk::SendInput("{Esc}")
-::kjj::SendInput("{Esc}")
+::jk::SendInput("{Esc}")
+::kj::SendInput("{Esc}")
