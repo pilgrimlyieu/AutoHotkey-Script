@@ -1,14 +1,19 @@
 AHK_Dir := "C:/Program Files/AutoHotkey/UX/"
 
 Scripts := [
-    "Basic/Abbreviation.ahk",
-    "Basic/Correction.ahk",
-    "Basic/Remap.ahk",
+    "Basic/Abbreviation/Email.ahk",
+    ; "Basic/Correction/AutoCorrect.ahk1",
+    "Basic/Correction/Pinyin.ahk",
+    ; "Basic/Remap/Fn.ahk",
+    "Basic/Remap/NumLock.ahk",
+    "Basic/Remap/Others.ahk",
+    "Basic/Remap/Punctuation.ahk",
     "Basic/Window/WinDrag/main.ahk1",
 
-    "General/Common.ahk",
-    "General/Health.ahk",
-    "General/Specific.ahk",
+    "General/Common/Run.ahk",
+    "General/Health/MouseHand.ahk",
+    "General/Specific/Vim/Vim.ahk",
+    "General/Specific/WindowsTerminal.ahk",
 
     "Project/Vark/main.ahk",
 ]
