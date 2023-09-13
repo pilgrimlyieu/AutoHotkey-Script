@@ -104,12 +104,17 @@
     __Format(CtrlObj, *) {
         format_style := CtrlObj.Value, result := ""
         if format_style == 1 {
-            for index, value in this.json["paragraphs_result"] {
-                for idx, vl in value["words_result_idx"]
-                    result .= this.json["words_result"][vl + 1]["words"]
-                result .= "`n"
+            if this.configs["recognition_type"] == "handwriting" || this.configs["recognition_type"] == "webimage"
+                for index, value in this.json["words_result"]
+                    result .= value["words"] (index != this.json["words_result"].Length ? SubStr(value["words"], -1, 1) ~= "[\x{4e00}-\x{9fa5}a-zA-Z\s0-9，、—“‘「『【；《]" && SubStr(this.json["words_result"][index + 1]["words"], 1, 1) ~= "[\x{4e00}-\x{9fa5}a-zA-Z\s0-9]" ? "" : "`n" : "")
+            else {
+                for index, value in this.json["paragraphs_result"] {
+                    for idx, vl in value["words_result_idx"]
+                        result .= this.json["words_result"][vl + 1]["words"]
+                    result .= "`n"
+                }
+                result := SubStr(result, 1, StrLen(result) - 1)
             }
-            result := SubStr(result, 1, StrLen(result) - 1)
         }
         else if format_style == 2 {
             for index, value in this.json["words_result"]
@@ -199,6 +204,9 @@
         TranslateGUI.Title := "OCRC (BaiduOCR) 「谷歌翻译（" this.ResultGUI["TranslateFrom"].Text "->" this.ResultGUI["TranslateTo"].Text "）」翻译结果"
         TranslateGUI.BackColor := "EBEDF4"
         TranslateGUI.SetFont(, "Microsoft YaHei")
+        TranslateGUI.AddText("vFocus")
+        TranslateGUI["Focus"].Focus()
+        TranslateGUI["Focus"].Visible := False
         TranslateGUI.AddEdit("x20 y20 w600 h300 vTranslate").SetFont("s18")
         TranslateGUI["Translate"].Value := GoogleTranslate(result, Index2Value(TL := OCRC_Configs["TextOCR_TranslateLanguages"], this.ResultGUI["TranslateFrom"].Value), Index2Value(TL, this.ResultGUI["TranslateTo"].Value), {proxy: this.configs["translate_proxy"]})
         TranslateGUI["Translate"].OnEvent("Change", (CtrlObj, *) => A_Clipboard := CtrlObj.Value)
