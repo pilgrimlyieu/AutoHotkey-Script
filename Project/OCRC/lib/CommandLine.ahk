@@ -1,18 +1,46 @@
-global OCRC_ShortCommands := Map(
+global Cli_Commands := Map(
     "-s", ,
-    "-f", ,
-    "-d", ,
-    "-S", ,
-    "-D", ,
-)
-global OCRC_LongCommands := Map(
     "--snip", ,
+    "-f", ,
     "--file", ,
+    "-d", ,
     "--dir", ,
+    "-S", ,
     "--set", ,
+    "-D", ,
     "--debug", ,
 )
-global Cli_DefaultCommand := ""
+global Cli_TextOCROptions := Map(
+    "-S", ,
+    "--show", ,
+    "-l", ,
+    "--lang", ,
+    "-t", ,
+    "--type", ,
+    "-c", ,
+    "--conf", ,
+    "-f", ,
+    "--format", ,
+    "-p", ,
+    "--punc", ,
+    "-s", ,
+    "--space", ,
+    "-o", ,
+    "--output", ,
+)
+global Cli_FormulaOCROptions := Map(
+    "-S", ,
+    "--show", ,
+    "-i", ,
+    "--inline", ,
+    "-d", ,
+    "--display", ,
+    "-s", ,
+    "--select", ,
+    "-o", ,
+    "--output", ,
+)
+global Cli_DefaultCommand := "--snip"
 
 Cli_Snip(args) {
     static SubCommands := Map(
@@ -35,13 +63,7 @@ Cli_Directory(args) {
 }
 
 Cli_Set(args) {
-    static SubCommands := Map(
-        "g", ,
-        "global", ,
-        "l", ,
-        "local", ,
-    )
-    static DefaultSubCommand := "local"
+
 }
 
 Cli_Debug(args) {
