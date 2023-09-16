@@ -65,7 +65,7 @@ Gdip_EncodeBitmapTo64string(pBitmap, extension := "png", quality := 75) {
         NumPut(   "ptr", v.ptr, ep, 24+A_PtrSize) 
     }
     DllCall("ole32\CreateStreamOnHGlobal", "ptr", 0, "int", True, "ptr*", &pStream:=0, "HRESULT")
-    DllCall("gdiplus\GdipSaveImageToStream", "ptr", pBitmap, "ptr", pStream, "ptr", pCodec, "ptr", IsSet(ep) ? ep : 0)
+    DllCall("gdiplus\GdipSaveImageToStream", "ptr", pBitmap, "ptr", pStream, "ptr", pCodec, "ptr", ep ?? 0)
     DllCall("ole32\GetHGlobalFromStream", "ptr", pStream, "ptr*", &hbin:=0, "HRESULT")
     bin := DllCall("GlobalLock", "ptr", hbin, "ptr")
     size := DllCall("GlobalSize", "uint", bin, "uptr")
