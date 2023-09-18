@@ -104,9 +104,10 @@
     __Format(CtrlObj, *) {
         format_style := CtrlObj.Value, result := ""
         if format_style == 1 {
-            if this.configs["recognition_type"] == "handwriting" || this.configs["recognition_type"] == "webimage"
+            if this.configs["recognition_type"] == "handwriting" || this.configs["recognition_type"] == "webimage" {
                 for index, value in this.json["words_result"]
                     result .= value["words"] (index != this.json["words_result"].Length ? SubStr(value["words"], -1, 1) ~= "[\x{4e00}-\x{9fa5}a-zA-Z\s0-9，、—“‘「『【；《]" && SubStr(this.json["words_result"][index + 1]["words"], 1, 1) ~= "[\x{4e00}-\x{9fa5}a-zA-Z\s0-9]" ? "" : "`n" : "")
+            }
             else {
                 for index, value in this.json["paragraphs_result"] {
                     for idx, vl in value["words_result_idx"]
