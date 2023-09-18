@@ -3,10 +3,12 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.1.0
+ * @version 2.2.0-develop
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
+
+#ErrorStdOut UTF-8
 
 if !FileExist("ahk-json.dll")
     FileInstall("lib\ahk-json.dll", "ahk-json.dll")
@@ -37,6 +39,8 @@ if OCRC_Configs["Basic"]["Basic_TextOCROnOff"]
     Hotkey(OCRC_Configs["Basic"]["Basic_TextOCRHotkey"], Basic_TextOCREngines[Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]], "On")
 if OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"]
     Hotkey(OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"], Basic_FormulaOCREngines[Map2Array(Basic_FormulaOCREngines)[OCRC_Configs["Basic"]["Basic_FormulaOCREngine"]]], "On")
+
+#!z::TextOCR_BaiduOCR("", Img2Base64())
 
 TextOCR_BaiduOCR(ThisHotkey, image := 0) {
     GlobalConstants()
