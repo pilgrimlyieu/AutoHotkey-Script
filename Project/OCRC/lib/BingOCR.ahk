@@ -10,7 +10,8 @@ class Bing {
         this.json := JSON.parse(Request("https://www.bing.com/cameraexp/api/v1/getlatex", "UTF-8", "POST", JSON.stringify(post_data), headers))
         if this.json["isError"]
             return MsgBox(this.json["errorMessage"], "BingOCR ERROR", "Iconx 0x1000")
-        this.__Show()
+        if this.configs["show"]
+            this.__Show()
     }
 
     __Show() {
