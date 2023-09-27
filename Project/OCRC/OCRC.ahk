@@ -53,6 +53,7 @@ TextOCR_BaiduOCR(ThisHotkey, image := 0) {
             ),
             Map(
                 "textocr_engine",    1,
+                "show",              1,
                 "api_key",           OCRC_Configs["BaiduOCR"]["BaiduOCR_APIKey"],
                 "secret_key",        OCRC_Configs["BaiduOCR"]["BaiduOCR_SecretKey"],
                 "token",             OCRC_Configs["BaiduOCR"]["BaiduOCR_Token"],
@@ -73,15 +74,14 @@ TextOCR_BaiduOCR(ThisHotkey, image := 0) {
         )
 }
 
-FormulaOCR_MathpixOCR(ThisHotkey, image := 0) {
+FormulaOCR_BingOCR(ThisHotkey, image := 0) {
     GlobalConstants()
-    if image || base64string := PrepareOCR(True)
-        MathpixOCR := Mathpix(
+    if image || base64string := PrepareOCR(False)
+        BingOCR := Bing(
             Map(
-                "formulaocr_engine",       2,
-                "app_id",                  OCRC_Configs["MathpixOCR"]["MathpixOCR_AppID"],
-                "app_key",                 OCRC_Configs["MathpixOCR"]["MathpixOCR_AppKey"],
-                "image_base64",            (image ~= "^data:image/jpg;base64,") ? image : image ? "data:image/jpg;base64," image : base64string,
+                "formulaocr_engine",       1,
+                "show",                    1,
+                "image_base64",            (image ~= "^data:image/jpg;base64,") ? SubStr(image, 23) : image || base64string,
                 "math_inline_delimiters",  FormulaOCR_InlineStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_InlineStyle"]],
                 "math_display_delimiters", FormulaOCR_DisplayStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_DisplayStyle"]],
                 "default_select",          OCRC_Configs["FormulaOCR"]["FormulaOCR_DefaultSelect"],
@@ -89,13 +89,16 @@ FormulaOCR_MathpixOCR(ThisHotkey, image := 0) {
         )
 }
 
-FormulaOCR_BingOCR(ThisHotkey, image := 0) {
+FormulaOCR_MathpixOCR(ThisHotkey, image := 0) {
     GlobalConstants()
-    if image || base64string := PrepareOCR(False)
-        BingOCR := Bing(
+    if image || base64string := PrepareOCR(True)
+        MathpixOCR := Mathpix(
             Map(
-                "formulaocr_engine",       1,
-                "image_base64",            (image ~= "^data:image/jpg;base64,") ? SubStr(image, 23) : image || base64string,
+                "formulaocr_engine",       2,
+                "show",                    1,
+                "app_id",                  OCRC_Configs["MathpixOCR"]["MathpixOCR_AppID"],
+                "app_key",                 OCRC_Configs["MathpixOCR"]["MathpixOCR_AppKey"],
+                "image_base64",            (image ~= "^data:image/jpg;base64,") ? image : image ? "data:image/jpg;base64," image : base64string,
                 "math_inline_delimiters",  FormulaOCR_InlineStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_InlineStyle"]],
                 "math_display_delimiters", FormulaOCR_DisplayStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_DisplayStyle"]],
                 "default_select",          OCRC_Configs["FormulaOCR"]["FormulaOCR_DefaultSelect"],

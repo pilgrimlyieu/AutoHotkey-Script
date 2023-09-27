@@ -85,10 +85,10 @@ SettingGUI(*) {
     Setting["TextOCR_FormatStyle"].ToolTip := "设置默认段落格式`n智能段落：根据返回结果智能合并段落。`n合并多行：将多行合并为一行。`n拆分多行：不对返回结果进行段落合并处理。"
     Setting.AddText("x15 y+15 w135 h25 Right", "默认标点")
     Setting.AddDropDownList("x+15 w170 vTextOCR_PunctuationStyle AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_PunctuationStyle"], ["智能标点", "原始结果", "中文标点", "英文标点"]).OnEvent("Change", UpdateVar)
-    Setting["TextOCR_PunctuationStyle"].ToolTip := "设置默认标点格式`n智能标点（实验性，可能有较大问题！）：根据上下文智能转换标点。`n原始结果：恢复上一文本处理操作前的状态（不支持连续恢复）。`n中文标点：将所有标点转换为中文标点。`n英文标点：将所有标点转换为英文标点。"
+    Setting["TextOCR_PunctuationStyle"].ToolTip := "设置默认标点格式`n智能标点（实验性，可能有较大问题！）：根据上下文智能转换标点。`n中文标点：将所有标点转换为中文标点。`n英文标点：将所有标点转换为英文标点。"
     Setting.AddText("x15 y+15 w135 h25 Right", "默认空格")
     Setting.AddDropDownList("x+15 w170 vTextOCR_SpaceStyle AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_SpaceStyle"], ["智能空格", "原始结果", "去除空格"]).OnEvent("Change", UpdateVar)
-    Setting["TextOCR_SpaceStyle"].ToolTip := "设置默认空格格式`n智能空格（实验性，可能有较大问题！在对网址等文本处理不建议使用）：根据上下文智能转换空格。`n原始结果：恢复上一文本处理操作前的状态（不支持连续恢复）。`n去除空格：去除所有空格。"
+    Setting["TextOCR_SpaceStyle"].ToolTip := "设置默认空格格式`n智能空格（实验性，可能有较大问题！在对网址等文本处理不建议使用）：根据上下文智能转换空格。`n去除空格：去除所有空格。"
     Setting.AddText("x15 y+15 w135 h25 Right", "默认翻译原始语言")
     Setting.AddDropDownList("x+15 w170 vTextOCR_TranslateFrom AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_TranslateFrom"], TLs := Map2Array(TL := OCRC_Configs["TextOCR_TranslateLanguages"])).OnEvent("Change", UpdateVar)
     Setting["TextOCR_TranslateFrom"].ToolTip := "设置翻译的默认原始语言，可在配置文件中自行添加，默认有「自动检测」「中文」和英文，默认选择「自动检测」"
