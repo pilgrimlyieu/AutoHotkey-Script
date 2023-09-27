@@ -59,6 +59,8 @@
         this.ResultGUI.AddDropDownList("x+0 w105 vSearchEngine AltSubmit Choose" this.configs["search_engine"], Map2Array(OCRC_Configs["TextOCR_SearchEngines"])).SetFont("s12")
         this.ResultGUI["SearchEngine"].OnEvent("Change", ObjBindMethod(this, "__Search"))
         this.ResultGUI["SearchEngine"].OnEvent("ContextMenu", ObjBindMethod(this, "__Search"))
+        this.ResultGUI.AddButton("x627 y+12 w148 h28 vSave", "保存").SetFont("s12")
+        this.ResultGUI["Save"].OnEvent("Click", ObjBindMethod(this, "__Save"))
 
         this.ResultGUI.AddEdit("x20 y70 w760 h400 vResult").SetFont("s18")
         this.ResultGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
@@ -199,7 +201,7 @@
         return this.result := result
     }
 
-    __Translate(CtrlObj, *) {
+    __Translate(*) {
         result := this.result
         TranslateGUI := Gui()
         TranslateGUI.OnEvent("Escape", (GuiObj) => GuiObj.Destroy())
@@ -230,6 +232,11 @@
         }
         if this.configs["close_and_search"]
             this.ResultGUI.Destroy()
+    }
+
+    __Save(*) {
+        try FileDelete(txt := FileSelect(, , "保存识别结果"))
+        FileAppend(this.result, txt ".txt")
     }
 
     __Clip(CtrlObj, *) => (this.result := CtrlObj.Value, A_Clipboard := this.result)
