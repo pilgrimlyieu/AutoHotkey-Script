@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/lang/zh-CN/).
 
-- [\[2.2.0\] \[release\] (2023-09-27)](#220-release-2023-09-27)
+- [2.2.0 \[release\] (2023-09-27)](#220-release-2023-09-27)
   - [Added](#added)
   - [Removed](#removed)
   - [Fixed](#fixed)
@@ -407,7 +407,7 @@ It has been 16 months since the latest stable version of OCRC v1.2.2 was release
   - Confidence
     - Bar
 
-[2.1.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v2.1.0...OCR-v2.2.0
+[2.2.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v2.1.0...OCR-v2.2.0
 [2.1.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v2.0.2...OCR-v2.1.0
 [2.0.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v2.0.1...OCR-v2.0.2
 [2.0.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v1.2.2...OCR-v2.0.1
