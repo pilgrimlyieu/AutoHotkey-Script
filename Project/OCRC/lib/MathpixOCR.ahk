@@ -16,7 +16,8 @@
         this.json := JSON.parse(Request("https://api.mathpix.com/v3/text", "UTF-8", "POST", JSON.stringify(post_data), headers))
         if this.json.Has("error")
             return MsgBox(this.json["error_info"]["message"], "MathpixOCR ERROR: " this.json["error_info"]["id"], "Iconx 0x1000")
-        this.__Show()
+        if this.configs["show"]
+            this.__Show()
     }
 
     __Show() {
