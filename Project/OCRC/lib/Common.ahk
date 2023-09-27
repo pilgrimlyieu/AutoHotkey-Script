@@ -46,7 +46,7 @@ UrlEncode(str) {
 
 ; Extracted & Modified from https://github.com/buliasz/AHKv2-Gdip/blob/master/Gdip_All.ahk
 Gdip_EncodeBitmapTo64string(pBitmap, extension := "png", quality := 75) {
-    DllCall("gdiplus\GdipGetImageEncodersSize", "uint*", &count:=0, "uint*", &size:=0)
+    DllCall("gdiplus\GdipGetImageEncodersSize", "uint*", &count := 0, "uint*", &size := 0)
     DllCall("gdiplus\GdipGetImageEncoders", "uint", count, "uint", size, "ptr", ci := Buffer(size))
     loop {
         if A_Index > count
@@ -64,9 +64,9 @@ Gdip_EncodeBitmapTo64string(pBitmap, extension := "png", quality := 75) {
         NumPut(  "uint",     4, ep, 20+A_PtrSize) 
         NumPut(   "ptr", v.ptr, ep, 24+A_PtrSize) 
     }
-    DllCall("ole32\CreateStreamOnHGlobal", "ptr", 0, "int", True, "ptr*", &pStream:=0, "HRESULT")
+    DllCall("ole32\CreateStreamOnHGlobal", "ptr", 0, "int", True, "ptr*", &pStream := 0, "HRESULT")
     DllCall("gdiplus\GdipSaveImageToStream", "ptr", pBitmap, "ptr", pStream, "ptr", pCodec, "ptr", ep ?? 0)
-    DllCall("ole32\GetHGlobalFromStream", "ptr", pStream, "ptr*", &hbin:=0, "HRESULT")
+    DllCall("ole32\GetHGlobalFromStream", "ptr", pStream, "ptr*", &hbin := 0, "HRESULT")
     bin := DllCall("GlobalLock", "ptr", hbin, "ptr")
     size := DllCall("GlobalSize", "uint", bin, "uptr")
     flags := 0x40000001
@@ -78,12 +78,25 @@ Gdip_EncodeBitmapTo64string(pBitmap, extension := "png", quality := 75) {
     return StrGet(str, length, "CP0")
 }
 
+Gdip_SetImageAttributesColorMatrix(Matrix) {
+	ColourMatrix := Buffer(100, 0)
+	Matrix := RegExReplace(RegExReplace(Matrix, "^[^\d-\.]+([\d\.])", "$1", , 1), "[^\d-\.]+", "|")
+	Matrix := StrSplit(Matrix, "|")
+	loop 25 {
+		M := (Matrix[A_Index] != "") ? Matrix[A_Index] : Mod(A_Index-1, 6) ? 0 : 1
+		NumPut("Float", M, ColourMatrix, (A_Index-1)*4)
+	}
+	DllCall("gdiplus\GdipCreateImageAttributes", "UPtr*", &ImageAttr := 0)
+	DllCall("gdiplus\GdipSetImageAttributesColorMatrix", "UPtr", ImageAttr, "Int", 1, "Int", 1, "UPtr", ColourMatrix.Ptr, "UPtr", 0, "Int", 0)
+	return ImageAttr
+}
+
 Gdip_Startup() {
     if !DllCall("LoadLibrary", "str", "gdiplus", "UPtr")
         throw Error("Could not load GDI+ library")
     si := Buffer(A_PtrSize = 8 ? 24 : 16, 0)
     NumPut("UInt", 1, si)
-    DllCall("gdiplus\GdiplusStartup", "UPtr*", &pToken:=0, "UPtr", si.Ptr, "UPtr", 0)
+    DllCall("gdiplus\GdiplusStartup", "UPtr*", &pToken := 0, "UPtr", si.Ptr, "UPtr", 0)
     if !pToken
         throw Error("Gdiplus failed to start. Please ensure you have gdiplus on your system")
     return pToken
@@ -99,6 +112,31 @@ Gdip_Shutdown(pToken) {
     return 0
 }
 
+Gdip_DrawImage(pGraphics, pBitmap, dx := "", dy := "", dw := "", dh := "", sx := "", sy := "", sw := "", sh := "", Matrix := 1) {
+	if !IsNumber(Matrix)
+		ImageAttr := Gdip_SetImageAttributesColorMatrix(Matrix)
+	else if Matrix != 1
+		ImageAttr := Gdip_SetImageAttributesColorMatrix("1|0|0|0|0|0|1|0|0|0|0|0|1|0|0|0|0|0|" Matrix "|0|0|0|0|0|1")
+	else
+		ImageAttr := 0
+	if (sx = "" && sy = "" && sw = "" && sh = "") {
+		if (dx = "" && dy = "" && dw = "" && dh = "") {
+			sx := dx := 0, sy := dy := 0
+			DllCall("gdiplus\GdipGetImageWidth", "UPtr", pBitmap, "uint*", &sw := 0), dw := sw
+            DllCall("gdiplus\GdipGetImageHeight", "UPtr", pBitmap, "uint*", &sh := 0), dh := sh
+		}
+		else {
+			sx := sy := 0
+			DllCall("gdiplus\GdipGetImageWidth", "UPtr", pBitmap, "uint*", &sw := 0)
+			DllCall("gdiplus\GdipGetImageHeight", "UPtr", pBitmap, "uint*", &sh := 0)
+		}
+	}
+	_E := DllCall("gdiplus\GdipDrawImageRectRect", "UPtr", pGraphics, "UPtr", pBitmap, "Float", dx, "Float", dy, "Float", dw, "Float", dh, "Float", sx, "Float", sy, "Float", sw, "Float", sh, "Int", 2, "UPtr", ImageAttr, "UPtr", 0, "UPtr", 0)
+	if ImageAttr
+        DllCall("gdiplus\GdipDisposeImageAttributes", "UPtr", ImageAttr)
+	return _E
+}
+
 Gdip_CreateBitmapFromClipboard() {
     if !DllCall("IsClipboardFormatAvailable", "UInt", 8)
         return -2
@@ -109,15 +147,69 @@ Gdip_CreateBitmapFromClipboard() {
         return -5
     if !hBitmap
         return -3
-    if !(pBitmap := Gdip_CreateBitmapFromHBITMAP(hBitmap))
+    DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", "UPtr", hBitmap, "UPtr", 0, "UPtr*", &pBitmap := 0)
+    if !pBitmap
         return -4
     DllCall("DeleteObject", "UPtr", hBitmap)
     return pBitmap
 }
 
-Gdip_CreateBitmapFromHBITMAP(hBitmap, Palette:=0) {
-    DllCall("gdiplus\GdipCreateBitmapFromHBITMAP", "UPtr", hBitmap, "UPtr", Palette, "UPtr*", &pBitmap:=0)
-    return pBitmap
+Gdip_CreateBitmapFromFile(sFile, IconNumber := 1, IconSize := "") {
+	SplitPath sFile,,, &extension := ""
+	if RegExMatch(extension, "^(?i:exe|dll)$") {
+		Sizes := IconSize ? IconSize : 256 "|" 128 "|" 64 "|" 48 "|" 32 "|" 16
+		BufSize := 16 + (2 * (A_PtrSize ? A_PtrSize : 4))
+		buf := Buffer(BufSize, 0)
+		hIcon := 0
+		for eachSize, Size in StrSplit( Sizes, "|" ) {
+			DllCall("PrivateExtractIcons", "str", sFile, "Int", IconNumber-1, "Int", Size, "Int", Size, "UPtr*", &hIcon, "UPtr*", 0, "UInt", 1, "UInt", 0)
+			if !hIcon
+				continue
+			if !DllCall("GetIconInfo", "UPtr", hIcon, "UPtr", buf.Ptr) {
+                DllCall("DestroyIcon", "UPtr", hIcon)
+				continue
+			}
+			hbmMask  := NumGet(buf, 12 + ((A_PtrSize ? A_PtrSize : 4) - 4))
+			hbmColor := NumGet(buf, 12 + ((A_PtrSize ? A_PtrSize : 4) - 4) + (A_PtrSize ? A_PtrSize : 4))
+			if !(hbmColor && DllCall("GetObject", "UPtr", hbmColor, "Int", BufSize, "UPtr", buf.Ptr)) {
+                DllCall("DestroyIcon", "UPtr", hIcon)
+				continue
+			}
+			break
+		}
+		if !hIcon
+			return -1
+		Width := NumGet(buf, 4, "Int"), Height := NumGet(buf, 8, "Int")
+		hbm := CreateDIBSection(Width, -Height), hdc := DllCall("CreateCompatibleDC", "UPtr", 0), obm := DllCall("SelectObject", "UPtr", hdc, "UPtr", hbm)
+		if !DllCall("DrawIconEx", "UPtr", hdc, "Int", 0, "Int", 0, "UPtr", hIcon, "UInt", Width, "UInt", Height, "UInt", 0, "UPtr", 0, "UInt", 3) {
+            DllCall("DestroyIcon", "UPtr", hIcon)
+			return -2
+		}
+		dib := Buffer(104)
+		DllCall("GetObject", "UPtr", hbm, "Int", A_PtrSize = 8 ? 104 : 84, "UPtr", dib.Ptr)
+		Stride := NumGet(dib, 12, "Int"), Bits := NumGet(dib, 20 + (A_PtrSize = 8 ? 4 : 0))
+		DllCall("gdiplus\GdipCreateBitmapFromScan0", "Int", Width, "Int", Height, "Int", Stride, "Int", 0x26200A, "UPtr", Bits, "UPtr*", &pBitmapOld := 0)
+        DllCall("gdiplus\GdipCreateBitmapFromScan0", "Int", Width, "Int", Height, "Int", 0, "Int", 0x26200A, "UPtr", 0, "UPtr*", &pBitmap := 0)
+        DllCall("gdiplus\GdipGetImageGraphicsContext", "UPtr", pBitmap, "UPtr*", &_G := 0)
+		Gdip_DrawImage(_G, pBitmapOld, 0, 0, Width, Height, 0, 0, Width, Height)
+		DllCall("SelectObject", "UPtr", hdc, "UPtr", obm), DllCall("DeleteObject", "UPtr", hbm), DllCall("DeleteObject", "UPtr", hdc)
+		DllCall("gdiplus\GdipDeleteGraphics", "UPtr", _G), DllCall("gdiplus\GdipDisposeImage", "UPtr", pBitmapOld)
+        DllCall("DestroyIcon", "UPtr", hIcon)
+	}
+    else {
+		DllCall("gdiplus\GdipCreateBitmapFromFile", "UPtr", StrPtr(sFile), "UPtr*", &pBitmap := 0)
+	}
+	return pBitmap
+}
+
+CreateDIBSection(w, h, hdc := "", bpp := 32, &ppvBits := 0) {
+	hdc2 := hdc ? hdc : DllCall("GetDC", "UPtr", 0)
+	bi := Buffer(40, 0)
+	NumPut("UInt", 40, "UInt", w, "UInt", h, "ushort", 1, "ushort", bpp, "UInt", 0, bi)
+	hbm := DllCall("CreateDIBSection", "UPtr", hdc2, "UPtr", bi.Ptr, "UInt", 0, "UPtr*", &ppvBits, "UPtr", 0, "UInt", 0, "UPtr")
+	if !hdc
+        DllCall("ReleaseDC", "UPtr", hdc2, "UPtr", hdc)
+	return hbm
 }
 
 Map2Array(in_map, forkey := 1) {
@@ -150,11 +242,22 @@ GetScreenshot(SnipTime := 10, BufferTime := 1000, If3pSnip := 0, CmdOf3pSnip := 
     return 0
 }
 
-Img2Base64(Front := False, Quality := 75) {
+ClipImg2Base64(Front := False, Quality := 75) {
     try {
         pToken       := Gdip_Startup()
         pBitmap      := Gdip_CreateBitmapFromClipboard()
         base64string := Gdip_EncodeBitmapTo64string(pBitmap, "JPG", Quality)
+        DllCall("gdiplus\GdipDisposeImage", "UPtr", pBitmap)
+        Gdip_Shutdown(pToken)
+    }
+    return Front ? "data:image/jpg;base64," base64string : base64string
+}
+
+ImgFile2Base64(ImgFile, Extension := "PNG", Front := False, Quality := 75) {
+    try {
+        pToken       := Gdip_Startup()
+        pBitmap      := Gdip_CreateBitmapFromFile(ImgFile)
+        base64string := Gdip_EncodeBitmapTo64string(pBitmap, Extension, Quality)
         DllCall("gdiplus\GdipDisposeImage", "UPtr", pBitmap)
         Gdip_Shutdown(pToken)
     }
@@ -181,7 +284,7 @@ PrepareOCR(base64_front) {
             MsgBox("未检测到截图", "Clipping ERROR", "Iconx 0x1000")
         return
     }
-    base64string := Img2Base64(base64_front, OCRC_Configs["Advance"]["Advance_EBto64SQuality"])
+    base64string := ClipImg2Base64(base64_front, OCRC_Configs["Advance"]["Advance_EBto64SQuality"])
     A_Clipboard := ClipSaved, ClipSaved := ""
     return base64string
 }
@@ -224,4 +327,26 @@ GoogleTranslate(text, from := "auto", to := "zh-CN", configs := {}) {
         try for index, sentence in JSON.parse(Request("https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=" from "&tl=" to "&q=" UrlEncode(text), , , , , configs.proxy))[1]
             result .= sentence[1]
     return result
+}
+
+FileTextOCR(*) {
+    images := FileSelect("M", , "选择图片进行文本 OCR（可多选）", "*.jpg; *.jpeg; *.png; *.bmp")
+    if images
+        for index, image in images {
+            SplitPath(image, , , &extension)
+            Basic_TextOCREngines[Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(image, extension, OCRC_Configs["Advance"]["Advance_EBto64SQuality"]))
+        }
+}
+
+DirectoryTextOCR(*) {
+    images_directory := FileSelect("D", , "选择图片文件夹进行文本 OCR")
+    if images_directory {
+        loop files images_directory "\*.*" {
+            if A_LoopFileExt ~= "jpg|jpeg|png|bmp" {
+                ocr_object := Basic_TextOCREngines[Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(A_LoopFileFUllPath, A_LoopFileExt, OCRC_Configs["Advance"]["Advance_EBto64SQuality"]), 0)
+                try FileDelete(images_directory "\" A_LoopFileName ".txt")
+                FileAppend(ocr_object.__Process(False), images_directory "\" A_LoopFileName ".txt", "`n UTF-8")
+            }
+        }
+    }
 }
