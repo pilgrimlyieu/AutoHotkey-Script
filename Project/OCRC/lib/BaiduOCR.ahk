@@ -13,13 +13,13 @@
             this.__Show()
     }
 
-    __Process(clip := True) {
+    __Process(clip) {
         this.__Format(this.configs["format_style"])
         this.__Probability()
         this.__Punctuation(this.configs["punctuation_style"])
         this.__Space(this.configs["space_style"])
         if clip
-            this.__Clip(this.result)
+            A_Clipboard := this.result
         return this.result
     }
 
@@ -42,13 +42,13 @@
         ))
         this.ResultGUI.AddText("x+15 y5 w42 h30", "排版").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w90 vFormatStyle AltSubmit Choose" this.configs["format_style"], ["智能段落", "合并多行", "拆分多行"]).SetFont("s12")
-        this.ResultGUI["FormatStyle"].OnEvent("Change", ObjBindMethod(this, "__TextProcess", this.__Format, this.ResultGUI["FormatStyle"].Value))
+        this.ResultGUI["FormatStyle"].OnEvent("Change", ObjBindMethod(this, "__TextProcess", ObjBindMethod(this, "__Format"), this.ResultGUI["FormatStyle"]))
         this.ResultGUI.AddText("x197 y+15 w42 h30", "标点").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w90 vPunctuationStyle AltSubmit Choose" this.configs["punctuation_style"], ["智能标点", "中文标点", "英文标点"]).SetFont("s12")
-        this.ResultGUI["PunctuationStyle"].OnEvent("Change", ObjBindMethod(this, "__TextProcess", this.__Punctuation, this.ResultGUI["PunctuationStyle"].Value))
+        this.ResultGUI["PunctuationStyle"].OnEvent("Change", ObjBindMethod(this, "__TextProcess", ObjBindMethod(this, "__Punctuation"), this.ResultGUI["PunctuationStyle"]))
         this.ResultGUI.AddText("x+15 y5 w42 h30", "空格").SetFont("s12")
         this.ResultGUI.AddDropDownList("x+0 w90 vSpaceStyle AltSubmit Choose" this.configs["space_style"], ["智能空格", "去除空格"]).SetFont("s12")
-        this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__TextProcess", this.__Space, this.ResultGUI["SpaceStyle"].Value))
+        this.ResultGUI["SpaceStyle"].OnEvent("Change", ObjBindMethod(this, "__TextProcess", ObjBindMethod(this, "__Space"), this.ResultGUI["SpaceStyle"]))
         this.ResultGUI.AddText("x+15 y5 w55 h15", "原始语言").SetFont("s10")
         this.ResultGUI.AddDropDownList("x+0 w65 vTranslateFrom AltSubmit Choose" this.configs["translate_from"], TLs := Map2Array(TL := OCRC_Configs["TextOCR_TranslateLanguages"])).SetFont("s8")
         this.ResultGUI.AddText("x492 y+0 w55 h15", "目标语言").SetFont("s10")
@@ -62,7 +62,7 @@
 
         this.ResultGUI.AddEdit("x20 y70 w760 h400 vResult").SetFont("s18")
         this.ResultGUI["Result"].OnEvent("Change", ObjBindMethod(this, "__Clip"))
-        this.__Process()
+        this.ResultGUI["Result"].Value := this.__Process(True)
 
         if this.configs["probability_type"] {
             if this.probability <= 60
@@ -109,8 +109,8 @@
         }
     }
 
-    __TextProcess(Function, option, *) {
-        this.result := Function(option)
+    __TextProcess(Function, CtrlObj, *) {
+        this.result := Function(CtrlObj.Value)
         this.ResultGUI["Result"].Value := this.result
         this.__Clip(this.ResultGUI["Result"])
     }
@@ -140,7 +140,7 @@
                 result .= value["words"] "`n"
             result := SubStr(result, 1, StrLen(result) - 1)
         }
-        return result
+        return this.result := result
     }
 
     __Punctuation(option) {
@@ -169,7 +169,7 @@
             for CP, EP in BaiduOCR_c2ePunctuations
                 result := StrReplace(result, CP, EP)
         }
-        return result
+        return this.result := result
     }
 
     __Space(option) {
@@ -196,7 +196,7 @@
         }
         else if option == 2
             result := StrReplace(result, A_Space)
-        return result
+        return this.result := result
     }
 
     __Translate(CtrlObj, *) {
