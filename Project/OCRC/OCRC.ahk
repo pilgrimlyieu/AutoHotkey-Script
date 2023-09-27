@@ -42,8 +42,6 @@ if OCRC_Configs["Basic"]["Basic_TextOCROnOff"]
 if OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"]
     Hotkey(OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"], Basic_FormulaOCREngines[Map2Array(Basic_FormulaOCREngines)[OCRC_Configs["Basic"]["Basic_FormulaOCREngine"]]], "On")
 
-#!z::TextOCR_BaiduOCR("", ClipImg2Base64())
-
 TextOCR_BaiduOCR(ThisHotkey, image := 0, show := 1) {
     GlobalConstants()
     if image || base64string := PrepareOCR(False)
