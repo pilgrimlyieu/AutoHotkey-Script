@@ -29,6 +29,8 @@ A_IconTip := "OCRC"
 A_TrayMenu.Delete()
 A_TrayMenu.Add("OCRC 设置", SettingGUI)
 A_TrayMenu.Add("OCR 引擎设置", OCREnginesGUI)
+A_TrayMenu.Add("导入图片", FileTextOCR)
+A_TrayMenu.Add("导入文件夹", DirectoryTextOCR)
 A_TrayMenu.Add("重启", (*) => Reload())
 A_TrayMenu.Add("退出", (*) => ExitApp())
 A_TrayMenu.ClickCount := 1
@@ -40,12 +42,12 @@ if OCRC_Configs["Basic"]["Basic_TextOCROnOff"]
 if OCRC_Configs["Basic"]["Basic_FormulaOCROnOff"]
     Hotkey(OCRC_Configs["Basic"]["Basic_FormulaOCRHotkey"], Basic_FormulaOCREngines[Map2Array(Basic_FormulaOCREngines)[OCRC_Configs["Basic"]["Basic_FormulaOCREngine"]]], "On")
 
-#!z::TextOCR_BaiduOCR("", Img2Base64())
+#!z::TextOCR_BaiduOCR("", ClipImg2Base64())
 
-TextOCR_BaiduOCR(ThisHotkey, image := 0) {
+TextOCR_BaiduOCR(ThisHotkey, image := 0, show := 1) {
     GlobalConstants()
     if image || base64string := PrepareOCR(False)
-        BaiduOCR := Baidu(
+        return BaiduOCR := Baidu(
             Map(
                 "paragraph",     "true",
                 "probability",   OCRC_Configs["BaiduOCR"]["BaiduOCR_ProbabilityType"] ? "true" : "false",
@@ -53,7 +55,7 @@ TextOCR_BaiduOCR(ThisHotkey, image := 0) {
             ),
             Map(
                 "textocr_engine",    1,
-                "show",              1,
+                "show",              show,
                 "api_key",           OCRC_Configs["BaiduOCR"]["BaiduOCR_APIKey"],
                 "secret_key",        OCRC_Configs["BaiduOCR"]["BaiduOCR_SecretKey"],
                 "token",             OCRC_Configs["BaiduOCR"]["BaiduOCR_Token"],
@@ -74,13 +76,13 @@ TextOCR_BaiduOCR(ThisHotkey, image := 0) {
         )
 }
 
-FormulaOCR_BingOCR(ThisHotkey, image := 0) {
+FormulaOCR_BingOCR(ThisHotkey, image := 0, show := 1) {
     GlobalConstants()
     if image || base64string := PrepareOCR(False)
-        BingOCR := Bing(
+        return BingOCR := Bing(
             Map(
                 "formulaocr_engine",       1,
-                "show",                    1,
+                "show",                    show,
                 "image_base64",            (image ~= "^data:image/jpg;base64,") ? SubStr(image, 23) : image || base64string,
                 "math_inline_delimiters",  FormulaOCR_InlineStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_InlineStyle"]],
                 "math_display_delimiters", FormulaOCR_DisplayStyles[OCRC_Configs["FormulaOCR"]["FormulaOCR_DisplayStyle"]],
@@ -89,13 +91,13 @@ FormulaOCR_BingOCR(ThisHotkey, image := 0) {
         )
 }
 
-FormulaOCR_MathpixOCR(ThisHotkey, image := 0) {
+FormulaOCR_MathpixOCR(ThisHotkey, image := 0, show := 1) {
     GlobalConstants()
     if image || base64string := PrepareOCR(True)
-        MathpixOCR := Mathpix(
+        return MathpixOCR := Mathpix(
             Map(
                 "formulaocr_engine",       2,
-                "show",                    1,
+                "show",                    show,
                 "app_id",                  OCRC_Configs["MathpixOCR"]["MathpixOCR_AppID"],
                 "app_key",                 OCRC_Configs["MathpixOCR"]["MathpixOCR_AppKey"],
                 "image_base64",            (image ~= "^data:image/jpg;base64,") ? image : image ? "data:image/jpg;base64," image : base64string,
