@@ -8,6 +8,20 @@ global Basic_FormulaOCREngines     := Map(
     "Mathpix OCR", FormulaOCR_MathpixOCR,
     "Bing OCR", FormulaOCR_BingOCR,
 )
+global Basic_Base64HaveFront       := Map(
+    "百度 OCR", False,
+    "Mathpix OCR", True,
+    "Bing OCR", False,
+)
+
+global FormulaOCR_InlineStyles        := [
+    ["$", "$"],
+    ["\(", "\)"],
+]
+global FormulaOCR_DisplayStyles       := [
+    ["$$", "$$"],
+    ["\[", "\]"],
+]
 
 global BaiduOCR_RecognitionTypes := Map(
     "general_basic",  "通用文字（标准）识别",
@@ -55,12 +69,3 @@ global BaiduOCR_e2cPunctuations  := Map(
     "[", "【",
     "]", "】",
 )
-
-global FormulaOCR_InlineStyles        := [
-    ["$", "$"],
-    ["\(", "\)"],
-]
-global FormulaOCR_DisplayStyles       := [
-    ["$$", "$$"],
-    ["\[", "\]"],
-]

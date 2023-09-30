@@ -236,7 +236,8 @@
 
     __Save(*) {
         try FileDelete(txt := FileSelect(, , "保存识别结果"))
-        FileAppend(this.result, txt ".txt")
+        if txt
+            FileAppend(this.result, txt ".txt")
     }
 
     __Clip(CtrlObj, *) => (this.result := CtrlObj.Value, A_Clipboard := this.result)
