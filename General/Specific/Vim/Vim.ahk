@@ -48,6 +48,8 @@ ListJoin(list, string) {
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
+Tab & `::SetCapsLockState !GetKeyState("CapsLock", "T")
+
 #HotIf WinActive("^(i|s|v|V)") && WinActive("ahk_class Vim")
 
 CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
