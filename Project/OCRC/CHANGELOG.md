@@ -49,6 +49,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
 
 ## [2.2.1] [[release](https://github.com/pilgrimlyieu/AutoHotkey-Script/releases/tag/OCRC-v2.2.1)] (2023-10-04)
 
+The version was updated a few days ago, but it has not been released and updated for a long time. In fact, not much has been updated, just fixing some problems.
+
 ### Fixed
 
 - Text OCR
@@ -68,7 +70,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
   - The taskbar menu adds the "Import Picture" and "Import Folder" options to support the Text OCR of external files.
   - "Import Picture": You can select multiple image files (supports jpg, jpeg, png and bmp formats), and an OCR result window will be opened for each image.
   - "Import Folder": You can select a folder, and the results of all image files in the folder (supports jpg, jpeg, png and bmp formats) will be saved to the corresponding txt file with the file name.
-  - The result window supports saving OCR results
+  - The problem of saving the result even if canceling in the result window
 
 ### Removed
 
