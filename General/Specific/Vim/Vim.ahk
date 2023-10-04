@@ -27,6 +27,8 @@ ListJoin(list, string) {
     return SubStr(str, StrLen(string) + 1)
 }
 
+#+CapsLock::SetCapsLockState(!GetKeyState("CapsLock", "T"))
+
 #HotIf !WinActive("ahk_class Vim")
 
 !q::{
@@ -47,8 +49,6 @@ ListJoin(list, string) {
     }
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
-
-Tab & `::SetCapsLockState !GetKeyState("CapsLock", "T")
 
 #HotIf WinActive("^(i|s|v|V)") && WinActive("ahk_class Vim")
 
