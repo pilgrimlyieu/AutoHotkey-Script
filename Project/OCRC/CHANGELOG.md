@@ -4,18 +4,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/lang/zh-CN/).
 
+- [2.2.1 \[release\] (2023-10-04)](#221-release-2023-10-04)
+  - [Fixed](#fixed)
 - [2.2.0 \[release\] (2023-09-27)](#220-release-2023-09-27)
   - [Added](#added)
   - [Removed](#removed)
-  - [Fixed](#fixed)
+  - [Fixed](#fixed-1)
 - [2.1.0 \[release\] (2023-09-09)](#210-release-2023-09-09)
   - [Added](#added-1)
   - [Changed](#changed)
   - [Removed](#removed-1)
-  - [Fixed](#fixed-1)
+  - [Fixed](#fixed-2)
 - [2.0.2 \[release\] (2023-09-05)](#202-release-2023-09-05)
   - [Added](#added-2)
-  - [Fixed](#fixed-2)
+  - [Fixed](#fixed-3)
 - [2.0.1 \[release\] (2023-09-05)](#201-release-2023-09-05)
   - [Added](#added-3)
   - [Changed](#changed-1)
@@ -24,26 +26,35 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0
   - [Changed](#changed-2)
 - [1.2.1 \[release\] (2022-04-23)](#121-release-2022-04-23)
   - [Added](#added-4)
-  - [Fixed](#fixed-3)
+  - [Fixed](#fixed-4)
 - [1.2.0 First Released Version \[release\] (2022-04-16)](#120-first-released-version-release-2022-04-16)
   - [Added](#added-5)
   - [Changed](#changed-3)
-  - [Fixed](#fixed-4)
-- [1.1.3 (2022-04-05)](#113-2022-04-05)
   - [Fixed](#fixed-5)
+- [1.1.3 (2022-04-05)](#113-2022-04-05)
+  - [Fixed](#fixed-6)
 - [1.1.2 (2022-04-04)](#112-2022-04-04)
   - [Added](#added-6)
-  - [Fixed](#fixed-6)
+  - [Fixed](#fixed-7)
 - [1.1.1 (2022-04-04)](#111-2022-04-04)
   - [Added](#added-7)
   - [Changed](#changed-4)
-  - [Fixed](#fixed-7)
+  - [Fixed](#fixed-8)
 - [1.1.0 (2022-04-04)](#110-2022-04-04)
   - [Added](#added-8)
   - [Changed](#changed-5)
   - [Removed](#removed-3)
 - [1.0.0 (2022-04-03)](#100-2022-04-03)
   - [Added](#added-9)
+
+## [2.2.1] [[release](https://github.com/pilgrimlyieu/AutoHotkey-Script/releases/tag/OCRC-v2.2.1)] (2023-10-04)
+
+### Fixed
+
+- Text OCR
+  - The setting update does not take effect on the imported image or folder OCR in time
+  - JPG encoding accuracy does not take effect on the imported image or folder OCR
+  - The problem of saving the result window even if canceling
 
 ## [2.2.0] [[release](https://github.com/pilgrimlyieu/AutoHotkey-Script/releases/tag/OCRC-v2.2.0)] (2023-09-27)
 
@@ -407,6 +418,7 @@ It has been 16 months since the latest stable version of OCRC v1.2.2 was release
   - Confidence
     - Bar
 
+[2.2.1]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v2.2.0...OCR-v2.2.1
 [2.2.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v2.1.0...OCR-v2.2.0
 [2.1.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v2.0.2...OCR-v2.1.0
 [2.0.2]: https://github.com/pilgrimlyieu/AutoHotkey-Script/compare/OCR-v2.0.1...OCR-v2.0.2
