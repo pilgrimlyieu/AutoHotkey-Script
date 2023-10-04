@@ -1,11 +1,10 @@
 #NoTrayIcon
 
+#Include ..\..\Library\Clipboard.ahk
+
 ; 请将 Everything 目录放 PATH
 #f::{
-    ClipSaved := ClipboardAll(), A_Clipboard := ""
-    SendInput("{Ctrl Down}c{Ctrl Up}")
-    ClipWait(0.5, 0)
-    selected := Trim(A_Clipboard)
+    ClipLists := GetSelectedText(), ClipSaved := ClipLists[1], selected := ClipLists[2]
     if DirExist(selected)
         ; "Run(everything -path `"" selected "`"") ; 为路径则打开路径（包括子文件夹）
         Run("everything -parent `"" selected "`"") ; 为路径则打开路径（不包括子文件夹）

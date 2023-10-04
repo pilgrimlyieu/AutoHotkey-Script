@@ -1,5 +1,7 @@
 #NoTrayIcon
 
+#Include ..\..\..\Library\Clipboard.ahk
+
 SetTitleMatchMode "RegEx"
 SetWinDelay 0
 MonitorGetWorkArea( , , , &WorkAreaInfoRight, &WorkAreaInfoBottom)
@@ -32,9 +34,7 @@ ListJoin(list, string) {
 #HotIf !WinActive("ahk_class Vim")
 
 !q::{
-    ClipSaved := ClipboardAll(), A_Clipboard := ""
-    SendInput("{Ctrl Down}c{Ctrl Up}")
-    clip_result := ClipWait(0.5, 0)
+    ClipLists := GetSelectedText(), ClipSaved := ClipLists[1], clip_result := ClipLists[2]
     if InStr(A_Clipboard, "`r`n")
         Run("gvim -d `"" ListJoin(StrSplit(A_Clipboard, "`r`n"), "`" `"") "`"", , , &process_id)
     else if clip_result
