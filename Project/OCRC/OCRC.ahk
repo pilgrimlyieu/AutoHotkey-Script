@@ -2,7 +2,7 @@
  * @description Optical Character Recognition Commander
  * @file OCRC.ahk
  * @author PilgrimLyieu
- * @date 2023/08/24
+ * @date 2023/10/05
  * @version 2.2.2-beta.2
  ***********************************************************************/
 
