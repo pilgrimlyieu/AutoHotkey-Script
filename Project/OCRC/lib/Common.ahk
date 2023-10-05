@@ -295,11 +295,29 @@ DirectoryTextOCR(*) {
     GlobalConstants()
     images_directory := FileSelect("D", , "选择图片文件夹进行文本 OCR")
     if images_directory {
+        always_overwrite := OCRC_Configs["Basic"]["Basic_AlwaysOverwrite"]
         loop files images_directory "\*.*" {
             if A_LoopFileExt ~= "jpg|jpeg|png|bmp" {
                 ocr_object := Basic_TextOCREngines[engine := Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(A_LoopFileFUllPath, A_LoopFileExt, Basic_Base64HaveFront[engine], OCRC_Configs["Advance"]["Advance_EBto64SQuality"]), 0)
-                try FileDelete(images_directory "\" A_LoopFileName ".txt")
+                SetTimer(ChangeButtonNames, 10)
+                if have_file := FileExist(A_LoopFileFullPath) && (overwrite := always_overwrite || (overwrite := MsgBox("文件已存在，是否覆盖？", "OverwriteFile", "Icon? 0x1000 CancelTryAgainContinue")) == "TryAgain" || overwrite == "Continue") {
+                    if overwrite == "Continue"
+                        always_overwrite := 1
+                    try FileDelete(images_directory "\" A_LoopFileName ".txt")
+                    catch
+                        MsgBox("覆盖失败", "Overwrite ERROR", "Iconx 0x1000")
+                }
+                if !have_file || overwrite == 1 || overwrite == "TryAgain" || overwrite == "Continue"
                 FileAppend(ocr_object.__Process(False), images_directory "\" A_LoopFileName ".txt", "`n UTF-8")
+            }
+        }
+        ChangeButtonNames() {
+            if WinExist("OverwriteFile") {
+                SetTimer(, 0)
+                WinActivate
+                ControlSetText("跳过", "Button1")
+                ControlSetText("覆盖", "Button2")
+                ControlSetText("总是覆盖", "Button3")
             }
         }
     }

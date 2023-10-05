@@ -235,8 +235,11 @@
     }
 
     __Save(*) {
-        try FileDelete(txt := FileSelect(, , "保存识别结果"))
-        if txt
+        if FileExist(txt := FileSelect(, , "保存识别结果")) && (overwrite := this.configs["always_overwrite"] || MsgBox("文件已存在，是否覆盖？", "OverwriteFile", "Icon? Default2 0x1000 YesNo") == "Yes")
+            try FileDelete(txt)
+            catch
+                return MsgBox("覆盖失败", "Overwrite ERROR", "Iconx 0x1000")
+        if txt && (overwrite == 1 || overwrite == "Yes")
             FileAppend(this.result, txt ".txt")
     }
 

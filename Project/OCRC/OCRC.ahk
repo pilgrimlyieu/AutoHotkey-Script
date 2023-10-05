@@ -70,6 +70,7 @@ TextOCR_BaiduOCR(ThisHotkey, image := 0, show := 1) {
                 "translate_to",      OCRC_Configs["TextOCR"]["TextOCR_TranslateTo"],
                 "search_engine",     OCRC_Configs["TextOCR"]["TextOCR_SearchEngine"],
                 "close_and_search",  OCRC_Configs["TextOCR"]["TextOCR_CloseAndSearch"],
+                "always_overwrite",  OCRC_Configs["TextOCR"]["TextOCR_AlwaysOverwrite"],
             )
         )
 }
