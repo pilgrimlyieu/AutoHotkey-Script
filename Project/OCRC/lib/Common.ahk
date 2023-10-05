@@ -311,6 +311,7 @@ DirectoryTextOCR(*) {
                 FileAppend(ocr_object.__Process(False), A_LoopFileFullPath ".txt", "`n UTF-8")
             }
         }
+        MsgBox("已完成文件夹文本 OCR 结果输出", "Text OCR", "Iconi 0x1000")
         ChangeButtonNames() {
             if WinExist("OverwriteFile") {
                 SetTimer(, 0)
