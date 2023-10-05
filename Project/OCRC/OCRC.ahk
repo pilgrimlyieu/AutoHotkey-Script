@@ -3,7 +3,7 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.2.1
+ * @version 2.2.2-beta.1
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
@@ -70,6 +70,7 @@ TextOCR_BaiduOCR(ThisHotkey, image := 0, show := 1) {
                 "translate_to",      OCRC_Configs["TextOCR"]["TextOCR_TranslateTo"],
                 "search_engine",     OCRC_Configs["TextOCR"]["TextOCR_SearchEngine"],
                 "close_and_search",  OCRC_Configs["TextOCR"]["TextOCR_CloseAndSearch"],
+                "always_overwrite",  OCRC_Configs["TextOCR"]["TextOCR_AlwaysOverwrite"],
             )
         )
 }

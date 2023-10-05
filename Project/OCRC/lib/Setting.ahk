@@ -79,7 +79,7 @@ SettingGUI(*) {
     Setting["Advance_GoogleTranslateProxy"].ToolTip := "设置谷歌翻译的代理。如不使用谷歌翻译则无需设置"
 
     Setting["Tabs"].UseTab("TextOCR")
-    Setting.AddGroupBox("x20 y50 w325 h310", "默认选项")
+    Setting.AddGroupBox("x20 y50 w325 h340", "默认选项")
     Setting.AddText("x15 y80 w135 h25 Right", "默认排版")
     Setting.AddDropDownList("x+15 w170 vTextOCR_FormatStyle AltSubmit Choose" OCRC_Configs["TextOCR"]["TextOCR_FormatStyle"], ["智能段落", "合并多行", "拆分多行"]).OnEvent("Change", UpdateVar)
     Setting["TextOCR_FormatStyle"].ToolTip := "设置默认段落格式`n智能段落：根据返回结果智能合并段落。`n合并多行：将多行合并为一行。`n拆分多行：不对返回结果进行段落合并处理。"
@@ -100,6 +100,8 @@ SettingGUI(*) {
     Setting["TextOCR_SearchEngine"].ToolTip := "设置默认搜索引擎。以下为默认选项（可在配置文件中移除或添加）：`n百度：百度搜索。`n谷歌：谷歌搜索。`n必应：必应搜索。`n百度百科：百度百科搜索。`n维基百科：维基百科搜索。"
     Setting.AddCheckBox("x18 y+15 w180 vTextOCR_CloseAndSearch Right Checked" OCRC_Configs["TextOCR"]["TextOCR_CloseAndSearch"], "搜索时关闭结果窗口").OnEvent("Click", UpdateVar)
     Setting["TextOCR_CloseAndSearch"].ToolTip := "设置是否在点击搜索后关闭结果窗口"
+    Setting.AddCheckBox("x18 y+15 w180 vTextOCR_AlwaysOverwrite Right Checked" OCRC_Configs["TextOCR"]["TextOCR_AlwaysOverwrite"], "保存时总是覆盖文件").OnEvent("Click", UpdateVar)
+    Setting["TextOCR_AlwaysOverwrite"].ToolTip := "设置保存结果时是否默认覆盖文件"
 
     Setting["Tabs"].UseTab("FormulaOCR")
     Setting.AddGroupBox("x20 y50 w325 h110", "基础设置")
@@ -198,6 +200,7 @@ CreateConfig() {
     IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_TranslateTo")
     IniWrite(2, OCRC_ConfigFilePath, "TextOCR", "TextOCR_SearchEngine")
     IniWrite(1, OCRC_ConfigFilePath, "TextOCR", "TextOCR_CloseAndSearch")
+    IniWrite(0, OCRC_ConfigFilePath, "TextOCR", "TextOCR_AlwaysOverwrite")
 
     IniWrite(1, OCRC_ConfigFilePath, "FormulaOCR", "FormulaOCR_InlineStyle")
     IniWrite(1, OCRC_ConfigFilePath, "FormulaOCR", "FormulaOCR_DisplayStyle")
