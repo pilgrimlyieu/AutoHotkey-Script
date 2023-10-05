@@ -8,7 +8,7 @@
             post_data .= "&" key "=" value
         this.json := JSON.parse(Request("https://aip.baidubce.com/rest/2.0/ocr/v1/" this.configs["recognition_type"] "?access_token=" this.configs["token"], "UTF-8", "POST", post_data, Map("Content-Type", "application/x-www-form-urlencoded")))
         if this.json.Has("error_msg")
-            return MsgBox(this.json["error_msg"], "BaiduOCR ERROR", "Iconx 0x1000")
+            return MsgBox(this.json["error_msg"], "BaiduOCR ERROR " this.json["error_code"], "Iconx 0x1000")
         if this.configs["show"]
             this.__Show()
     }

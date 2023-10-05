@@ -289,7 +289,7 @@ FileTextOCR(*) {
             SplitPath(image, &name, , &extension)
             try Basic_TextOCREngines[engine := Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(image, extension, Basic_Base64HaveFront[engine], OCRC_Configs["Advance"]["Advance_EBto64SQuality"]))
             catch
-                MsgBox(name " 文本 OCR 失败", "Text OCR ERROR", "Iconx 0x1000")
+                MsgBox(name " 文本 OCR 失败", "TextOCR ERROR", "Iconx 0x1000")
         }
 }
 
@@ -302,7 +302,7 @@ DirectoryTextOCR(*) {
             if A_LoopFileExt ~= "jpg|jpeg|png|bmp" {
                 ocr_object := Basic_TextOCREngines[engine := Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(A_LoopFileFUllPath, A_LoopFileExt, Basic_Base64HaveFront[engine], OCRC_Configs["Advance"]["Advance_EBto64SQuality"]), 0)
                 SetTimer(ChangeButtonNames, 1)
-                if (have_file := FileExist(A_LoopFileFullPath ".txt")) && ((overwrite := always_overwrite) || (overwrite := MsgBox("文件 " A_LoopFileName ".txt 已存在，是否覆盖？", "OverwriteFile", "Icon? 0x1000 CancelTryAgainContinue")) == "TryAgain" || overwrite == "Continue") {
+                if (have_file := FileExist(A_LoopFileFullPath ".txt")) && ((overwrite := always_overwrite) || (overwrite := MsgBox("文件 " A_LoopFileName ".txt 已存在，是否覆盖？", "FolderImport OverwriteFile", "Icon? 0x1000 CancelTryAgainContinue")) == "TryAgain" || overwrite == "Continue") {
                     if overwrite == "Continue"
                         always_overwrite := 1
                     try FileDelete(A_LoopFileFullPath ".txt")
@@ -313,14 +313,16 @@ DirectoryTextOCR(*) {
                     FileAppend(ocr_object.__Process(False), A_LoopFileFullPath ".txt", "`n UTF-8")
             }
         }
-        MsgBox("已完成文件夹文本 OCR 结果输出", "Text OCR", "Iconi 0x1000")
+        MsgBox("已完成文件夹文本 OCR 结果输出", "TextOCR", "Iconi 0x1000")
         ChangeButtonNames() {
-            if WinExist("OverwriteFile") {
+            if WinExist("FolderImport OverwriteFile") {
                 SetTimer(, 0)
                 WinActivate
-                ControlSetText("跳过", "Button1")
-                ControlSetText("覆盖", "Button2")
-                ControlSetText("总是覆盖", "Button3")
+                try {
+                    ControlSetText("跳过", "Button1")
+                    ControlSetText("覆盖", "Button2")
+                    ControlSetText("总是覆盖", "Button3")
+                }
             }
         }
     }
