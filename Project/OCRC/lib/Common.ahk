@@ -286,8 +286,10 @@ FileTextOCR(*) {
     images := FileSelect("M", , "选择图片进行文本 OCR（可多选）", "*.jpg; *.jpeg; *.png; *.bmp")
     if images
         for index, image in images {
-            SplitPath(image, , , &extension)
-            Basic_TextOCREngines[engine := Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(image, extension, Basic_Base64HaveFront[engine], OCRC_Configs["Advance"]["Advance_EBto64SQuality"]))
+            SplitPath(image, &name, , &extension)
+            try Basic_TextOCREngines[engine := Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(image, extension, Basic_Base64HaveFront[engine], OCRC_Configs["Advance"]["Advance_EBto64SQuality"]))
+            catch
+                MsgBox(name " 文本 OCR 失败", "Text OCR ERROR", "Iconx 0x1000")
         }
 }
 
