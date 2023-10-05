@@ -299,8 +299,8 @@ DirectoryTextOCR(*) {
         loop files images_directory "\*.*" {
             if A_LoopFileExt ~= "jpg|jpeg|png|bmp" {
                 ocr_object := Basic_TextOCREngines[engine := Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(A_LoopFileFUllPath, A_LoopFileExt, Basic_Base64HaveFront[engine], OCRC_Configs["Advance"]["Advance_EBto64SQuality"]), 0)
-                SetTimer(ChangeButtonNames, 10)
-                if have_file := FileExist(A_LoopFileFullPath ".txt") && (overwrite := always_overwrite || (overwrite := MsgBox("文件已存在，是否覆盖？", "OverwriteFile", "Icon? 0x1000 CancelTryAgainContinue")) == "TryAgain" || overwrite == "Continue") {
+                SetTimer(ChangeButtonNames, 1)
+                if (have_file := FileExist(A_LoopFileFullPath ".txt")) && ((overwrite := always_overwrite) || (overwrite := MsgBox("文件 " A_LoopFileName ".txt 已存在，是否覆盖？", "OverwriteFile", "Icon? 0x1000 CancelTryAgainContinue")) == "TryAgain" || overwrite == "Continue") {
                     if overwrite == "Continue"
                         always_overwrite := 1
                     try FileDelete(A_LoopFileFullPath ".txt")
@@ -308,7 +308,7 @@ DirectoryTextOCR(*) {
                         MsgBox("覆盖失败", "Overwrite ERROR", "Iconx 0x1000")
                 }
                 if !have_file || overwrite == 1 || overwrite == "TryAgain" || overwrite == "Continue"
-                FileAppend(ocr_object.__Process(False), A_LoopFileFullPath ".txt", "`n UTF-8")
+                    FileAppend(ocr_object.__Process(False), A_LoopFileFullPath ".txt", "`n UTF-8")
             }
         }
         MsgBox("已完成文件夹文本 OCR 结果输出", "Text OCR", "Iconi 0x1000")
