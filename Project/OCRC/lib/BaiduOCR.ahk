@@ -235,7 +235,8 @@
     }
 
     __Save(*) {
-        if FileExist(txt := FileSelect(, , "保存识别结果")) && (overwrite := this.configs["always_overwrite"] || MsgBox("文件已存在，是否覆盖？", "OverwriteFile", "Icon? Default2 0x1000 YesNo") == "Yes")
+        txt := FileSelect(, , "保存识别结果"), SplitPath(txt, , , &ext), txt .= (ext == "txt") ? "" : ".txt"
+        if FileExist(txt) && (overwrite := this.configs["always_overwrite"] || MsgBox("文件已存在，是否覆盖？", "OverwriteFile", "Icon? Default2 0x1000 YesNo") == "Yes")
             try FileDelete(txt)
             catch
                 return MsgBox("覆盖失败", "Overwrite ERROR", "Iconx 0x1000")

@@ -3,7 +3,7 @@
  * @file OCRC.ahk
  * @author PilgrimLyieu
  * @date 2023/08/24
- * @version 2.2.2-beta.1
+ * @version 2.2.2-beta.2
  ***********************************************************************/
 
 ;@Ahk2Exe-SetMainIcon icon\OCRC.ico
