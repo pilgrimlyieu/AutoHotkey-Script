@@ -236,12 +236,12 @@
 
     __Save(*) {
         txt := FileSelect(, , "保存识别结果"), SplitPath(txt, , , &ext), txt .= (ext == "txt") ? "" : ".txt", SplitPath(txt, &name)
-        if FileExist(txt) && ((overwrite := this.configs["always_overwrite"]) || MsgBox(name ".txt 文件已存在，是否覆盖？", "OverwriteFile", "Icon? Default2 0x1000 YesNo") == "Yes")
+        if (have_file := FileExist(txt)) && ((overwrite := this.configs["always_overwrite"]) || (overwrite := MsgBox(name " 文件已存在，是否覆盖？", "OverwriteFile", "Icon? Default2 0x1000 YesNo")) == "Yes")
             try FileDelete(txt)
             catch
                 return MsgBox("覆盖失败", "Overwrite ERROR", "Iconx 0x1000")
-        if txt && (overwrite == 1 || overwrite == "Yes")
-            FileAppend(this.result, txt ".txt")
+        if !have_file || overwrite == 1 || overwrite == "Yes"
+            FileAppend(this.result, txt)
     }
 
     __Clip(CtrlObj, *) => (this.result := CtrlObj.Value, A_Clipboard := this.result)
