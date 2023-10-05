@@ -295,7 +295,7 @@ DirectoryTextOCR(*) {
     GlobalConstants()
     images_directory := FileSelect("D", , "选择图片文件夹进行文本 OCR")
     if images_directory {
-        always_overwrite := OCRC_Configs["Basic"]["Basic_AlwaysOverwrite"]
+        always_overwrite := OCRC_Configs["Basic"]["TextOCR_AlwaysOverwrite"]
         loop files images_directory "\*.*" {
             if A_LoopFileExt ~= "jpg|jpeg|png|bmp" {
                 ocr_object := Basic_TextOCREngines[engine := Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(A_LoopFileFUllPath, A_LoopFileExt, Basic_Base64HaveFront[engine], OCRC_Configs["Advance"]["Advance_EBto64SQuality"]), 0)
