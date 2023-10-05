@@ -303,12 +303,12 @@ DirectoryTextOCR(*) {
                 if have_file := FileExist(A_LoopFileFullPath ".txt") && (overwrite := always_overwrite || (overwrite := MsgBox("文件已存在，是否覆盖？", "OverwriteFile", "Icon? 0x1000 CancelTryAgainContinue")) == "TryAgain" || overwrite == "Continue") {
                     if overwrite == "Continue"
                         always_overwrite := 1
-                    try FileDelete(images_directory "\" A_LoopFileName ".txt")
+                    try FileDelete(A_LoopFileFullPath ".txt")
                     catch
                         MsgBox("覆盖失败", "Overwrite ERROR", "Iconx 0x1000")
                 }
                 if !have_file || overwrite == 1 || overwrite == "TryAgain" || overwrite == "Continue"
-                FileAppend(ocr_object.__Process(False), images_directory "\" A_LoopFileName ".txt", "`n UTF-8")
+                FileAppend(ocr_object.__Process(False), A_LoopFileFullPath ".txt", "`n UTF-8")
             }
         }
         ChangeButtonNames() {
