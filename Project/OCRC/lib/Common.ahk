@@ -300,7 +300,7 @@ DirectoryTextOCR(*) {
             if A_LoopFileExt ~= "jpg|jpeg|png|bmp" {
                 ocr_object := Basic_TextOCREngines[engine := Map2Array(Basic_TextOCREngines)[OCRC_Configs["Basic"]["Basic_TextOCREngine"]]]("", ImgFile2Base64(A_LoopFileFUllPath, A_LoopFileExt, Basic_Base64HaveFront[engine], OCRC_Configs["Advance"]["Advance_EBto64SQuality"]), 0)
                 SetTimer(ChangeButtonNames, 10)
-                if have_file := FileExist(A_LoopFileFullPath) && (overwrite := always_overwrite || (overwrite := MsgBox("文件已存在，是否覆盖？", "OverwriteFile", "Icon? 0x1000 CancelTryAgainContinue")) == "TryAgain" || overwrite == "Continue") {
+                if have_file := FileExist(A_LoopFileFullPath ".txt") && (overwrite := always_overwrite || (overwrite := MsgBox("文件已存在，是否覆盖？", "OverwriteFile", "Icon? 0x1000 CancelTryAgainContinue")) == "TryAgain" || overwrite == "Continue") {
                     if overwrite == "Continue"
                         always_overwrite := 1
                     try FileDelete(images_directory "\" A_LoopFileName ".txt")
