@@ -1,5 +1,8 @@
 # OCRC
 
+> 已过期！最新介绍见 [AutoHotkey 脚本 OCRC 介绍](https://pilgrimlyieu.github.io/2023/09/ocrc)。
+> Outdated! See [AutoHotkey 脚本 OCRC 介绍](https://pilgrimlyieu.github.io/2023/09/ocrc) for the latest introduction.
+
 > **注意**：下列使用说明基于*已过时版本* **[1.1.3]**，OCRC 在 **[1.2.0]** 版本进行了重大更新，请自行进行甄别判断。1.2.0 与 1.1.3 的区别可见[更新文档](CHANGELOG.md#120-first-released-version-2022-04-16)
 
 [1.2.0]: https://github.com/pilgrimlyieu/AutoHotkey-Script/tree/b11d711c9682743621ec614ab392677214757e7c/OCRC

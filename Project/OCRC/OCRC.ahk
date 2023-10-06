@@ -1,4 +1,6 @@
 ﻿/************************************************************************
+ * @name OCRC
+ * @name 道衣
  * @description Optical Character Recognition Commander
  * @file OCRC.ahk
  * @author PilgrimLyieu
