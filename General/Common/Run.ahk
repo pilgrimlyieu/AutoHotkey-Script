@@ -4,7 +4,7 @@
 
 ; 请将 Everything 目录放 PATH
 #f::{
-    ClipLists := GetSelectedText(), ClipSaved := ClipLists[1], selected := ClipLists[2]
+    ClipLists := GetSelectedPath(), ClipSaved := ClipLists[1], selected := ClipLists[2]
     if DirExist(selected)
         ; "Run(everything -path `"" selected "`"") ; 为路径则打开路径（包括子文件夹）
         Run("everything -parent `"" selected "`"") ; 为路径则打开路径（不包括子文件夹）

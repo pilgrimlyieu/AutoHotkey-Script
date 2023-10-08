@@ -15,7 +15,7 @@ Scripts := [
     "General/Specific/Vim/Vim.ahk",
     "General/Specific/WindowsTerminal.ahk",
 
-    "Project/Vark/main.ahk",
+    ; "Project/Vark/main.ahk",
 ]
 
 for index, script in Scripts

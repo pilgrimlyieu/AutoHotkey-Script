@@ -34,7 +34,7 @@ ListJoin(list, string) {
 #HotIf !WinActive("ahk_class Vim")
 
 !q::{
-    ClipLists := GetSelectedText(), ClipSaved := ClipLists[1], clip_result := ClipLists[2]
+    ClipLists := GetSelectedPath(), ClipSaved := ClipLists[1], clip_result := ClipLists[2]
     if InStr(A_Clipboard, "`r`n")
         Run("gvim -d `"" ListJoin(StrSplit(A_Clipboard, "`r`n"), "`" `"") "`"", , , &process_id)
     else if clip_result
