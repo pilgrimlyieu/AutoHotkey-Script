@@ -1,27 +1,13 @@
 #NoTrayIcon
 
 #Include ..\..\..\Library\Clipboard.ahk
+#Include ..\..\..\Library\IME.ahk
 
 SetTitleMatchMode "RegEx"
 SetWinDelay 0
 MonitorGetWorkArea( , , , &WorkAreaInfoRight, &WorkAreaInfoBottom)
 
 ; 请将 Vim 目录放 PATH
-
-IsNotEnglishMode() {
-    DetectHiddenWindows True
-    hWnd := winGetID("A")
-    result := SendMessage(
-        0x283, ; Message: WM_IME_CONTROL
-        0x001, ; wParam : IMC_GETCONVERSIONMODE
-        0    , ; lParam : (NoArgs)
-             , ; Control : (Window)
-        ; Retrieves the default window handle to the IME class.
-        "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", hWnd, "Uint")
-    )
-    DetectHiddenWindows False
-    return result
-}
 
 ListJoin(list, string) {
     for index, content in list
