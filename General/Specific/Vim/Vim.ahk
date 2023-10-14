@@ -50,16 +50,23 @@ ListJoin(list, string) {
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
-#HotIf WinActive("^(i|s|v|V)") && WinActive("ahk_class Vim")
+#HotIf WinActive("^(i|s|v|V)🏷️.*✏️$")
 
 CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 +CapsLock::SendInput("{Alt Down}{Shift Down}{F12}{Shift Up}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
 
-#HotIf WinActive("^i") && WinActive("ahk_class Vim") && IsNotEnglishMode()
+#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsNotEnglishMode()
 
 #Hotstring * C0 ? X
 
 ::jk::SendInput("{Esc}")
 ::kj::SendInput("{Esc}")
+
+#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe WindowsTerminal.exe") && IsNotEnglishMode()
+
+#Hotstring C0 ? X B0
+
+::jk::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}")
+::kj::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}")
