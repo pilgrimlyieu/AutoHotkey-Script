@@ -22,6 +22,13 @@
     SetTimer(() => ToolTip(), -1000)
 }
 
+#+F1::{ ; 双拼方案 UserDefinedDoublePinyinScheme0: 小鹤双拼*2*^*iuvdjhcwfg^xmlnpbksqszxkrltvyovt
+    ShuangpinStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS", "Enable Double Pinyin")
+    RegWrite(ShuangpinStatus := !ShuangpinStatus, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS", "Enable Double Pinyin")
+    ToolTip("已" (ShuangpinStatus ? "启用" : "关闭") "双拼。")
+    SetTimer(() => ToolTip(), -1000)
+}
+
 #!Space::{
     TouchpadStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad\Status", "Enabled")
     Run("SystemSettingsAdminFlows.exe EnableTouchPad " (TouchpadStatus := !TouchpadStatus))
