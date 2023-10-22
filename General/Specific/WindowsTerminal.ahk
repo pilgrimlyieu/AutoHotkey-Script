@@ -1,10 +1,9 @@
 #NoTrayIcon
 
+#Include ..\..\Library\Clipboard.ahk
+
 RunWT(max) {
-    ClipSaved := ClipboardAll(), A_Clipboard := ""
-    SendInput("{Ctrl Down}c{Ctrl Up}")
-    ClipWait(0.5, 0)
-    selected := Trim(A_Clipboard)
+    ClipList := GetSelectedPath(), ClipSaved := ClipList[1], selected := ClipList[2]
     if DirExist(selected)
         Run("wt" (max ? " --maximized" : "") " --startingDirectory `"" selected "`" " )
     else
