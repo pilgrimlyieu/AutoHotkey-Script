@@ -7,7 +7,6 @@ GetSelectedPath(wait := 0.5) {
     else
         SendInput("{Ctrl Down}c{Ctrl Up}")
     ClipWait(0.5, 0)
-    ; return [ClipSaved, Trim(A_Clipboard)]
     return {
         saved: ClipSaved,
         path:  Trim(A_Clipboard),

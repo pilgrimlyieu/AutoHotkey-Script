@@ -13,6 +13,7 @@ Scripts := [
     "General/Common/Run.ahk",
     "General/Health/MouseHand.ahk",
     "General/Specific/Vim/Vim.ahk",
+    "General/Specific/Vim/gVIME.ahk",
     "General/Specific/WindowsTerminal.ahk",
 
     ; "Project/Vark/main.ahk",
