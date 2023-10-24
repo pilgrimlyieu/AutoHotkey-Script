@@ -2,9 +2,9 @@
 
 #Include ..\..\..\Library\IME.ahk
 
-SetTimer(gVimCompatibilityIME, 250)
+SetTimer(gVimIMEwithCompatibility, 250)
 
-gVimCompatibilityIME() {
+gVimIMEwithCompatibility() {
     static ime_compatibility
     ime_compatibility := GetIMECompatibility()
     if WinActive("ahk_exe gvim.exe") && !ime_compatibility
