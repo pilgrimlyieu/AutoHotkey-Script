@@ -22,9 +22,9 @@ ChangeIMECompatibility(compatibility) {
     RegWrite(compatibility, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\input\tsf\tsf3override\{81d4e9c9-1d3b-41bc-9e6c-4b40bf79e35e}", "NoTsf3Override2")
 }
 
-IsChinese() => GetIMELang() == 1025
-IsEnglish() => (lang := GetIMELang()) == 0 || lang == 1024 ; 微软拼音输入法下英文模式为 1024
-Switch2Chinese() => ChangeIMELang(1025)
-Switch2English() => ChangeIMELang(GetIMECompatibility() ? 1024 : 0)
+IsChinese() => (lang := GetIMELang()) == 1025 || lang == 1
+IsEnglish() => (lang := GetIMELang()) == 0 || lang == 1024
+Switch2Chinese() => ChangeIMELang(1025) ; 不支持兼容模式，因为兼容模式 GetIMELang() 返回值十分奇怪
+Switch2English() => ChangeIMELang(0)    ; 同上
 
 IsShuangpin() => RegRead("HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS", "Enable Double Pinyin")
