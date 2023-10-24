@@ -2,7 +2,7 @@
 
 #Include ..\..\Library\IME.ahk
 
-#HotIf IsChineseMode()
+#HotIf IsChinese() && !IsShuangpin()
 
 #Hotstring c r * ?
 ; ui <-> iu
