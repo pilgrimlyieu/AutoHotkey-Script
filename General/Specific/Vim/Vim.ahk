@@ -43,16 +43,14 @@ CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
 
-#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsNotEnglishMode()
+#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsChinese()
 
 #Hotstring * C0 ? X
 
 ::jk::SendInput("{Esc}")
 ::kj::SendInput("{Esc}")
 
-#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe WindowsTerminal.exe") && IsNotEnglishMode()
+#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe WindowsTerminal.exe")
 
-#Hotstring C0 ? X B0
-
-::jk::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}")
-::kj::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}")
+!CapsLock::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}{Tab}")
+Home::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Tab}")
