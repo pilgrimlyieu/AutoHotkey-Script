@@ -17,7 +17,7 @@ ListJoin(list, string) {
 
 #+CapsLock::SetCapsLockState(!GetKeyState("CapsLock", "T"))
 
-#HotIf !WinActive("ahk_class Vim")
+#HotIf !WinActive("ahk_exe gvim.exe")
 
 !q::{
     ClipLists := GetSelectedPath(), ClipSaved := ClipLists.saved, clip_result := ClipLists.path
@@ -36,31 +36,34 @@ ListJoin(list, string) {
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
-#HotIf WinActive("^(i|s|v|V)🏷️.*✏️$")
+#HotIf WinActive("^[isvV]🏷️.*✏️$")
 
 CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 +CapsLock::SendInput("{Alt Down}{Shift Down}{F12}{Shift Up}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
 
-
-#HotIf WinActive("^[ivV]🏷️.*✏️$") && WinActive("ahk_exe gvim.exe")
+#HotIf WinActive("^[isvV]🏷️.*✏️$") && WinActive("ahk_exe gvim.exe")
 
 !CapsLock::SendInput("{Esc}")
 Delete::SendInput("{Esc}")
 
-#HotIf WinActive("^[n]🏷️.*✏️$")
+#HotIf WinActive("^[isvV]🏷️.*✏️$") && WinActive("ahk_exe WindowsTerminal.exe")
+
+!CapsLock::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}{Tab}")
+Delete::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Tab}")
+
+#HotIf WinActive("^n🏷️.*✏️$")
 
 Delete::SendInput("a")
+
+#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsChinese()
+
+#Hotstring * C0 ? X
+::jjj::SendInput("{Esc}")
 
 #HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsChinese() && !IsShuangpin()
 
 #Hotstring * C0 ? X
-
 ::jk::SendInput("{Esc}")
 ::kj::SendInput("{Esc}")
-
-#HotIf WinActive("^[ivV]🏷️.*✏️$") && WinActive("ahk_exe WindowsTerminal.exe")
-
-!CapsLock::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}{Tab}")
-Delete::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Tab}")
