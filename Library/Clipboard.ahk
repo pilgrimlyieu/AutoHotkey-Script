@@ -6,7 +6,7 @@ GetSelectedPath(wait := 0.5) {
         SendInput("{Ctrl Down}{Shift Down}c{shift Up}{Ctrl Up}")
     else
         SendInput("{Ctrl Down}c{Ctrl Up}")
-    ClipWait(0.5, 0)
+    ClipWait(wait, 0)
     return {
         saved: ClipSaved,
         path:  Trim(A_Clipboard),
