@@ -43,14 +43,24 @@ CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
 
-#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsChinese()
+
+#HotIf WinActive("^[ivV]🏷️.*✏️$") && WinActive("ahk_exe gvim.exe")
+
+!CapsLock::SendInput("{Esc}")
+Delete::SendInput("{Esc}")
+
+#HotIf WinActive("^[n]🏷️.*✏️$")
+
+Delete::SendInput("a")
+
+#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsChinese() && !IsShuangpin()
 
 #Hotstring * C0 ? X
 
 ::jk::SendInput("{Esc}")
 ::kj::SendInput("{Esc}")
 
-#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe WindowsTerminal.exe")
+#HotIf WinActive("^[ivV]🏷️.*✏️$") && WinActive("ahk_exe WindowsTerminal.exe")
 
 !CapsLock::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}{Tab}")
-Home::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Tab}")
+Delete::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Tab}")
