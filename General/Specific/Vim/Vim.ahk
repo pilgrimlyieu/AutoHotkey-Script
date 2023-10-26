@@ -43,27 +43,10 @@ CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
 
-#HotIf WinActive("^[isvV]🏷️.*✏️$") && WinActive("ahk_exe gvim.exe")
-
-!CapsLock::SendInput("{Esc}")
-Delete::SendInput("{Esc}")
-
-#HotIf WinActive("^[isvV]🏷️.*✏️$") && WinActive("ahk_exe WindowsTerminal.exe")
-
-!CapsLock::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Shift}{Tab}")
-Delete::SendInput("{Esc}{Ctrl Down}[{Ctrl Up}{Tab}")
-
-#HotIf WinActive("^n🏷️.*✏️$")
-
-Delete::SendInput("a")
-
 #HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsChinese()
 
 #Hotstring * C0 ? X
-::jjj::SendInput("{Esc}")
-
-#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsChinese() && !IsShuangpin()
-
-#Hotstring * C0 ? X
-::jk::SendInput("{Esc}")
-::kj::SendInput("{Esc}")
+::jk::GetKeyState("Space") ? SendInput("{BackSpace}{Esc}") : SendInput("jk")
+::kj::GetKeyState("Space") ? SendInput("{BackSpace}{Esc}") : SendInput("kj")
+::jj::GetKeyState("Space") ? SendInput("{BackSpace}{Esc}") : SendInput("jj")
+::kk::GetKeyState("Space") ? SendInput("{BackSpace}{Esc}") : SendInput("kk")
