@@ -43,10 +43,8 @@ CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
 
-#HotIf WinActive("^i🏷️.*✏️$") && WinActive("ahk_exe gvim.exe") && IsChinese()
+#HotIf WinActive("^i🏷️.*✏️$")
 
-#Hotstring * C0 ? X
-::jk::GetKeyState("Space") ? SendInput("{BackSpace}{Esc}") : SendInput("jk")
-::kj::GetKeyState("Space") ? SendInput("{BackSpace}{Esc}") : SendInput("kj")
-::jj::GetKeyState("Space") ? SendInput("{BackSpace}{Esc}") : SendInput("jj")
-::kk::GetKeyState("Space") ? SendInput("{BackSpace}{Esc}") : SendInput("kk")
+#Hotstring * C0 ?
+::jjj::{Ctrl Down}[{Ctrl Up}
+::;;::{Ctrl Down}[{Ctrl Up}

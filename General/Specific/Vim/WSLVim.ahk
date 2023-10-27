@@ -4,7 +4,7 @@
 
 SetTitleMatchMode "RegEx"
 
-SetTimer(SmartWSLVimIMELang, 250)
+SetTimer(SmartWSLVimIMELang, 100)
 
 global IME_Lang := 1 ; 1: 中文, 0: 英文
 
