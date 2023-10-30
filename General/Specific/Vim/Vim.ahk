@@ -36,14 +36,14 @@ ListJoin(list, string) {
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
-#HotIf WinActive("^[isvV]🏷️.*✏️$")
+#HotIf WinActive("^.*✏️[isvV]$")
 
 CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 +CapsLock::SendInput("{Alt Down}{Shift Down}{F12}{Shift Up}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
 
-#HotIf WinActive("^i🏷️.*✏️$")
+#HotIf WinActive(".*✏️i$")
 
 #Hotstring * C0 ?
 ::jjj::{Ctrl Down}[{Ctrl Up}
