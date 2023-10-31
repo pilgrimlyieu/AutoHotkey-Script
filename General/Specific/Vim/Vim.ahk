@@ -43,7 +43,13 @@ CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
 
-#HotIf WinActive(".*✏️i$")
+#HotIf WinActive(".*✏️i$") && WinActive("ahk_exe gvim.exe")
+
+#Hotstring * C0 ?
+::jjj::{Esc}
+::;;::{Esc}
+
+#HotIf WinActive(".*✏️i$") && WinActive("ahk_exe WindowsTerminal.exe")
 
 #Hotstring * C0 ?
 ::jjj::{Ctrl Down}[{Ctrl Up}
