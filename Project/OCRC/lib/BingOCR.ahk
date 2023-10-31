@@ -37,6 +37,6 @@ class Bing {
         this.ResultGUI.AddEdit("x120 yp w370 h36 vDisplayResult ReadOnly -Multi -VScroll", display_result).OnEvent("Focus", Clip)
         Clip(this.ResultGUI[["LaTeXResult", "InlineResult", "DisplayResult"][this.configs["default_select"]]])
         this.ResultGUI["Focus"].Focus()
-        this.ResultGUI.Show("w500 h210")
+        this.ResultGUI.Show("w500 h205")
     }
 }

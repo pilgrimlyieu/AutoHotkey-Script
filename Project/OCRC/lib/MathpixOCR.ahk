@@ -62,9 +62,9 @@
             progress_color := "F8CD46"
         else
             progress_color := "63C956"
-        this.ResultGUI.AddProgress("x10 y+20 w480 h30 c" progress_color, confidence)
+        this.ResultGUI.AddProgress("x10 y+15 w480 h30 c" progress_color, confidence)
         this.ResultGUI.AddText("x10 yp w500 Center BackgroundTrans", confidence "%")
         this.ResultGUI["Focus"].Focus()
-        this.ResultGUI.Show("w500 h" ((gui_height_case >= 2) ? (gui_height_case == 3) ? 315 : 260 : 140))
+        this.ResultGUI.Show("w500 h" ((gui_height_case >= 2) ? (gui_height_case == 3) ? 305 : 245 : 155))
     }
 }
