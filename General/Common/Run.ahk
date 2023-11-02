@@ -33,3 +33,6 @@
     TouchpadStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad\Status", "Enabled")
     Run("SystemSettingsAdminFlows.exe EnableTouchPad " (TouchpadStatus := !TouchpadStatus))
 }
+
+PrintScreen::Run("D:\Software\Snipaste\Snipaste.exe snip")
++PrintScreen::Run("D:\Software\Snipaste\Snipaste.exe paste")
