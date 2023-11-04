@@ -1,4 +1,5 @@
 #NoTrayIcon
+#SingleInstance Force
 
 #Include ..\..\Library\Clipboard.ahk
 #Include ..\..\Library\IME.ahk

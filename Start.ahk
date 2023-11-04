@@ -1,24 +1,31 @@
-AHK_Dir := "C:/Program Files/AutoHotkey/UX/"
+AHK_Dir := "C:/Program Files/AutoHotkey/"
 
 Scripts := [
-    "Basic/Abbreviation/Email.ahk",
-    ; "Basic/Correction/AutoCorrect.ahk1",
-    "Basic/Correction/Pinyin.ahk",
-    ; "Basic/Remap/Fn.ahk",
-    "Basic/Remap/NumLock.ahk",
-    "Basic/Remap/Others.ahk",
-    "Basic/Remap/Punctuation.ahk",
-    "Basic/Window/WinDrag/main.ahk1",
+    {path: "Basic/Abbreviation/Email",     ahk1: 0, admin: 0},
+    ; {path: "Basic/Correction/AutoCorrect", ahk1: 1, admin: 0},
+    {path: "Basic/Correction/Pinyin",      ahk1: 0, admin: 0},
+    ; {path: "Basic/Remap/Fn",               ahk1: 0, admin: 0},
+    {path: "Basic/Remap/NumLock",          ahk1: 0, admin: 0},
+    {path: "Basic/Remap/Others",           ahk1: 0, admin: 0},
+    {path: "Basic/Remap/Punctuation",      ahk1: 0, admin: 0},
+    {path: "Basic/Window/WinDrag/main",    ahk1: 1, admin: 0},
 
-    "General/Common/Run.ahk",
-    "General/Health/MouseHand.ahk",
-    "General/Specific/Vim/Vim.ahk",
-    "General/Specific/Vim/WSLVim.ahk",
-    "General/Specific/Vim/gVIME.ahk",
-    "General/Specific/WindowsTerminal.ahk",
+    {path: "General/Common/Run",               ahk1: 0, admin: 1},
+    {path: "General/Health/MouseHand",         ahk1: 0, admin: 0},
+    {path: "General/Specific/Vim/Vim",         ahk1: 0, admin: 0},
+    {path: "General/Specific/Vim/WSLVim",      ahk1: 0, admin: 0},
+    {path: "General/Specific/Vim/gVIME",       ahk1: 0, admin: 0},
+    {path: "General/Specific/WindowsTerminal", ahk1: 0, admin: 0},
 
-    ; "Project/Vark/main.ahk",
+    ; {path: "Project/Vark/main", ahk1: 0, admin: 0},
 ]
 
 for index, script in Scripts
-    Run("`"" AHK_Dir "AutoHotkeyUX.exe`" `"" AHK_Dir "launcher.ahk`" /restart `"" script)
+    if script.admin
+        Run("*RunAs `"" A_WorkingDir "/" script.path ".ahk`"") ; Should add #SingleInstance force in script file
+    else {
+        if script.ahk1
+            Run("`"" AHK_Dir "v1.1.37.01/AutoHotkeyU64.exe`" /restart `"" A_WorkingDir "/" script.path ".ahk1`"")
+        else
+            Run("`"" AHK_Dir "v2/AutoHotkey.exe`" /restart `"" A_WorkingDir "/" script.path ".ahk`"")
+    }
