@@ -17,6 +17,16 @@
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
+#+e::Run("rundll32 sysdm.cpl,EditEnvironmentVariables")
+
+#+c::Run("ms-clock:")
+
+#b::Run("msedge")
+
+#g::Run("regedit")
+
+#q::Run("code")
+
 ^Space::{
     ProxyStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")
     RegWrite(ProxyStatus := !ProxyStatus, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")

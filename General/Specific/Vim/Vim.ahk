@@ -52,5 +52,5 @@ CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 #HotIf WinActive(".*✏️i$") && WinActive("ahk_exe WindowsTerminal.exe")
 
 #Hotstring * C0 ?
-::jjj::{Ctrl Down}[{Ctrl Up}
-::;;::{Ctrl Down}[{Ctrl Up}
+::jjj::{Esc}{Ctrl Down}[{Ctrl Up}
+::;;::{Esc}{Ctrl Down}[{Ctrl Up}
