@@ -45,12 +45,20 @@ CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 
 #HotIf WinActive(".*✏️i$") && WinActive("ahk_exe gvim.exe")
 
-#Hotstring * C0 ?
-::jjj::{Esc}
-::;;::{Esc}
+~RControl::{
+    if (A_PriorHotkey != "~RControl" || A_TimeSincePriorHotkey > 250) {
+        KeyWait("RControl")
+        return
+    }
+    SendInput("{Esc}")
+}
 
 #HotIf WinActive(".*✏️i$") && WinActive("ahk_exe WindowsTerminal.exe")
 
-#Hotstring * C0 ?
-::jjj::{Esc}{Ctrl Down}[{Ctrl Up}
-::;;::{Esc}{Ctrl Down}[{Ctrl Up}
+~RControl::{
+    if (A_PriorHotkey != "~RControl" || A_TimeSincePriorHotkey > 250) {
+        KeyWait("RControl")
+        return
+    }
+    SendInput("{Esc}{Ctrl Down}[{Ctrl Up}")
+}
