@@ -23,6 +23,8 @@
 
 #b::Run("msedge")
 
+#p::Run("control")
+
 #g::Run("regedit")
 
 #q::Run("code")
