@@ -23,6 +23,8 @@
 
 #b::Run("msedge")
 
+#+b::Run("msedge.exe -inprivate")
+
 #p::Run("control")
 
 #g::Run("regedit")

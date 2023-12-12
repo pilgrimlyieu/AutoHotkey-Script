@@ -2,7 +2,7 @@
 
 #Include ..\..\..\Library\IME.ahk
 
-SetTimer(gVimIMEwithCompatibility, 250)
+SetTimer(gVimIMEwithCompatibility, 100)
 
 gVIME_status  := [1, 0] ; [gvim, others]
 

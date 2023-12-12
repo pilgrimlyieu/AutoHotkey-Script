@@ -14,11 +14,11 @@ ChangeIMELang(code) {
 GetIMECompatibility() { ; 1 为兼容模式，0 为不兼容模式（即新版）
     DummyValue := RegRead("HKEY_CURRENT_USER\Software\Microsoft\CTF\TIP\{81D4E9C9-1D3B-41BC-9E6C-4B40BF79E35E}", "DummyValue")
     NoTsf3Override2 := RegRead("HKEY_CURRENT_USER\Software\Microsoft\input\tsf\tsf3override\{81d4e9c9-1d3b-41bc-9e6c-4b40bf79e35e}", "NoTsf3Override2")
-    return (DummyValue == 0) && (NoTsf3Override2 == 1)
+    return (DummyValue == 1) && (NoTsf3Override2 == 1)
 }
 
 ChangeIMECompatibility(compatibility) {
-    RegWrite(!compatibility, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\CTF\TIP\{81D4E9C9-1D3B-41BC-9E6C-4B40BF79E35E}", "DummyValue")
+    RegWrite(compatibility, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\CTF\TIP\{81D4E9C9-1D3B-41BC-9E6C-4B40BF79E35E}", "DummyValue")
     RegWrite(compatibility, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\input\tsf\tsf3override\{81d4e9c9-1d3b-41bc-9e6c-4b40bf79e35e}", "NoTsf3Override2")
 }
 

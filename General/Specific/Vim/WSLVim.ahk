@@ -35,7 +35,7 @@ $~*LShift::{
 
 $~LShift Up::{
     global IME_language, LShift_down_timestamp, LShift_are_not_pressed
-    if (A_PriorKey ~= "[LR]Shift") && LShift_are_not_pressed && (A_TickCount - LShift_down_timestamp < 200) {
+    if (A_PriorKey ~= "[LR]Shift") && LShift_are_not_pressed && (A_TickCount - LShift_down_timestamp < 250) {
         IME_language := !IME_language
         SendInput("{LShift}")
     }
