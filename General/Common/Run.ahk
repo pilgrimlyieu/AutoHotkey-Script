@@ -44,6 +44,13 @@
     SetTimer(() => ToolTip(), -1000)
 }
 
+#F2::{ ; Adapted from https://www.autohotkey.com/boards/viewtopic.php?p=180845#p180845
+    TaskbarGlomLevelStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarGlomLevel")
+    RegWrite(TaskbarGlomLevelStatus := !TaskbarGlomLevelStatus, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarGlomLevel")
+    SendMessage(0x1A, , , , "ahk_class Shell_TrayWnd")
+    WinRedraw("ahk_class Shell_TrayWnd")
+}
+
 #!Space::{
     TouchpadStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad\Status", "Enabled")
     Run("SystemSettingsAdminFlows.exe EnableTouchPad " (TouchpadStatus := !TouchpadStatus))
