@@ -2,6 +2,10 @@
 
 #Include ..\..\Library\Clipboard.ahk
 
+Path2WSL(path) {
+    return "/mnt/" StrLower(SubStr(path, 1, 1)) StrReplace(SubStr(path, 3), "\", "/")
+}
+
 Profiles := Map(
     "Bash",       "Git Bash",
     "Ubuntu",     "Ubuntu-22.04",
@@ -11,7 +15,12 @@ Profiles := Map(
 
 RunWT(profile := "Bash") {
     ClipList := GetSelectedPath(), ClipSaved := ClipList.saved, selected := ClipList.path
-    Run(Format("wt --window 0 new-tab --profile `"{1}`" --startingDirectory `"{2}`"", Profiles[profile], (profile == "Ubuntu") ? "~/Space" : DirExist(selected) ? selected : "~"))
+    if (profile == "Ubuntu") {
+        starting := DirExist(selected) ? Path2WSL(selected) : "~/Space"
+    } else {
+        starting := DirExist(selected) ? selected : "~"
+    }
+    Run(Format("wt --window 0 new-tab --profile `"{1}`" --startingDirectory `"{2}`"", Profiles[profile], starting))
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
