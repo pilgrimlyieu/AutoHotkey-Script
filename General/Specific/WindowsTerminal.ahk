@@ -18,7 +18,7 @@ RunWT(profile := "Bash") {
     if (profile == "Ubuntu") {
         starting := DirExist(selected) ? Path2WSL(selected) : "~/Space"
     } else {
-        starting := DirExist(selected) ? selected : "~"
+        starting := DirExist(selected) ? StrReplace(selected, "\", "/") : "~"
     }
     Run(Format("wt --window 0 new-tab --profile `"{1}`" --startingDirectory `"{2}`"", Profiles[profile], starting))
     A_Clipboard := ClipSaved, ClipSaved := ""
