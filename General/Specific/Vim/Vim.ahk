@@ -21,15 +21,16 @@ ListJoin(list, string) {
 
 !q::{
     ClipLists := GetSelectedPath(), ClipSaved := ClipLists.saved, clip_result := ClipLists.path
-    if InStr(A_Clipboard, "`r`n")
-        Run("gvim -d `"" ListJoin(StrSplit(A_Clipboard, "`r`n"), "`" `"") "`"", , , &process_id)
+    if InStr(clip_result, "`r`n")
+        Run("gvim -d `"" ListJoin(StrSplit(clip_result, "`r`n"), "`" `"") "`"", , , &process_id)
     else if clip_result
-        Run("gvim `"" A_Clipboard "`"", , , &process_id)
+        Run("gvim `"" clip_result "`"", , , &process_id)
     else
         Run("gvim", , , &process_id)
     if WinWait("ahk_pid " process_id, , 10) {
         ProcessSetPriority("High", process_id)
         WinSetStyle(-0xC40000, "ahk_pid " process_id)
+        ; This is conflict with "au GUIEnter * simalt ~x"(auto maximized) in Vim. Don't add it to vimrc.
         WinMove(0, 0, WorkAreaInfoRight, WorkAreaInfoBottom, "ahk_pid " process_id)
         WinActivate("ahk_pid " process_id)
     }
