@@ -21,6 +21,7 @@ ListJoin(list, string) {
 
 !q::{
     ClipLists := GetSelectedPath(), ClipSaved := ClipLists.saved, clip_result := ClipLists.path
+    EnvSet("VIM_KEYCODE_TRANS_STRATEGY", "experimental") ; Vim patch 9.1.0050. See also `:h w32-experimental-keycode-trans-strategy`
     if InStr(clip_result, "`r`n")
         Run("gvim -d `"" ListJoin(StrSplit(clip_result, "`r`n"), "`" `"") "`"", , , &process_id)
     else if clip_result
