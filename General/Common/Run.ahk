@@ -51,6 +51,13 @@
     WinRedraw("ahk_class Shell_TrayWnd")
 }
 
+#F3::{ ; https://superuser.com/a/1357023
+    buttonState := DllCall("user32.dll\SwapMouseButton", "UInt", 1)
+    if buttonState != 0 {
+        buttonState := DllCall("user32.dll\SwapMouseButton", "UInt", 0)
+    }
+}
+
 #!Space::{
     TouchpadStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad\Status", "Enabled")
     Run("SystemSettingsAdminFlows.exe EnableTouchPad " (TouchpadStatus := !TouchpadStatus))
