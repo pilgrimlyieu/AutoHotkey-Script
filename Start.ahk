@@ -25,7 +25,7 @@ for index, script in Scripts
         Run("*RunAs `"" A_WorkingDir "/" script.path ".ahk`"") ; Should add #SingleInstance force in script file
     else {
         if script.ahk1
-            Run("`"" AHK_Dir "v1.1.37.01/AutoHotkeyU64.exe`" /restart `"" A_WorkingDir "/" script.path ".ahk1`"")
+            Run("`"" AHK_Dir "v1.1.37.02/AutoHotkeyU64.exe`" /restart `"" A_WorkingDir "/" script.path ".ahk1`"")
         else
             Run("`"" AHK_Dir "v2/AutoHotkey.exe`" /restart `"" A_WorkingDir "/" script.path ".ahk`"")
     }
