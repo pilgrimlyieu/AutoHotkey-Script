@@ -19,24 +19,24 @@ global EXTENDMAX := ENTENDMINS.Length
 global TIMETOSHUTDOWN := A_YYYY . A_MM . A_DD . SHUTDOWNTIME
 global EXTENDLEVEL := EXTENDMAX
 
-secondsToWarn(warn_min) {
-    global TIMETOSHUTDOWN
-    return DateDiff(DateAdd(TIMETOSHUTDOWN, -warn_min, "Minutes"), A_Now, "Seconds")
+msToWarn(warn_min) {
+    return DateDiff(DateAdd(TIMETOSHUTDOWN, -warn_min, "Minutes"), A_Now, "Seconds") * 1000
 }
 
 warnAndShutdown(warn_min) {
     global EXTENDLEVEL, TIMETOSHUTDOWN
-    delta_time := secondsToWarn(warn_min)
+    delta_time := msToWarn(warn_min)
     if delta_time > 0 {
+        MsgBox("test")
         SetTimer(, -delta_time)
     } else if delta_time <= 0 {
         if warn_min {
             if EXTENDLEVEL > 0 {
                 if_extend := MsgBox(Format("还有 {1} 分钟关机！请注意保存重要内容！是否要延长 {2} 分钟关机？", warn_min, ENTENDMINS[EXTENDLEVEL]), "关机提示", "YesNo Icon? 0x1000 T10")
-                if (if_extend == "Yes" || if_extend == "Timeout") {
+                if if_extend == "Yes" || if_extend == "Timeout" {
                     try {
                         TIMETOSHUTDOWN := DateAdd(TIMETOSHUTDOWN, ENTENDMINS[EXTENDLEVEL--], "Minutes")
-                        SetTimer(, -secondsToWarn(warn_min))
+                        SetTimer(, -msToWarn(warn_min))
                     } catch {
                         ToolTip("已经不能再延长关机时间了！")
                         SetTimer(() => ToolTip(), -3000)
@@ -53,5 +53,5 @@ warnAndShutdown(warn_min) {
 }
 
 for , warn_time in WARNSTAGES {
-    SetTimer(warnAndShutdown.Bind(warn_time), -secondsToWarn(warn_time))
+    SetTimer(warnAndShutdown.Bind(warn_time), -msToWarn(warn_time))
 }
