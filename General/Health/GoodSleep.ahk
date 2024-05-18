@@ -27,9 +27,8 @@ warnAndShutdown(warn_min) {
     global EXTENDLEVEL, TIMETOSHUTDOWN
     delta_time := msToWarn(warn_min)
     if delta_time > 0 {
-        MsgBox("test")
         SetTimer(, -delta_time)
-    } else if delta_time <= 0 {
+    } else {
         if warn_min {
             if EXTENDLEVEL > 0 {
                 if_extend := MsgBox(Format("还有 {1} 分钟关机！请注意保存重要内容！是否要延长 {2} 分钟关机？", warn_min, ENTENDMINS[EXTENDLEVEL]), "关机提示", "YesNo Icon? 0x1000 T10")

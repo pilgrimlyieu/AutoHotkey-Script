@@ -12,6 +12,7 @@ Scripts := [
 
     {path: "General/Common/Run",               ahk1: 0, admin: 1},
     {path: "General/Health/MouseHand",         ahk1: 0, admin: 0},
+    {path: "General/Health/GoodSleep",         ahk1: 0, admin: 0},
     {path: "General/Specific/Vim/Vim",         ahk1: 0, admin: 0},
     {path: "General/Specific/Vim/WSLVim",      ahk1: 0, admin: 0},
     {path: "General/Specific/Vim/gVIME",       ahk1: 0, admin: 0},
