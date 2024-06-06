@@ -1,13 +1,19 @@
 GetIMELang() {
     DetectHiddenWindows True
-    result := SendMessage(0x283, 0x001, 0, , "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", WinGetID("A"), "Uint"))
+    try {
+        winid := WinGetID("A")
+        result := SendMessage(0x283, 0x001, 0, , "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", winid, "Uint"))
+    }
     DetectHiddenWindows False
     return result
 }
 
 ChangeIMELang(code) {
     DetectHiddenWindows True
-    SendMessage(0x283, 0x002, code, , "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", WinGetID("A"), "Uint"))
+    try {
+        winid := WinGetID("A")
+        SendMessage(0x283, 0x002, code, , "ahk_id " DllCall("imm32\ImmGetDefaultIMEWnd", "Uint", winid, "Uint"))
+    }
     DetectHiddenWindows False
 }
 
