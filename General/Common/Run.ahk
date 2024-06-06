@@ -31,7 +31,7 @@
 
 #q::Run("code")
 
-^Space::{
+#^Space::{
     ProxyStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")
     RegWrite(ProxyStatus := !ProxyStatus, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")
     ToolTip("Proxy has been switched " (ProxyStatus ? "On." : "Off."))

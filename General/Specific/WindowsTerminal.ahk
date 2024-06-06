@@ -8,7 +8,7 @@ Path2WSL(path) {
 
 Profiles := Map(
     "Bash",       "Git Bash",
-    "Ubuntu",     "Ubuntu-22.04",
+    "Ubuntu",     "Ubuntu",
     "PowerShell", "PowerShell",
     "CMD",        "Command Prompt",
 )
