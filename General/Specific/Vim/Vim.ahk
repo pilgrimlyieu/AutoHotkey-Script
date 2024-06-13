@@ -33,7 +33,7 @@ ListJoin(list, string) {
         WinSetStyle(-0xC40000, "ahk_pid " process_id)
         ; This is conflict with "au GUIEnter * simalt ~x"(auto maximized) in Vim. Don't add it to vimrc.
         WinMove(0, 0, WorkAreaInfoRight, WorkAreaInfoBottom, "ahk_pid " process_id)
-        WinActivate("ahk_pid " process_id)
+        try WinActivate("ahk_pid " process_id)
     }
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
