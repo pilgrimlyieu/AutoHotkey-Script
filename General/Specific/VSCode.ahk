@@ -8,4 +8,4 @@ RunVSCode() {
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
-#v::RunVSCode()
+#q::RunVSCode()

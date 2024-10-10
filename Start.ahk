@@ -1,33 +1,51 @@
 AHK_Dir := "C:/Program Files/AutoHotkey/"
 
 Scripts := [
-    {path: "Basic/Abbreviation/Email",     ahk1: 0, admin: 0},
-    ; {path: "Basic/Correction/AutoCorrect", ahk1: 1, admin: 0},
-    {path: "Basic/Correction/Pinyin",      ahk1: 0, admin: 0},
-    ; {path: "Basic/Remap/Fn",               ahk1: 0, admin: 0},
-    {path: "Basic/Remap/NumLock",          ahk1: 0, admin: 0},
-    {path: "Basic/Remap/Others",           ahk1: 0, admin: 0},
-    {path: "Basic/Remap/Punctuation",      ahk1: 0, admin: 0},
-    {path: "Basic/Window/WinDrag/main",    ahk1: 1, admin: 0},
+    {path: "Basic/Abbreviation",                admin: 0, dir: 1, recursive: 0},
+    ; {path: "Basic/Correction/AutoCorrect.ahk1", admin: 0, dir: 0, recursive: 0},
+    {path: "Basic/Correction/Pinyin.ahk",       admin: 0, dir: 0, recursive: 0},
+    {path: "Basic/Remap",                       admin: 0, dir: 1, recursive: 0},
+    {path: "Basic/Window/WinDrag/main.ahk1",    admin: 0, dir: 0, recursive: 0},
 
-    {path: "General/Common/Run",               ahk1: 0, admin: 1},
-    {path: "General/Health/MouseHand",         ahk1: 0, admin: 0},
-    {path: "General/Health/GoodSleep",         ahk1: 0, admin: 0},
-    {path: "General/Specific/Vim/Vim",         ahk1: 0, admin: 0},
-    {path: "General/Specific/Vim/WSLVim",      ahk1: 0, admin: 0},
-    {path: "General/Specific/Vim/gVIME",       ahk1: 0, admin: 0},
-    {path: "General/Specific/VSCode",          ahk1: 0, admin: 0},
-    {path: "General/Specific/WindowsTerminal", ahk1: 0, admin: 0},
+    {path: "General/Common",                       admin: 1, dir: 1, recursive: 0},
+    {path: "General/Health",                       admin: 0, dir: 1, recursive: 0},
+    {path: "General/Specific/Vim",                 admin: 0, dir: 1, recursive: 0},
+    {path: "General/Specific/VSCode.ahk",          admin: 0, dir: 0, recursive: 0},
+    {path: "General/Specific/WindowsTerminal.ahk", admin: 0, dir: 0, recursive: 0},
 
-    ; {path: "Project/Vark/main", ahk1: 0, admin: 0},
+    ; {path: "Project/Vark/main.ahk", admin: 0, dir: 0, recursive: 0},
 ]
 
-for index, script in Scripts
-    if script.admin
-        Run("*RunAs `"" A_WorkingDir "/" script.path ".ahk`"") ; Should add #SingleInstance force in script file
-    else {
-        if script.ahk1
-            Run("`"" AHK_Dir "v1.1.37.02/AutoHotkeyU64.exe`" /restart `"" A_WorkingDir "/" script.path ".ahk1`"")
-        else
-            Run("`"" AHK_Dir "v2/AutoHotkey.exe`" /restart `"" A_WorkingDir "/" script.path ".ahk`"")
+normalizePath(path) {
+    return A_WorkingDir "/" path
+}
+
+executeScript(path, admin := false) {
+    ahkType := path ~= "\.ahk1$" ? -1 : path ~= "\.ahk$" ? 1 : 0
+    if (ahkType == 0) {
+        return
     }
+    if admin
+        Run(Format("*RunAs `"{1}`"", path)) ; Should add #SingleInstance force in script file
+    else {
+        if ahkType == -1
+            Run(Format("`"{1}v1.1.37.02/AutoHotkeyU64.exe`" /restart `"{2}`" LAUNCH_FROM_START", AHK_Dir, path))
+        else if ahkType == 1
+            Run(Format("`"{1}v2/AutoHotkey.exe`" /restart `"{2}`" LAUNCH_FROM_START", AHK_Dir, path))
+    }
+}
+
+processItem(item, recursive := false) {
+    path := normalizePath(item.path)
+    property := FileExist(path)
+    if (InStr(property, "D")) {
+        loop files path . "/*", recursive ? "R" : "" { 
+            executeScript(A_LoopFileFullPath, item.admin)
+        }
+    } else if (property) {
+        executeScript(path, item.admin)
+    }
+}
+
+for index, item in Scripts
+    processItem(item, item.recursive)

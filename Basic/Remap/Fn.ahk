@@ -1,5 +1,9 @@
 #NoTrayIcon
 
+#Include ..\..\Library\Start.ahk
+
+preventStartLaunch(A_Args)
+
 Fn_Status := 0
 
 #Space::{
