@@ -16,6 +16,7 @@ Scripts := [
     {path: "General/Specific/Vim/Vim",         ahk1: 0, admin: 0},
     {path: "General/Specific/Vim/WSLVim",      ahk1: 0, admin: 0},
     {path: "General/Specific/Vim/gVIME",       ahk1: 0, admin: 0},
+    {path: "General/Specific/VSCode",          ahk1: 0, admin: 0},
     {path: "General/Specific/WindowsTerminal", ahk1: 0, admin: 0},
 
     ; {path: "Project/Vark/main", ahk1: 0, admin: 0},
