@@ -4,6 +4,12 @@
 #Include ..\..\Library\Clipboard.ahk
 #Include ..\..\Library\IME.ahk
 
+ListJoin(list, string) {
+    for index, content in list
+        str .= string . content
+    return SubStr(str, StrLen(string) + 1)
+}
+
 ; 请将 Everything 目录放 PATH
 #f::{
     ClipLists := GetSelectedPath(), ClipSaved := ClipLists.saved, selected := ClipLists.path
@@ -29,7 +35,17 @@
 
 #g::Run("regedit")
 
-#q::Run("code")
+#y::{
+    ClipLists := GetSelectedPath(), ClipSaved := ClipLists.saved, clip_result := ClipLists.path
+    ScriptPath := A_ScriptDir . "\scripts\ImageCompression.pyw"
+    Run("pythonw `"" ScriptPath "`" `"" ListJoin(StrSplit(clip_result, "`r`n"), "`" `"") "`"")
+}
+
+#+y::{
+    ClipLists := GetSelectedPath(), ClipSaved := ClipLists.saved, clip_result := ClipLists.path
+    ScriptPath := A_ScriptDir . "\scripts\ImageCompression2JPG.pyw"
+    Run("pythonw `"" ScriptPath "`" `"" ListJoin(StrSplit(clip_result, "`r`n"), "`" `"") "`"")
+}
 
 #^Space::{
     ProxyStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")
