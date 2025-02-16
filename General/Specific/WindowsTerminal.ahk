@@ -13,7 +13,7 @@ Profiles := Map(
     "CMD",        "Command Prompt",
 )
 
-RunWT(profile := "Bash") {
+RunWT(profile := "PowerShell") {
     ClipList := GetSelectedPath(), ClipSaved := ClipList.saved, selected := ClipList.path
     if (profile == "Ubuntu") {
         starting := DirExist(selected) ? Path2WSL(selected) : "~/Space"
