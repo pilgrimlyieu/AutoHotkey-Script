@@ -12,7 +12,7 @@ def compress_image(file_path):
     try:
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        result = subprocess.run(['ffmpeg', '-v', '24', '-i', file_path, temp_file_path], check=True, startupinfo=startupinfo)
+        result = subprocess.run(['ffmpeg', '-nostats', '-loglevel', '0', '-i', file_path, temp_file_path], check=True, startupinfo=startupinfo)
         if result.returncode == 0:
             original_size = os.path.getsize(file_path)
             compressed_size = os.path.getsize(temp_file_path)
