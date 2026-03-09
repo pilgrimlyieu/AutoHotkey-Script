@@ -38,7 +38,7 @@ ListJoin(list, string) {
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
-#HotIf WinActive("^.*✏️[isvV]$")
+#HotIf WinActive("^.*✏️[isvV]$") || (WinActive("ahk_exe WindowsTerminal.exe") && WinActive(" \| [\w-]*md$"))
 
 CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 +CapsLock::SendInput("{Alt Down}{Shift Down}{F12}{Shift Up}{Alt Up}")
