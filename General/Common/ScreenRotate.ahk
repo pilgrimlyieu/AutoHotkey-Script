@@ -1,6 +1,7 @@
 ; Credit: https://www.autohotkey.com/boards/viewtopic.php?t=118324
 
 #NoTrayIcon
+#SingleInstance Force
 
 GetScreenOrientation(MonitorNumber := 1) {
     static dmSize := 220

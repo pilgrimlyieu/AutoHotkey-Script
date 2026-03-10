@@ -12,7 +12,8 @@ Scripts := [
     {path: "General/Common",                       admin: 1, dir: 1, recursive: 0},
     {path: "General/Health",                       admin: 0, dir: 1, recursive: 0},
     {path: "General/Specific/Vim",                 admin: 0, dir: 1, recursive: 0},
-    {path: "General/Specific/VSCode.ahk",          admin: 0, dir: 0, recursive: 0},
+    {path: "General/Specific/Obsidian",            admin: 0, dir: 1, recursive: 0},
+    {path: "General/Specific/Code.ahk",          admin: 0, dir: 0, recursive: 0},
     {path: "General/Specific/WindowsTerminal.ahk", admin: 0, dir: 0, recursive: 0},
 
     ; {path: "Project/Vark/main.ahk", admin: 0, dir: 0, recursive: 0},
@@ -31,10 +32,8 @@ executeScript(path, admin := false) {
         Run(Format("*RunAs `"{1}`"", path)) ; Should add #SingleInstance force in script file
     else {
         if ahkType == -1
-            ; ShellRunAsUser(Format("`"{1}v1.1.37.02/AutoHotkeyU64.exe`" /restart `"{2}`" LAUNCH_FROM_START", AHK_Dir, path))
             ShellRunAsUser(Format("{1}v1.1.37.02/AutoHotkeyU64.exe", AHK_Dir), Format("/restart `"{1}`" LAUNCH_FROM_START", path))
         else if ahkType == 1
-            ; ShellRunAsUser(Format("`"{1}v2/AutoHotkey.exe`" /restart `"{2}`" LAUNCH_FROM_START", AHK_Dir, path))
             ShellRunAsUser(Format("{1}v2/AutoHotkey.exe", AHK_Dir), Format("/restart `"{1}`" LAUNCH_FROM_START", path))
     }
 }
