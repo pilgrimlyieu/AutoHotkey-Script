@@ -16,5 +16,5 @@ RunZed() {
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
-#q::RunZed()
-#+q::RunVSCode()
+#q::RunVSCode()
+#+q::RunZed()

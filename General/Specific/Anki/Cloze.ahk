@@ -28,13 +28,19 @@ Cloze(keep := 0, space := 1) {
 
 global turn := 0
 
-#HotIf WinActive("ahk_exe anki.exe")
+#HotIf WinActive("ahk_exe anki.exe") || WinActive("ahk_exe pythonw.exe")
 
 +f1::global turn := 0
 f1::Cloze(1)
 f2::Cloze()
-`::SendInput("{Text}<br>`n")
+
++f11::global turn := 0
+f11::Cloze(1)
+f12::Cloze()
+
+; `::SendInput("{Text}<br>`n")
 
 #InputLevel 1
 
 +`::SendInput("{Ctrl Down}{Enter}{Ctrl Up}{Shift Down}{F1}{Shift Up}")
++Delete::SendInput("{Ctrl Down}{Enter}{Ctrl Up}{Shift Down}{F1}{Shift Up}")

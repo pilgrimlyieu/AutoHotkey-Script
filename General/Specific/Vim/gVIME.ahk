@@ -16,4 +16,4 @@ gVimIMEwithCompatibility() {
         ChangeIMECompatibility(gVIME_status[2])
 }
 
-#F1::ChangeIMECompatibility(gVIME_status[!WinActive("ahk_exe gvim.exe") + 1] := !GetIMECompatibility())
+#+F1::ChangeIMECompatibility(gVIME_status[!WinActive("ahk_exe gvim.exe") + 1] := !GetIMECompatibility())

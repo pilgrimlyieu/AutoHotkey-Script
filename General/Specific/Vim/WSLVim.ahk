@@ -1,4 +1,4 @@
-; #NoTrayIcon
+#NoTrayIcon
 #SingleInstance Force
 
 #Include ..\..\..\Library\IME.ahk
@@ -7,7 +7,7 @@ SetTitleMatchMode "RegEx"
 
 global IME_language := 1 ; 1: 中文, 0: 英文
 
-SetTimer(SmartWSLVimIMELang, 50)
+SetTimer(SmartWSLVimIMELang, 20)
 
 Switch2Language(lang) {
     if (lang == 1)

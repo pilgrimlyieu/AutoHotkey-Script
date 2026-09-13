@@ -28,7 +28,7 @@ ListJoin(list, string) {
         Run("gvim `"" clip_result "`"", , , &process_id)
     else
         Run("gvim", , , &process_id)
-    if WinWait("ahk_pid " process_id, , 10) {
+    if WinWait("ahk_pid " process_id, , 1) {
         ProcessSetPriority("High", process_id)
         WinSetStyle(-0xC40000, "ahk_pid " process_id)
         ; This is conflict with "au GUIEnter * simalt ~x"(auto maximized) in Vim. Don't add it to vimrc.
@@ -38,7 +38,9 @@ ListJoin(list, string) {
     A_Clipboard := ClipSaved, ClipSaved := ""
 }
 
-#HotIf WinActive("^.*✏️[isvV]$") || (WinActive("ahk_exe WindowsTerminal.exe") && WinActive(" \| [\w-]*md$"))
+; #HotIf WinActive("^.*✏️[isvV]$") || (WinActive("ahk_exe WindowsTerminal.exe") && WinActive(" \| [\w-]*md$"))
+
+#HotIf WinActive("ahk_exe WindowsTerminal.exe") || WinActive("ahk_exe gvim.exe")
 
 CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 +CapsLock::SendInput("{Alt Down}{Shift Down}{F12}{Shift Up}{Alt Up}")

@@ -47,37 +47,52 @@ ListJoin(list, string) {
     Run("pythonw `"" ScriptPath "`" `"" ListJoin(StrSplit(clip_result, "`r`n"), "`" `"") "`"")
 }
 
-#^Space::{
-    ProxyStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")
-    RegWrite(ProxyStatus := !ProxyStatus, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")
-    ToolTip("Proxy has been switched " (ProxyStatus ? "On." : "Off."))
-    SetTimer(() => ToolTip(), -1000)
-}
+; #^Space::{
+;     ProxyStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")
+;     RegWrite(ProxyStatus := !ProxyStatus, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings", "ProxyEnable")
+;     ToolTip("Proxy has been switched " (ProxyStatus ? "On." : "Off."))
+;     SetTimer(() => ToolTip(), -1000)
+; }
 
-#+F1::{ ; 双拼方案 UserDefinedDoublePinyinScheme0: 小鹤双拼*2*^*iuvdjhcwfg^xmlnpbksqszxkrltvyovt
-    RegWrite(ShuangpinStatus := !IsShuangpin(), "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS", "Enable Double Pinyin")
-    ToolTip("已" (ShuangpinStatus ? "启用" : "关闭") "双拼。")
-    SetTimer(() => ToolTip(), -1000)
-}
+; #+F1::{ ; 双拼方案 UserDefinedDoublePinyinScheme0: 小鹤双拼*2*^*iuvdjhcwfg^xmlnpbksqszxkrltvyovt
+;     RegWrite(ShuangpinStatus := !IsShuangpin(), "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\InputMethod\Settings\CHS", "Enable Double Pinyin")
+;     ToolTip("已" (ShuangpinStatus ? "启用" : "关闭") "双拼。")
+;     SetTimer(() => ToolTip(), -1000)
+; }
 
-#F2::{ ; Adapted from https://www.autohotkey.com/boards/viewtopic.php?p=180845#p180845
+#+F2::{ ; Adapted from https://www.autohotkey.com/boards/viewtopic.php?p=180845#p180845
     TaskbarGlomLevelStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarGlomLevel")
     RegWrite(TaskbarGlomLevelStatus := !TaskbarGlomLevelStatus, "REG_DWORD", "HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced", "TaskbarGlomLevel")
     SendMessage(0x1A, , , , "ahk_class Shell_TrayWnd")
     WinRedraw("ahk_class Shell_TrayWnd")
 }
 
-#F3::{ ; https://superuser.com/a/1357023
+#+F3::{ ; https://superuser.com/a/1357023
     buttonState := DllCall("user32.dll\SwapMouseButton", "UInt", 1)
     if buttonState != 0 {
         buttonState := DllCall("user32.dll\SwapMouseButton", "UInt", 0)
     }
 }
 
-#!Space::{
+#+F12::{
     TouchpadStatus := RegRead("HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\PrecisionTouchPad\Status", "Enabled")
     Run("SystemSettingsAdminFlows.exe EnableTouchPad " (TouchpadStatus := !TouchpadStatus))
 }
 
+; #+L::{
+;     DllCall("PowrProf\SetSuspendState", "Int", 0, "Int", 0, "Int", 0)
+; }
+
 PrintScreen::Run("snipaste.exe snip")
 +PrintScreen::Run("snipaste.exe paste")
+
+#+v::{
+    original := A_Clipboard
+    if (original != "") {
+        transformed := StrReplace(original, "<", "&lt;")
+        A_Clipboard := transformed
+        Send "^v"
+        Sleep 50
+        A_Clipboard := original
+    }
+}

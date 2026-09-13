@@ -7,10 +7,10 @@
             "Content-type", "application/json",
         )
         post_data := Map(
-            "src"                 , this.configs["image_base64"],
-            "idiomatic_eqn_arrays", True,
-            "formats"             , ["text", "latex_styled"],
-            "math_inline_delimiters", this.configs["math_inline_delimiters"],
+            "src"                    , this.configs["image_base64"],
+            "idiomatic_eqn_arrays"   , True,
+            "formats"                , ["text", "latex_styled"],
+            "math_inline_delimiters" , this.configs["math_inline_delimiters"],
             "math_display_delimiters", this.configs["math_display_delimiters"],
         )
         this.json := JSON.parse(Request("https://api.mathpix.com/v3/text", "UTF-8", "POST", JSON.stringify(post_data), headers))

@@ -1,6 +1,8 @@
-; #NoTrayIcon
+ExitApp
+#NoTrayIcon
 
-^#Space::ExitApp()
+#^+Space::ExitApp()
+#^Space::Reload()
 AppsKey::LButton
 ; RAlt::LButton
 RCtrl::RButton

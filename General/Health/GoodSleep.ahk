@@ -1,4 +1,5 @@
-; #NoTrayIcon
+#NoTrayIcon
+ExitApp
 
 global WARN_STAGES := [ ; minutes
     30,
@@ -12,7 +13,7 @@ global EXTEND_MINS := [
     5,
 ]
 global EXTEND_MAX := EXTEND_MINS.Length
-global SHUTDOWN_TIME := "233000" ; HHMMSS format
+global SHUTDOWN_TIME := "235959" ; HHMMSS format
 global TIME_TO_SHUTDOWN := A_YYYY . A_MM . A_DD . SHUTDOWN_TIME
 global EXTEND_LEVEL := EXTEND_MAX
 

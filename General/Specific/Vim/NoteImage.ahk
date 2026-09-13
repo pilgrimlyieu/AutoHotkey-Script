@@ -24,7 +24,7 @@ transformToWindows(wslPath) {
         imageBaseName := res.Value
     }
     imageBaseName := RegExReplace(imageBaseName, "[\\/:\*\?" "<>| ]", "-")
-    imageBaseName := RegExReplace(imageBaseName, "\.(png|jpg|jpeg|gif|bmp)$", "")
+    imageBaseName := RegExReplace(imageBaseName, "\.(png|jpg|jpeg|gif|bmp|webp)$", "")
 
     local tempFilePath := "\\wsl.localhost\Ubuntu/tmp/vim_file_path"
     if !FileExist(tempFilePath) {
@@ -39,7 +39,7 @@ transformToWindows(wslPath) {
     try {
         SplitPath(mdFullPath, &mdFileName, &mdDir, &mdExt, &mdNameNoExt)
         local imageSaveDir := mdDir . "\" . mdNameNoExt
-        local imageSavePath := imageSaveDir . "\" . imageBaseName . ".png"
+        local imageSavePath := imageSaveDir . "\" . imageBaseName . ".webp"
     } catch {
         return
     }
@@ -47,6 +47,8 @@ transformToWindows(wslPath) {
     if !DirExist(imageSaveDir) {
         DirCreate(imageSaveDir)
     }
+
+    Sleep(3000)
 
     RunWait('"' SNIPASTE_PATH '" snip -o "' imageSavePath '"', , "Hide")
 

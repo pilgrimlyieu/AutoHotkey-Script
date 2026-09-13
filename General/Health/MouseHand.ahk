@@ -1,7 +1,7 @@
 #NoTrayIcon
 SetMouseDelay -1
 
-global LBKeyNum := 300, LimitMins := 30, BreakSeconds := 60, ForceSeconds := 30
+global LBKeyNum := 400, LimitMins := 30, BreakSeconds := 60, ForceSeconds := 30
 
 ~LButton::
 KeyLeftButton(ThisHotkey) {
