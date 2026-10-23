@@ -60,25 +60,16 @@ GetWorkingDir(paths) {
     return dir ? dir : home
 }
 
-BuildVimCommand(neovim, paths) {
-    if (neovim) {
-        exe := "neovide --frame none"
-        if (paths.Length > 1)
-            return exe . " --no-tabs " . JoinQuoted(paths) . " -- -d"
-        if (paths.Length == 1)
-            return exe . " " . QuotePath(paths[1])
-        return exe
-    }
-
-    exe := "gvim"
+BuildNeovimCommand(paths) {
+    exe := "neovide"
     if (paths.Length > 1)
-        return exe . " -d " . JoinQuoted(paths)
+        return exe . " --no-tabs " . JoinQuoted(paths) . " -- -d"
     if (paths.Length == 1)
         return exe . " " . QuotePath(paths[1])
     return exe
 }
 
-openVim(neovim := true) {
+openNeovim() {
     global workAreaInfoRight, workAreaInfoBottom
 
     selected := GetSelectedPath()
@@ -88,17 +79,11 @@ openVim(neovim := true) {
     paths := GetSelectedPaths(clipText)
     cwd := GetWorkingDir(paths)
 
-    if (!neovim)
-        EnvSet("VIM_KEYCODE_TRANS_STRATEGY", "experimental") ; Vim patch 9.1.0050
-
-    command := BuildVimCommand(neovim, paths)
+    command := BuildNeovimCommand(paths)
     Run(command, cwd, , &pid)
 
     if WinWait("ahk_pid " pid, , 1) {
         ProcessSetPriority("High", pid)
-        if (!neovim)
-            WinSetStyle(-0xC40000, "ahk_pid " pid)
-        ; 与 Vim 的 au GUIEnter * simalt ~x 冲突，不要加到 vimrc
         WinMove(0, 0, workAreaInfoRight, workAreaInfoBottom, "ahk_pid " pid)
         try WinActivate("ahk_pid " pid)
     }
@@ -108,36 +93,13 @@ openVim(neovim := true) {
 
 #+CapsLock::SetCapsLockState(!GetKeyState("CapsLock", "T"))
 
-#HotIf !WinActive("ahk_exe gvim.exe") && !WinActive("ahk_exe neovide.exe")
+#HotIf !WinActive("ahk_exe neovide.exe")
 
-!q::openVim()
-!+q::openVim(false)
+!q::openNeovim()
 
-; #HotIf WinActive("^.*✏️[isvV]$") || (WinActive("ahk_exe WindowsTerminal.exe") && WinActive(" \| [\w-]*md$"))
-
-#HotIf WinActive("ahk_exe WindowsTerminal.exe") || WinActive("ahk_exe gvim.exe") || WinActive("ahk_exe neovide.exe")
+#HotIf WinActive("ahk_exe WindowsTerminal.exe") || WinActive("ahk_exe neovide.exe")
 
 CapsLock::SendInput("{Alt Down}{F12}{Alt Up}")
 +CapsLock::SendInput("{Alt Down}{Shift Down}{F12}{Shift Up}{Alt Up}")
 ^CapsLock::SendInput("{Ctrl Down}{Alt Down}{F12}{Alt Up}{Ctrl Up}")
 ^+CapsLock::SendInput("{Ctrl Down}{Shift Down}{Alt Down}{F12}{Alt Up}{Shift Up}{Ctrl Up}")
-
-#HotIf WinActive(".*✏️i$") && WinActive("ahk_exe gvim.exe")
-
-~RControl::{
-    if (A_PriorHotkey != "~RControl" || A_TimeSincePriorHotkey > 250) {
-        KeyWait("RControl")
-        return
-    }
-    SendInput("{Esc}")
-}
-
-#HotIf WinActive(".*✏️i$") && WinActive("ahk_exe WindowsTerminal.exe")
-
-~RControl::{
-    if (A_PriorHotkey != "~RControl" || A_TimeSincePriorHotkey > 250) {
-        KeyWait("RControl")
-        return
-    }
-    SendInput("{Esc}{Ctrl Down}[{Ctrl Up}")
-}
