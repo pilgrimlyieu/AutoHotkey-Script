@@ -15,6 +15,7 @@ Scripts := [
     {path: "General/Specific/Obsidian",            admin: 0, dir: 1, recursive: 0},
     {path: "General/Specific/Code.ahk",          admin: 0, dir: 0, recursive: 0},
     {path: "General/Specific/WindowsTerminal.ahk", admin: 0, dir: 0, recursive: 0},
+    {path: "General/Specific/GlazeWM.ahk",         admin: 0, dir: 0, recursive: 0},
 
     ; {path: "Project/Vark/main.ahk", admin: 0, dir: 0, recursive: 0},
 ]
